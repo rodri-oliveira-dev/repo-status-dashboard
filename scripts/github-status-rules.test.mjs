@@ -1,0 +1,184 @@
+import assert from 'node:assert/strict';
+import { describe, it } from 'node:test';
+import {
+  calculateHealth,
+  classifyProjectType,
+  correlateReleaseVersion,
+  inferDeliveryType,
+  mapDeliveryStatus,
+  selectBuildWorkflow,
+  selectDeliveryWorkflow,
+} from './github-status-rules.mjs';
+
+const run = (name, updated_at, extra = {}) => ({
+  name,
+  path: `.github/workflows/${name.toLowerCase()}.yml`,
+  updated_at,
+  status: 'completed',
+  conclusion: 'success',
+  ...extra,
+});
+
+describe('build workflow selection', () => {
+  it('selects the newest relevant CI workflow', () => {
+    const result = selectBuildWorkflow([
+      run('CI', '2026-10-01T10:00:00Z'),
+      run('Build and test', '2026-10-02T10:00:00Z'),
+      run('Release', '2026-10-03T10:00:00Z'),
+    ]);
+    assert.equal(result.name, 'Build and test');
+  });
+
+  it('does not treat Dependabot as the primary CI run', () => {
+    const result = selectBuildWorkflow([
+      run('CI', '2026-10-03T10:00:00Z', { actor: { login: 'dependabot[bot]' } }),
+      run('Validation', '2026-10-02T10:00:00Z'),
+    ]);
+    assert.equal(result.name, 'Validation');
+  });
+});
+
+describe('delivery workflow selection and type', () => {
+  it('selects a publish workflow and ignores CI-only runs', () => {
+    assert.equal(
+      selectDeliveryWorkflow([
+        run('CI', '2026-10-03T10:00:00Z'),
+        run('Publish NuGet', '2026-10-02T10:00:00Z'),
+      ]).name,
+      'Publish NuGet',
+    );
+  });
+
+  it('classifies supported delivery types', () => {
+    assert.equal(inferDeliveryType('Publish package to NuGet'), 'NuGet');
+    assert.equal(inferDeliveryType('Deploy GitHub Pages'), 'GitHub Pages');
+    assert.equal(inferDeliveryType('github-pages deployment'), 'GitHub Pages');
+    assert.equal(inferDeliveryType('Push Docker image to GHCR'), 'Container');
+    assert.equal(inferDeliveryType('terraform apply'), 'Terraform');
+    assert.equal(inferDeliveryType('something else'), 'Unknown');
+  });
+
+  it('associates a release version only when timestamps are close', () => {
+    const release = { tag_name: 'v2.1.0', published_at: '2026-10-06T10:05:00Z' };
+    assert.equal(correlateReleaseVersion(release, '2026-10-06T10:00:00Z'), 'v2.1.0');
+    assert.equal(correlateReleaseVersion(release, '2026-10-05T10:00:00Z'), null);
+  });
+
+  it('does not report an inactive deployment as a failure', () => {
+    assert.equal(mapDeliveryStatus('inactive'), 'unknown');
+  });
+});
+
+describe('health classification', () => {
+  const recent = '2026-10-01T00:00:00Z';
+  const now = Date.parse('2026-10-06T00:00:00Z');
+  it('prioritizes archived repositories', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: true,
+          buildStatus: 'failing',
+          deliveryStatus: 'failure',
+          lastActivityDate: recent,
+        },
+        now,
+      ),
+      'archived',
+    ));
+  it('marks failed CI or delivery as failed', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: false,
+          buildStatus: 'passing',
+          deliveryStatus: 'failure',
+          lastActivityDate: recent,
+        },
+        now,
+      ),
+      'failed',
+    ));
+  it('marks repositories without recent activity as stale', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: false,
+          buildStatus: 'passing',
+          deliveryStatus: 'success',
+          lastActivityDate: '2026-01-01T00:00:00Z',
+        },
+        now,
+      ),
+      'stale',
+    ));
+  it('marks recent passing builds as healthy', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: false,
+          buildStatus: 'passing',
+          deliveryStatus: 'none',
+          lastActivityDate: recent,
+        },
+        now,
+      ),
+      'healthy',
+    ));
+  it('marks in-progress signals as warning', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: false,
+          buildStatus: 'running',
+          deliveryStatus: 'none',
+          lastActivityDate: recent,
+        },
+        now,
+      ),
+      'warning',
+    ));
+  it('keeps missing signals unknown', () =>
+    assert.equal(
+      calculateHealth(
+        {
+          archived: false,
+          buildStatus: 'unknown',
+          deliveryStatus: 'none',
+          lastActivityDate: recent,
+        },
+        now,
+      ),
+      'unknown',
+    ));
+});
+
+describe('project type classification', () => {
+  it('classifies common repository profiles', () => {
+    assert.equal(
+      classifyProjectType({ name: 'angular-template', language: 'TypeScript', topics: [] }),
+      'Angular',
+    );
+    assert.equal(
+      classifyProjectType({ name: 'CSF.Analyzers', language: 'C#', topics: ['roslyn-analyzer'] }),
+      'Analyzer',
+    );
+    assert.equal(
+      classifyProjectType({
+        name: 'Repo2C4',
+        description: 'A CLI tool',
+        language: 'C#',
+        topics: [],
+      }),
+      'CLI',
+    );
+    assert.equal(
+      classifyProjectType({
+        name: 'Dapper-FluentMap',
+        description: 'Fluent mapping for Dapper with analyzers',
+        language: 'C#',
+        topics: ['dapper', 'source-generator'],
+      }),
+      'Library',
+    );
+  });
+});

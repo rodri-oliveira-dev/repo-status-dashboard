@@ -1,0 +1,190 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">Operational dashboard</p>
+    <h1>Repository overview</h1>
+    <p>
+      Build, delivery and activity signals for
+      <strong>{{ store.dataset()?.owner ?? 'rodri-oliveira-dev' }}</strong
+      >.
+    </p>
+  </div>
+  @if (store.dataset(); as dataset) {
+    <div class="freshness" [title]="dataset.generatedAt | fullDate">
+      <span aria-hidden="true"></span>Updated {{ dataset.generatedAt | relativeDate }}
+    </div>
+  }
+</section>
+
+@if (store.loading()) {
+  <section class="state panel" aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    <h2>Loading repository status</h2>
+    <p>Reading the latest generated snapshot.</p>
+  </section>
+} @else if (store.error(); as error) {
+  <section class="state panel error" role="alert">
+    <h2>Repository data unavailable</h2>
+    <p>{{ error }}</p>
+    <button type="button" (click)="store.load(true)">Try again</button>
+  </section>
+} @else {
+  <section class="summary-grid" aria-label="Repository health summary">
+    <app-summary-card label="Repositories" [value]="stats().total" />
+    <app-summary-card label="Healthy" [value]="stats().healthy" tone="success" />
+    <app-summary-card label="Warning" [value]="stats().warning" tone="warning" />
+    <app-summary-card label="Failed" [value]="stats().failed" tone="danger" />
+    <app-summary-card label="Stale" [value]="stats().stale" tone="stale" />
+    <app-summary-card label="Archived" [value]="stats().archived" tone="archived" />
+  </section>
+
+  <section class="workspace panel">
+    <div class="toolbar">
+      <label class="search"
+        ><span class="sr-only">Search repositories</span><span aria-hidden="true">⌕</span
+        ><input
+          type="search"
+          placeholder="Search repositories..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+      /></label>
+      <div class="filters">
+        <label
+          >Type<select [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+            <option value="all">All types</option>
+            @for (type of projectTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+            }
+          </select></label
+        >
+        <label
+          >Technology<select
+            [ngModel]="technologyFilter()"
+            (ngModelChange)="technologyFilter.set($event)"
+          >
+            <option value="all">All technologies</option>
+            @for (technology of technologies(); track technology) {
+              <option [value]="technology">{{ technology }}</option>
+            }
+          </select></label
+        >
+        <label
+          >Delivery<select
+            [ngModel]="deliveryFilter()"
+            (ngModelChange)="deliveryFilter.set($event)"
+          >
+            <option value="all">All deliveries</option>
+            @for (delivery of deliveryTypes; track delivery) {
+              <option [value]="delivery">{{ delivery }}</option>
+            }
+          </select></label
+        >
+        <label class="checkbox"
+          ><input
+            type="checkbox"
+            [ngModel]="showArchived()"
+            (ngModelChange)="showArchived.set($event)"
+          />Show archived</label
+        >
+      </div>
+    </div>
+
+    <div class="status-tabs" aria-label="Filter by health status">
+      <button
+        type="button"
+        [class.active]="healthFilter() === 'all'"
+        (click)="setHealthFilter('all')"
+      >
+        All
+      </button>
+      @for (status of healthStatuses; track status) {
+        <button
+          type="button"
+          [class.active]="healthFilter() === status"
+          (click)="setHealthFilter(status)"
+        >
+          {{ status.charAt(0).toUpperCase() + status.slice(1) }}
+        </button>
+      }
+    </div>
+
+    @if (filteredRepositories().length === 0) {
+      <div class="empty">
+        <div aria-hidden="true">⌕</div>
+        <h2>No repositories found</h2>
+        <p>Try changing the search or filters.</p>
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <button type="button" (click)="sortBy('repository')">
+                  Repository <span>{{ sortLabel('repository') }}</span>
+                </button>
+              </th>
+              <th>Type</th>
+              <th>Build</th>
+              <th>Delivery</th>
+              <th>Version</th>
+              <th>
+                <button type="button" (click)="sortBy('updated')">
+                  Updated <span>{{ sortLabel('updated') }}</span>
+                </button>
+              </th>
+              <th>
+                <button type="button" (click)="sortBy('health')">
+                  Health <span>{{ sortLabel('health') }}</span>
+                </button>
+              </th>
+              <th><span class="sr-only">Open details</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (repository of filteredRepositories(); track trackRepository($index, repository)) {
+              <tr [class.archived]="repository.archived">
+                <td data-label="Repository">
+                  <a class="repo-name" [routerLink]="['/repository', repository.name]">{{
+                    repository.name
+                  }}</a
+                  ><span class="description">{{ repository.description || 'No description' }}</span>
+                </td>
+                <td data-label="Type">
+                  <span class="type-chip">{{ repository.projectType }}</span
+                  ><span class="technology">{{ repository.language || '—' }}</span>
+                </td>
+                <td data-label="Build" [title]="repository.lastWorkflowDate | fullDate">
+                  <app-status-badge [status]="repository.lastWorkflowStatus" />
+                </td>
+                <td data-label="Delivery">
+                  <span class="delivery">{{ repository.deliveryType }}</span
+                  ><small>{{
+                    repository.deliveryStatus === 'none' ? '' : repository.deliveryStatus
+                  }}</small>
+                </td>
+                <td data-label="Version">
+                  <code>{{ repository.deliveryVersion || '—' }}</code>
+                </td>
+                <td
+                  data-label="Updated"
+                  [title]="repository.lastCommitDate || repository.updatedAt | fullDate"
+                >
+                  {{ repository.lastCommitDate || repository.updatedAt | relativeDate }}
+                </td>
+                <td data-label="Health"><app-status-badge [status]="repository.health" /></td>
+                <td>
+                  <a
+                    class="open"
+                    [routerLink]="['/repository', repository.name]"
+                    [attr.aria-label]="'View ' + repository.name + ' details'"
+                    >›</a
+                  >
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+}

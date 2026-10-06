@@ -1,0 +1,157 @@
+<a class="back" routerLink="/">← Back to repositories</a>
+
+@if (store.loading()) {
+  <div class="loading panel">Loading repository details…</div>
+} @else if (store.error(); as error) {
+  <section class="load-error panel" role="alert">
+    <h1>Repository data unavailable</h1>
+    <p>{{ error }}</p>
+    <button type="button" (click)="store.load(true)">Try again</button>
+  </section>
+} @else if (repository(); as repository) {
+  <section class="detail-header">
+    <div>
+      <p class="eyebrow">{{ repository.projectType }} · {{ repository.visibility }}</p>
+      <h1>{{ repository.name }}</h1>
+      <p>{{ repository.description || 'No repository description is available.' }}</p>
+    </div>
+    <app-status-badge [status]="repository.health" />
+  </section>
+
+  <div class="detail-grid">
+    <section class="panel overview">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">Current state</p>
+          <h2>Operational overview</h2>
+        </div>
+        <span class="updated" [title]="repository.lastCommitDate || repository.updatedAt | fullDate"
+          >Updated {{ repository.lastCommitDate || repository.updatedAt | relativeDate }}</span
+        >
+      </div>
+      <dl>
+        <div>
+          <dt>Repository</dt>
+          <dd>{{ repository.fullName }}</dd>
+        </div>
+        <div>
+          <dt>Type</dt>
+          <dd>{{ repository.projectType }}</dd>
+        </div>
+        <div>
+          <dt>Build</dt>
+          <dd><app-status-badge [status]="repository.lastWorkflowStatus" /></dd>
+        </div>
+        <div>
+          <dt>Workflow</dt>
+          <dd>{{ repository.lastWorkflowName || 'Not detected' }}</dd>
+        </div>
+        <div>
+          <dt>Last build</dt>
+          <dd>{{ repository.lastWorkflowDate | fullDate }}</dd>
+        </div>
+        <div>
+          <dt>Latest delivery</dt>
+          <dd>{{ repository.deliveryType }}</dd>
+        </div>
+        <div>
+          <dt>Delivery status</dt>
+          <dd><app-status-badge [status]="repository.deliveryStatus" /></dd>
+        </div>
+        <div>
+          <dt>Version</dt>
+          <dd>
+            <code>{{ repository.deliveryVersion || '—' }}</code>
+          </dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd>{{ repository.deliveryDate | fullDate }}</dd>
+        </div>
+        <div>
+          <dt>Default branch</dt>
+          <dd>
+            <code>{{ repository.defaultBranch }}</code>
+          </dd>
+        </div>
+        <div>
+          <dt title="GitHub reports open issues and pull requests in this count">
+            Open issues &amp; PRs
+          </dt>
+          <dd>{{ repository.openIssues }}</dd>
+        </div>
+        <div>
+          <dt>Last commit</dt>
+          <dd [title]="repository.lastCommitDate | fullDate">
+            {{ repository.lastCommitDate | relativeDate }}
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <aside>
+      <section class="panel links">
+        <p class="eyebrow">Destinations</p>
+        <h2>Open in GitHub</h2>
+        <a [href]="repository.url" target="_blank" rel="noopener noreferrer"
+          >Repository <span>↗</span></a
+        >
+        @if (repository.lastWorkflowUrl) {
+          <a [href]="repository.lastWorkflowUrl" target="_blank" rel="noopener noreferrer"
+            >Workflow <span>↗</span></a
+          >
+        }
+        @if (repository.latestReleaseUrl) {
+          <a [href]="repository.latestReleaseUrl" target="_blank" rel="noopener noreferrer"
+            >Release <span>↗</span></a
+          >
+        }
+        @if (repository.deliveryUrl) {
+          <a [href]="repository.deliveryUrl" target="_blank" rel="noopener noreferrer"
+            >Delivery <span>↗</span></a
+          >
+        }
+        @if (repository.homepage) {
+          <a [href]="repository.homepage" target="_blank" rel="noopener noreferrer"
+            >Homepage <span>↗</span></a
+          >
+        }
+      </section>
+      <section class="panel metadata">
+        <p class="eyebrow">Repository</p>
+        <h2>Metadata</h2>
+        <dl>
+          <div>
+            <dt>Technology</dt>
+            <dd>{{ repository.language || 'Unknown' }}</dd>
+          </div>
+          <div>
+            <dt>Stars</dt>
+            <dd>{{ repository.stars }}</dd>
+          </div>
+          <div>
+            <dt>Commit</dt>
+            <dd>
+              <code>{{
+                repository.lastCommitSha ? repository.lastCommitSha.slice(0, 8) : '—'
+              }}</code>
+            </dd>
+          </div>
+        </dl>
+        @if (repository.topics.length) {
+          <div class="topics">
+            @for (topic of repository.topics; track topic) {
+              <span>{{ topic }}</span>
+            }
+          </div>
+        }
+      </section>
+    </aside>
+  </div>
+} @else {
+  <section class="not-found panel">
+    <h1>Repository not found</h1>
+    <p>The generated snapshot does not contain this repository.</p>
+    <a routerLink="/">Return to dashboard</a>
+  </section>
+}

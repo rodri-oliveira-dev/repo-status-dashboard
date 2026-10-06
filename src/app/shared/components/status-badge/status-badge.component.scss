@@ -1,0 +1,32 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 25px;
+  border-radius: 999px;
+  padding: 0.25rem 0.58rem;
+  background: var(--neutral-soft);
+  color: var(--text-subtle);
+  font-size: 0.73rem;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.success {
+  color: var(--success);
+  background: var(--success-soft);
+}
+.warning {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+.danger {
+  color: var(--danger);
+  background: var(--danger-soft);
+}

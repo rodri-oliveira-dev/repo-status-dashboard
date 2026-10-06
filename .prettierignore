@@ -1,0 +1,5 @@
+dist
+coverage
+node_modules
+public/data/repositories.json
+package-lock.json
