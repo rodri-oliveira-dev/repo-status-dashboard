@@ -1,0 +1,116 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version in vX.Y.Z format
+        required: true
+        type: string
+      prerelease:
+        description: Mark the release as a prerelease
+        required: true
+        default: false
+        type: boolean
+      generate_notes:
+        description: Generate release notes from merged pull requests
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Require the main branch
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF_NAME" != "main" ]]; then
+            echo "Releases must be dispatched from the main branch."
+            exit 1
+          fi
+
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate release version
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ ! "$VERSION" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "Version must use the vX.Y.Z format, optionally followed by a SemVer suffix."
+            exit 1
+          fi
+          if git rev-parse --verify --quiet "refs/tags/$VERSION"; then
+            echo "Tag $VERSION already exists."
+            exit 1
+          fi
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "Release $VERSION already exists."
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build:pages
+
+      - name: Package release artifact
+        shell: bash
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          archive="repo-control-center-${VERSION}.tar.gz"
+          tar -czf "$archive" -C dist/repo-control-center/browser .
+          sha256sum "$archive" > "${archive}.sha256"
+
+      - name: Create tag and GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+          PRERELEASE: ${{ inputs.prerelease }}
+          GENERATE_NOTES: ${{ inputs.generate_notes }}
+        run: |
+          archive="repo-control-center-${VERSION}.tar.gz"
+          args=("$VERSION" "$archive" "${archive}.sha256" --target "$GITHUB_SHA" --title "Repo Control Center $VERSION")
+
+          if [[ "$GENERATE_NOTES" == "true" ]]; then
+            args+=(--generate-notes)
+          else
+            args+=(--notes "Repo Control Center $VERSION")
+          fi
+
+          if [[ "$PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+
+          gh release create "${args[@]}"

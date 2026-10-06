@@ -1,0 +1,33 @@
+{
+  "folders": [
+    {
+      "name": "Repo Control Center",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.exclude": {
+      "**/.angular": true,
+      "**/dist": true
+    },
+    "search.exclude": {
+      "**/coverage": true,
+      "**/dist": true,
+      "**/node_modules": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "angular.ng-template",
+      "dbaeumer.vscode-eslint",
+      "editorconfig.editorconfig",
+      "esbenp.prettier-vscode"
+    ]
+  }
+}

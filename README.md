@@ -147,3 +147,11 @@ scripts/                      collector e regras de classificação
 ## Segurança
 
 A aplicação publicada consome somente o JSON estático. Não há token, chamada autenticada ao GitHub, OAuth, armazenamento de credenciais ou mutação de repositórios no frontend.
+
+## Releases
+
+O workflow manual [`release.yml`](.github/workflows/release.yml) valida formato, lint, testes e build antes de criar uma tag e uma GitHub Release. Execute **Actions → Create Release → Run workflow** a partir de `main` e informe uma versão no formato `vX.Y.Z`. A release inclui o build estático compactado e seu checksum SHA-256.
+
+## Licença
+
+Copyright © 2026 Rodrigo de Oliveira. Todos os direitos reservados. Este projeto é proprietário e não concede permissão para usar, copiar, modificar ou redistribuir o código sem autorização prévia por escrito. Consulte [`LICENSE`](LICENSE).
