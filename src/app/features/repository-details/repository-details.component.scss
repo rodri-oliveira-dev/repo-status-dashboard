@@ -152,13 +152,24 @@ aside {
   font-weight: 650;
 }
 .loading,
+.load-error,
 .not-found {
   padding: 4rem 1rem;
   text-align: center;
   color: var(--muted);
 }
+.load-error h1,
 .not-found h1 {
   color: var(--text);
+}
+.load-error button {
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
 }
 .not-found a {
   display: inline-block;

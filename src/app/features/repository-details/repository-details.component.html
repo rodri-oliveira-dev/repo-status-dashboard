@@ -2,6 +2,12 @@
 
 @if (store.loading()) {
   <div class="loading panel">Loading repository details…</div>
+} @else if (store.error(); as error) {
+  <section class="load-error panel" role="alert">
+    <h1>Repository data unavailable</h1>
+    <p>{{ error }}</p>
+    <button type="button" (click)="store.load(true)">Try again</button>
+  </section>
 } @else if (repository(); as repository) {
   <section class="detail-header">
     <div>
@@ -69,7 +75,9 @@
           </dd>
         </div>
         <div>
-          <dt>Open issues</dt>
+          <dt title="GitHub reports open issues and pull requests in this count">
+            Open issues &amp; PRs
+          </dt>
           <dd>{{ repository.openIssues }}</dd>
         </div>
         <div>

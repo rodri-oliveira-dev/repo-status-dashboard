@@ -43,7 +43,7 @@ jobs:
       - name: Test
         run: npm test
       - name: Build for GitHub Pages
-        run: npm run build:pages
+        run: npm run build -- --base-href "/${{ github.event.repository.name }}/"
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Upload Pages artifact

@@ -43,7 +43,7 @@ npm run collect       # atualiza o snapshot pela API do GitHub
 npm run lint          # ESLint para TypeScript, templates e scripts
 npm test              # testes Angular e das regras do collector
 npm run build         # build local de produção
-npm run build:pages   # build com base href /repo-control-center/
+npm run build:pages   # build com base href /repo-status-dashboard/
 npm run format:check  # valida Prettier
 ```
 
@@ -96,12 +96,12 @@ Precedência atual:
 
 ## GitHub Pages
 
-O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, gera o Angular com `base href` `/repo-control-center/` e publica o artifact oficial do Pages.
+O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, deriva o `base href` do nome real do repositório e publica o artifact oficial do Pages.
 
 No repositório GitHub, escolha **Settings → Pages → Source → GitHub Actions**. A URL esperada é:
 
 ```text
-https://rodri-oliveira-dev.github.io/repo-control-center/
+https://rodri-oliveira-dev.github.io/repo-status-dashboard/
 ```
 
 As rotas usam hash (`#/repository/...`), evitando 404 em refresh sem exigir um servidor ou cópia de `404.html`.

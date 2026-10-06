@@ -5,6 +5,7 @@ import {
   classifyProjectType,
   correlateReleaseVersion,
   inferDeliveryType,
+  mapDeliveryStatus,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
 } from './github-status-rules.mjs';
@@ -62,6 +63,10 @@ describe('delivery workflow selection and type', () => {
     assert.equal(correlateReleaseVersion(release, '2026-10-06T10:00:00Z'), 'v2.1.0');
     assert.equal(correlateReleaseVersion(release, '2026-10-05T10:00:00Z'), null);
   });
+
+  it('does not report an inactive deployment as a failure', () => {
+    assert.equal(mapDeliveryStatus('inactive'), 'unknown');
+  });
 });
 
 describe('health classification', () => {
@@ -93,7 +98,7 @@ describe('health classification', () => {
       ),
       'failed',
     ));
-  it('marks inactive repositories as stale', () =>
+  it('marks repositories without recent activity as stale', () =>
     assert.equal(
       calculateHealth(
         {

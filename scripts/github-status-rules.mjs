@@ -60,7 +60,8 @@ export function mapWorkflowStatus(run) {
 export function mapDeliveryStatus(value) {
   const status = String(value ?? '').toLowerCase();
   if (['success', 'active'].includes(status)) return 'success';
-  if (['failure', 'error', 'inactive'].includes(status)) return 'failure';
+  if (['failure', 'error'].includes(status)) return 'failure';
+  if (status === 'inactive') return 'unknown';
   if (['in_progress', 'running'].includes(status)) return 'running';
   if (['queued', 'pending', 'waiting', 'requested'].includes(status)) return 'queued';
   if (['cancelled', 'canceled'].includes(status)) return 'cancelled';

@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:pages": "ng build --base-href /repo-control-center/",
+    "build:pages": "ng build --base-href /repo-status-dashboard/",
     "collect": "node scripts/collect-github-status.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
