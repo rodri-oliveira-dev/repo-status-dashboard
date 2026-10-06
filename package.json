@@ -16,6 +16,7 @@
     "test:collector": "node --test scripts/*.test.mjs"
   },
   "private": true,
+  "license": "UNLICENSED",
   "description": "Operational dashboard for GitHub repositories",
   "engines": {
     "node": ">=24.0.0"
