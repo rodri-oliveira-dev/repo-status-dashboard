@@ -133,6 +133,22 @@ O collector classifica workflows semanticamente como `ci`, `quality`, `security`
 
 Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente, e Dependabot continua excluído. Assim, cancelamentos de mutation tests, quality gates e outras automações auxiliares não degradam a saúde. A configuração opcional por repositório pode substituir essa descoberta quando uma convenção de nomes não for suficiente.
 
+### Configuração por repositório
+
+Um repositório pode declarar arquivos de workflow em `.repo-dashboard.yml` na raiz:
+
+```yaml
+workflows:
+  ci:
+    - ci.yml
+    - build.yml
+  quality: [sonar.yml, mutation-tests.yml]
+  security: [codeql.yml]
+  delivery: [release.yml, deploy-pages.yml]
+```
+
+Papéis suportados: `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages` e `maintenance`. Cada entrada deve ser somente o nome de um arquivo `.yml` ou `.yaml`. Um papel declarado é autoritativo: arquivos não listados não são classificados heuristicamente naquele papel; papéis ausentes continuam usando heurísticas. Arquivo ausente mantém o comportamento padrão, enquanto conteúdo inválido gera um aviso restrito ao repositório e não interrompe a coleta. O conteúdo da configuração não é publicado no snapshot.
+
 ### Delivery
 
 A descoberta segue esta precedência:

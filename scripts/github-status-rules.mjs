@@ -49,32 +49,51 @@ function workflowText(run) {
     .join(' ');
 }
 
-export function classifyWorkflowRole(run) {
+function workflowFileName(run) {
+  return (
+    String(run?.path ?? '')
+      .split('/')
+      .pop()
+      ?.toLowerCase() ?? ''
+  );
+}
+
+export function classifyWorkflowRole(run, configuredWorkflows = {}) {
+  const fileName = workflowFileName(run);
+  for (const [role, files] of Object.entries(configuredWorkflows)) {
+    if (files.some((file) => file.toLowerCase() === fileName)) return role;
+  }
   const text = workflowText(run).toLowerCase();
   if (!text) return 'unknown';
-  if (/mutation|stryker|pitest/.test(text)) return 'mutation';
-  if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) return 'security';
-  if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) return 'pages';
-  if (/release|create tag|changelog/.test(text)) return 'release';
+  let role = 'unknown';
+  if (/mutation|stryker|pitest/.test(text)) role = 'mutation';
+  else if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) role = 'security';
+  else if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) role = 'pages';
+  else if (/release|create tag|changelog/.test(text)) role = 'release';
   if (
     /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
   )
-    return 'delivery';
-  if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) return 'maintenance';
-  if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text)) return 'quality';
-  if (
+    role = role === 'unknown' ? 'delivery' : role;
+  else if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
+  else if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text))
+    role = 'quality';
+  else if (
     /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build and test|build & test|compile and test/.test(
       text,
     )
   )
-    return 'ci';
-  return 'unknown';
+    role = 'ci';
+  return Object.hasOwn(configuredWorkflows, role) ? 'unknown' : role;
 }
 
-export function selectBuildWorkflow(runs) {
+export function selectBuildWorkflow(runs, configuredWorkflows = {}) {
   return (
     [...runs]
-      .filter((run) => !DEPENDABOT.test(workflowText(run)) && classifyWorkflowRole(run) === 'ci')
+      .filter(
+        (run) =>
+          !DEPENDABOT.test(workflowText(run)) &&
+          classifyWorkflowRole(run, configuredWorkflows) === 'ci',
+      )
       .sort(
         (left, right) =>
           Date.parse(right.updated_at ?? right.created_at) -
@@ -83,10 +102,12 @@ export function selectBuildWorkflow(runs) {
   );
 }
 
-export function selectDeliveryWorkflow(runs) {
+export function selectDeliveryWorkflow(runs, configuredWorkflows = {}) {
   return (
     [...runs]
-      .filter((run) => ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run)))
+      .filter((run) =>
+        ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run, configuredWorkflows)),
+      )
       .sort(
         (left, right) =>
           Date.parse(right.updated_at ?? right.created_at) -

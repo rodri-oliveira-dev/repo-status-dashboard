@@ -125,6 +125,21 @@ describe('workflow semantic roles', () => {
     );
     assert.equal(classifyWorkflowRole(run('Tests', '2026-10-01T10:00:00Z')), 'unknown');
   });
+
+  it('uses configured files authoritatively only for configured roles', () => {
+    const configured = { ci: ['pipeline.yml'] };
+    const namedCi = run('CI', '2026-10-01T10:00:00Z');
+    const configuredCi = run('Anything', '2026-10-02T10:00:00Z', {
+      path: '.github/workflows/pipeline.yml',
+    });
+    assert.equal(classifyWorkflowRole(namedCi, configured), 'unknown');
+    assert.equal(classifyWorkflowRole(configuredCi, configured), 'ci');
+    assert.equal(selectBuildWorkflow([namedCi, configuredCi], configured), configuredCi);
+    assert.equal(
+      classifyWorkflowRole(run('CodeQL security', '2026-10-01T10:00:00Z'), configured),
+      'security',
+    );
+  });
 });
 
 describe('delivery workflow selection and type', () => {

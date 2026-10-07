@@ -15,6 +15,7 @@ import {
   selectDeliveryWorkflow,
   summarizeCollection,
 } from './github-status-rules.mjs';
+import { decodeRepositoryConfig } from './repository-config.mjs';
 
 const OWNER = process.env.GITHUB_OWNER || 'rodri-oliveira-dev';
 const TOKEN = process.env.GH_DASHBOARD_TOKEN || process.env.GITHUB_TOKEN;
@@ -156,6 +157,18 @@ function deliveryFrom({ deployment, deploymentStatus, deliveryWorkflow, release,
 async function enrich(repository) {
   const name = repository.name;
   const base = `/repos/${encodeURIComponent(OWNER)}/${encodeURIComponent(name)}`;
+  const configResult = await collectSignal(`${base}/contents/.repo-dashboard.yml`, null, name);
+  let configuredWorkflows = {};
+  if (configResult.data) {
+    try {
+      configuredWorkflows = decodeRepositoryConfig(configResult.data).workflows;
+    } catch (error) {
+      const message = `invalid .repo-dashboard.yml: ${safeWarning(error)}`;
+      configResult.warning = message;
+      warnings.push(`${name}: ${message}`);
+      console.warn(`[collector] ${name}: ${message}`);
+    }
+  }
   const [commitResult, actionsResult, deploymentResult, releaseResult] = await Promise.all([
     collectSignal(
       `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
@@ -172,8 +185,8 @@ async function enrich(repository) {
   const deployments = deploymentResult.data;
   const release = releaseResult.data;
   const runs = workflowResponse.workflow_runs ?? [];
-  const build = selectBuildWorkflow(runs);
-  const deliveryWorkflow = selectDeliveryWorkflow(runs);
+  const build = selectBuildWorkflow(runs, configuredWorkflows);
+  const deliveryWorkflow = selectDeliveryWorkflow(runs, configuredWorkflows);
   const deployment = deployments[0] ?? null;
   const statusResult = deployment
     ? await collectSignal(`${base}/deployments/${deployment.id}/statuses?per_page=1`, [], name)
@@ -210,6 +223,7 @@ async function enrich(repository) {
     deploymentResult.warning,
     statusResult.warning,
     releaseResult.warning,
+    configResult.warning,
   ].filter(Boolean);
 
   return {
@@ -230,7 +244,7 @@ async function enrich(repository) {
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
     lastWorkflowName: build?.name ?? null,
-    lastWorkflowRole: build ? classifyWorkflowRole(build) : 'unknown',
+    lastWorkflowRole: build ? classifyWorkflowRole(build, configuredWorkflows) : 'unknown',
     lastWorkflowStatus: buildStatus,
     lastWorkflowConclusion: build?.conclusion ?? null,
     lastWorkflowDate: build?.updated_at ?? build?.created_at ?? null,
