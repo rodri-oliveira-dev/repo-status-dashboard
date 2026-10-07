@@ -31,6 +31,11 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
       - name: Wait for published site
         shell: bash
         run: |
@@ -52,6 +57,7 @@ jobs:
         with:
           token: ${{ github.token }}
           target: https://rodri-oliveira-dev.github.io/repo-status-dashboard/
+          rules_file_name: .zap/rules.tsv
           fail_action: false
           allow_issue_writing: true
           issue_title: OWASP ZAP Baseline Report
@@ -64,7 +70,8 @@ jobs:
             echo "# OWASP ZAP baseline"
             echo
             echo "- **Target:** https://rodri-oliveira-dev.github.io/repo-status-dashboard/"
-            echo "- **Mode:** passive baseline scan"
+            echo "- **Mode:** passive baseline scan scoped to /repo-status-dashboard/"
+            echo "- **Rules:** GitHub Pages managed headers/cache are ignored; app-controlled findings remain visible"
             echo "- **Deployment gate:** report-only"
             echo "- **Findings:** maintained in the OWASP ZAP Baseline Report issue and workflow artifact"
           } >> "$GITHUB_STEP_SUMMARY"
