@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:46:50.877Z",
+  "generatedAt": "2026-10-07T09:50:22.755Z",
   "repositories": [
     {
       "name": ".github",
@@ -58,6 +58,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 35,
+        "workflowRuns": 561,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 2,
+        "deployments": 0
+      },
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
       "lastCommitDate": "2026-10-06T17:25:33Z",
@@ -70,8 +80,8 @@
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.1.0",
-      "deliveryDate": "2026-09-24T14:31:42Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
+      "deliveryDate": "2026-09-24T14:31:46Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/.github/actions/runs/36013424070",
       "latestRelease": "v1.1.0",
       "latestReleaseDate": "2026-09-24T14:31:42Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
@@ -138,10 +148,10 @@
           "highCritical": 0
         },
         "workflow": {
-          "status": "not_configured",
-          "name": null,
-          "url": null,
-          "date": null
+          "status": "cancelled",
+          "name": "CI",
+          "url": "https://github.com/rodri-oliveira-dev/adr-guard/actions/runs/35640272551",
+          "date": "2026-09-21T18:45:15Z"
         },
         "openSsf": {
           "status": "not_configured",
@@ -149,6 +159,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 19,
+        "workflowRuns": 804,
+        "successfulCiRuns": 102,
+        "failedCiRuns": 58,
+        "releases": 15,
+        "deployments": 0
       },
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
@@ -238,6 +258,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 369,
+        "workflowRuns": 307,
+        "successfulCiRuns": 53,
+        "failedCiRuns": 51,
+        "releases": 1,
+        "deployments": 9
+      },
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
       "lastCommitDate": "2026-10-06T13:44:17Z",
@@ -323,6 +353,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 72,
+        "workflowRuns": 173,
+        "successfulCiRuns": 16,
+        "failedCiRuns": 5,
+        "releases": 1,
+        "deployments": 2
       },
       "projectType": "Application",
       "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
@@ -420,6 +460,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 9,
+        "workflowRuns": 234,
+        "successfulCiRuns": 54,
+        "failedCiRuns": 15,
+        "releases": 1,
+        "deployments": 1
       },
       "projectType": "Analyzer",
       "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
@@ -533,6 +583,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 28,
+        "workflowRuns": 103,
+        "successfulCiRuns": 4,
+        "failedCiRuns": 1,
+        "releases": 7,
+        "deployments": 0
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
       "lastCommitDate": "2026-10-06T18:07:49Z",
@@ -624,6 +684,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 224,
+        "workflowRuns": 355,
+        "successfulCiRuns": 63,
+        "failedCiRuns": 18,
+        "releases": 4,
+        "deployments": 37
+      },
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
       "lastCommitDate": "2026-10-06T12:31:55Z",
@@ -705,6 +775,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 5,
+        "workflowRuns": 17,
+        "successfulCiRuns": 5,
+        "failedCiRuns": 3,
+        "releases": 0,
+        "deployments": 0
       },
       "projectType": "Application",
       "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
@@ -798,6 +878,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 19,
+        "workflowRuns": 98,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 0
+      },
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
       "lastCommitDate": "2026-10-06T17:14:29Z",
@@ -890,6 +980,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 69,
+        "workflowRuns": 122,
+        "successfulCiRuns": 31,
+        "failedCiRuns": 3,
+        "releases": 0,
+        "deployments": 0
+      },
       "projectType": "Application",
       "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
       "lastCommitDate": "2026-10-06T11:53:45Z",
@@ -975,6 +1075,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 2,
+        "workflowRuns": 0,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 0
       },
       "projectType": "Library",
       "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
@@ -1067,6 +1177,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 68,
+        "workflowRuns": 532,
+        "successfulCiRuns": 20,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 1
+      },
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
       "lastCommitDate": "2026-10-06T12:08:11Z",
@@ -1156,15 +1276,25 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 252,
+        "workflowRuns": 522,
+        "successfulCiRuns": 3,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 12
+      },
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
       "lastCommitDate": "2026-10-06T18:09:39Z",
-      "lastWorkflowName": null,
-      "lastWorkflowRole": "unknown",
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
+      "lastWorkflowName": "CodeQL",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-09-20T13:57:06Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-observability-lab/actions/runs/35514857242",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -1174,13 +1304,8 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T18:09:44Z",
-      "health": "warning",
-      "healthReasons": [
-        {
-          "code": "CI_UNKNOWN",
-          "severity": "warning"
-        }
-      ],
+      "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1249,15 +1374,25 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 33,
+        "workflowRuns": 842,
+        "successfulCiRuns": 1,
+        "failedCiRuns": 0,
+        "releases": 3,
+        "deployments": 23
+      },
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
       "lastCommitDate": "2026-10-06T17:09:43Z",
-      "lastWorkflowName": null,
-      "lastWorkflowRole": "unknown",
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
+      "lastWorkflowName": "Release 1.0.0-ci.135136.1 from feat/mcp-roadmap-140",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-09-20T10:57:21Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/actions/runs/35506216869",
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.6.5",
@@ -1267,13 +1402,8 @@
       "latestReleaseDate": "2026-10-02T12:24:24Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/releases/tag/v1.6.5",
       "updatedAt": "2026-10-06T17:09:48Z",
-      "health": "warning",
-      "healthReasons": [
-        {
-          "code": "CI_UNKNOWN",
-          "severity": "warning"
-        }
-      ],
+      "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1344,6 +1474,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 2,
+        "workflowRuns": 0,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 0
       },
       "projectType": "Application",
       "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
@@ -1457,6 +1597,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 19,
+        "workflowRuns": 978,
+        "successfulCiRuns": 18,
+        "failedCiRuns": 6,
+        "releases": 16,
+        "deployments": 4
+      },
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
       "lastCommitDate": "2026-10-06T18:55:32Z",
@@ -1543,6 +1693,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 29,
+        "workflowRuns": 854,
+        "successfulCiRuns": 74,
+        "failedCiRuns": 37,
+        "releases": 2,
+        "deployments": 9
       },
       "projectType": "Application",
       "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
@@ -1632,6 +1792,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 12,
+        "workflowRuns": 149,
+        "successfulCiRuns": 62,
+        "failedCiRuns": 12,
+        "releases": 1,
+        "deployments": 9
+      },
       "projectType": "Angular",
       "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
       "lastCommitDate": "2026-10-07T08:13:24Z",
@@ -1639,8 +1809,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T09:52:02Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37603474859",
+      "lastWorkflowDate": "2026-10-07T09:55:41Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37603900683",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -1720,6 +1890,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 719,
+        "workflowRuns": 1518,
+        "successfulCiRuns": 120,
+        "failedCiRuns": 156,
+        "releases": 3,
+        "deployments": 14
+      },
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
@@ -1797,10 +1977,10 @@
           "highCritical": 0
         },
         "workflow": {
-          "status": "not_configured",
-          "name": null,
-          "url": null,
-          "date": null
+          "status": "passing",
+          "name": "Validate profile",
+          "url": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/actions/runs/35264569885",
+          "date": "2026-09-17T19:23:24Z"
         },
         "openSsf": {
           "status": "not_configured",
@@ -1808,6 +1988,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 120,
+        "workflowRuns": 309,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 10,
+        "deployments": 0
       },
       "projectType": "Application",
       "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
@@ -1896,6 +2086,16 @@
           "url": null
         }
       },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 166,
+        "workflowRuns": 1081,
+        "successfulCiRuns": 86,
+        "failedCiRuns": 7,
+        "releases": 4,
+        "deployments": 36
+      },
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
       "lastCommitDate": "2026-10-06T12:44:59Z",
@@ -1966,10 +2166,10 @@
           "highCritical": 0
         },
         "workflow": {
-          "status": "not_configured",
-          "name": null,
-          "url": null,
-          "date": null
+          "status": "passing",
+          "name": "Terraform CI",
+          "url": "https://github.com/rodri-oliveira-dev/terraform-gcp-dotnet-blueprint/actions/runs/34892165674",
+          "date": "2026-09-14T20:19:13Z"
         },
         "openSsf": {
           "status": "not_configured",
@@ -1977,6 +2177,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 295,
+        "workflowRuns": 109,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 0
       },
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
@@ -2094,6 +2304,16 @@
           "date": null,
           "url": null
         }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T09:50:22.755Z",
+        "commits": 30,
+        "workflowRuns": 71,
+        "successfulCiRuns": 6,
+        "failedCiRuns": 1,
+        "releases": 0,
+        "deployments": 0
       },
       "projectType": "Application",
       "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",

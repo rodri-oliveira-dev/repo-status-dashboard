@@ -72,6 +72,7 @@ export function countOpenWorkItems(items) {
 }
 
 export const STALE_WORK_ITEM_DAYS = 30;
+export const ACTIVITY_WINDOW_DAYS = 30;
 
 export function analyzeOpenWorkItems(
   items,
@@ -106,6 +107,64 @@ export function analyzeOpenWorkItems(
       oldestIssues: staleIssues.slice(0, 3).map(compact),
       oldestPullRequests: stalePullRequests.slice(0, 3).map(compact),
     },
+  };
+}
+
+function inWindow(value, cutoff) {
+  const timestamp = Date.parse(value ?? '');
+  return Number.isFinite(timestamp) && timestamp >= cutoff;
+}
+
+export async function paginateWindow(fetchPage, cutoff, itemDate) {
+  const items = [];
+  for (let page = 1; ; page += 1) {
+    const batch = await fetchPage(page);
+    items.push(...batch);
+    if (batch.length < 100) break;
+    const oldest = Date.parse(itemDate(batch.at(-1)) ?? '');
+    if (Number.isFinite(oldest) && oldest < cutoff) break;
+  }
+  return items;
+}
+
+export function summarizeActivity(
+  { commits, workflowRuns, deployments, releases, availability, configuredWorkflows = {} },
+  now = Date.now(),
+  windowDays = ACTIVITY_WINDOW_DAYS,
+) {
+  const cutoff = now - windowDays * 24 * 60 * 60 * 1000;
+  const recentRuns = workflowRuns.filter((run) =>
+    inWindow(run.updated_at ?? run.created_at, cutoff),
+  );
+  const ciRuns = recentRuns.filter(
+    (run) => classifyWorkflowRole(run, configuredWorkflows) === 'ci',
+  );
+  return {
+    windowDays,
+    since: new Date(cutoff).toISOString(),
+    commits: availability.commits
+      ? commits.filter((commit) =>
+          inWindow(commit?.commit?.committer?.date ?? commit?.commit?.author?.date, cutoff),
+        ).length
+      : null,
+    workflowRuns: availability.actions ? recentRuns.length : null,
+    successfulCiRuns: availability.actions
+      ? ciRuns.filter((run) => mapWorkflowStatus(run) === 'passing').length
+      : null,
+    failedCiRuns: availability.actions
+      ? ciRuns.filter((run) => mapWorkflowStatus(run) === 'failing').length
+      : null,
+    releases: availability.releases
+      ? releases.filter(
+          (release) =>
+            !release.draft && inWindow(release.published_at ?? release.created_at, cutoff),
+        ).length
+      : null,
+    deployments: availability.deployments
+      ? deployments.filter((deployment) =>
+          inWindow(deployment.updated_at ?? deployment.created_at, cutoff),
+        ).length
+      : null,
   };
 }
 

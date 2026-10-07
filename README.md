@@ -110,6 +110,10 @@ Issues e pull requests abertos são contados separadamente pelo endpoint REST de
 
 Um item aberto é considerado stale quando `updated_at` está há mais de 30 dias sem mudança; o limite é a constante `STALE_WORK_ITEM_DAYS` do collector. O instante exatamente no limite ainda não é stale. Itens fechados ou PRs mesclados são excluídos. O snapshot mantém as contagens e, para limitar o tamanho, somente os três itens mais antigos de cada tipo com seus links.
 
+### Atividade
+
+Cada snapshot recalcula uma janela móvel de 30 dias (`ACTIVITY_WINDOW_DAYS`) para commits, workflow runs, CI primário aprovado/reprovado, releases publicadas e deployments. As mesmas consultas usadas pelos sinais atuais são paginadas em blocos de 100 até ultrapassar o início da janela, evitando chamadas duplicadas. Zero significa fonte consultada sem eventos; `null` significa fonte indisponível. A janela é um retrato recomputável, não uma série histórica, e não exige backend permanente.
+
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
 Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de cinco grupos: metadados, commits, Actions, deployments e releases; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.

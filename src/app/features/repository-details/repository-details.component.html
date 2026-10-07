@@ -233,6 +233,36 @@
           >
         }
       </section>
+      <section class="panel activity">
+        <p class="eyebrow">Last {{ repository.activity.windowDays }} days</p>
+        <h2>Activity</h2>
+        <dl>
+          <div>
+            <dt>Commits</dt>
+            <dd>{{ repository.activity.commits ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Workflow runs</dt>
+            <dd>{{ repository.activity.workflowRuns ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Successful CI</dt>
+            <dd>{{ repository.activity.successfulCiRuns ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Failed CI</dt>
+            <dd>{{ repository.activity.failedCiRuns ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Releases</dt>
+            <dd>{{ repository.activity.releases ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Deployments</dt>
+            <dd>{{ repository.activity.deployments ?? 'Unavailable' }}</dd>
+          </div>
+        </dl>
+      </section>
     </aside>
   </div>
 } @else {

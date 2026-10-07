@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
+  ACTIVITY_WINDOW_DAYS,
   calculateCollection,
   calculateHealthAssessment,
   analyzeOpenWorkItems,
@@ -13,10 +14,12 @@ import {
   mapDeliveryStatus,
   mapWorkflowStatus,
   normalizeSecurityAlerts,
+  paginateWindow,
   securityWorkflowEvidence,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
   summarizeCollection,
+  summarizeActivity,
 } from './github-status-rules.mjs';
 import { decodeRepositoryConfig } from './repository-config.mjs';
 
@@ -102,6 +105,37 @@ async function collectSignal(path, fallback, repositoryName, { absentStatuses = 
     console.warn(`[collector] ${repositoryName}: optional data unavailable (${message})`);
     return { data: fallback, available: false, warning: message };
   }
+}
+
+async function collectWindowSignal({
+  path,
+  repositoryName,
+  cutoff,
+  extractItems = (response) => response,
+  itemDate,
+  absentStatuses = [404],
+}) {
+  let failure = null;
+  const items = await paginateWindow(
+    async (page) => {
+      const result = await collectSignal(
+        `${path}${path.includes('?') ? '&' : '?'}per_page=100&page=${page}`,
+        [],
+        repositoryName,
+        { absentStatuses },
+      );
+      if (!result.available) {
+        failure = result;
+        return [];
+      }
+      const batch = extractItems(result.data);
+      return batch;
+    },
+    cutoff,
+    itemDate,
+  );
+  if (failure) return { data: items, available: false, warning: failure.warning };
+  return { data: items, available: true };
 }
 
 async function collectOpenWorkItems(base, repository) {
@@ -235,9 +269,10 @@ function deliveryFrom({ deployment, deploymentStatus, deliveryWorkflow, release,
   return { type: 'None', status: 'none', date: null, url: null, version: null };
 }
 
-async function enrich(repository) {
+async function enrich(repository, generatedAt) {
   const name = repository.name;
   const base = `/repos/${encodeURIComponent(OWNER)}/${encodeURIComponent(name)}`;
+  const activityCutoff = generatedAt - ACTIVITY_WINDOW_DAYS * 24 * 60 * 60 * 1000;
   const configResult = await collectSignal(`${base}/contents/.repo-dashboard.yml`, null, name);
   let configuredWorkflows = {};
   if (configResult.data) {
@@ -260,15 +295,32 @@ async function enrich(repository) {
     codeScanningResult,
     openSsfResult,
   ] = await Promise.all([
-    collectSignal(
-      `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
-      [],
-      name,
-      { absentStatuses: [404, 409] },
-    ),
-    collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
-    collectSignal(`${base}/deployments?per_page=1`, [], name),
-    collectSignal(`${base}/releases/latest`, null, name),
+    collectWindowSignal({
+      path: `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}`,
+      repositoryName: name,
+      cutoff: activityCutoff,
+      itemDate: (commit) => commit?.commit?.committer?.date ?? commit?.commit?.author?.date,
+      absentStatuses: [404, 409],
+    }),
+    collectWindowSignal({
+      path: `${base}/actions/runs`,
+      repositoryName: name,
+      cutoff: activityCutoff,
+      extractItems: (response) => response.workflow_runs ?? [],
+      itemDate: (run) => run.updated_at ?? run.created_at,
+    }),
+    collectWindowSignal({
+      path: `${base}/deployments`,
+      repositoryName: name,
+      cutoff: activityCutoff,
+      itemDate: (deployment) => deployment.updated_at ?? deployment.created_at,
+    }),
+    collectWindowSignal({
+      path: `${base}/releases`,
+      repositoryName: name,
+      cutoff: activityCutoff,
+      itemDate: (release) => release.published_at ?? release.created_at,
+    }),
     collectOpenWorkItems(base, repository),
     collectSecurityAlerts(
       `${base}/dependabot/alerts?state=open&per_page=100`,
@@ -283,10 +335,10 @@ async function enrich(repository) {
     collectOpenSsf(name),
   ]);
   const commits = commitResult.data;
-  const workflowResponse = actionsResult.data;
   const deployments = deploymentResult.data;
-  const release = releaseResult.data;
-  const runs = workflowResponse.workflow_runs ?? [];
+  const releases = releaseResult.data;
+  const release = releases.find((candidate) => !candidate.draft && !candidate.prerelease) ?? null;
+  const runs = actionsResult.data;
   const build = selectBuildWorkflow(runs, configuredWorkflows);
   const deliveryWorkflow = selectDeliveryWorkflow(runs, configuredWorkflows);
   const securityWorkflow = actionsResult.available
@@ -344,6 +396,22 @@ async function enrich(repository) {
     lastActivityDate: latestDate(lastCommitDate, build?.updated_at, delivery.date),
     collectionStatus: collection.status,
   });
+  const activity = summarizeActivity(
+    {
+      commits,
+      workflowRuns: runs,
+      deployments,
+      releases,
+      configuredWorkflows,
+      availability: {
+        commits: commitResult.available,
+        actions: actionsResult.available,
+        deployments: deploymentResult.available,
+        releases: releaseResult.available,
+      },
+    },
+    generatedAt,
+  );
 
   return {
     name,
@@ -380,6 +448,7 @@ async function enrich(repository) {
         url: openSsfResult.url,
       },
     },
+    activity,
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -427,7 +496,7 @@ async function mapWithConcurrency(items, limit, mapper) {
   return results;
 }
 
-function fallbackRepository(repository) {
+function fallbackRepository(repository, generatedAt = Date.now()) {
   const collection = calculateCollection(
     {
       metadata: 'available',
@@ -469,6 +538,16 @@ function fallbackRepository(repository) {
       workflow: { status: 'unavailable', name: null, url: null, date: null },
       openSsf: { status: 'unavailable', score: null, date: null, url: null },
     },
+    activity: {
+      windowDays: ACTIVITY_WINDOW_DAYS,
+      since: new Date(generatedAt - ACTIVITY_WINDOW_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+      commits: null,
+      workflowRuns: null,
+      successfulCiRuns: null,
+      failedCiRuns: null,
+      releases: null,
+      deployments: null,
+    },
     projectType: classifyProjectType(repository),
     lastCommitSha: null,
     lastCommitDate: repository.pushed_at ?? null,
@@ -494,6 +573,7 @@ function fallbackRepository(repository) {
 }
 
 export async function collect() {
+  const generatedAt = Date.now();
   console.log(
     `[collector] collecting public repository status for ${OWNER}${TOKEN ? ' with authentication' : ' without authentication'}`,
   );
@@ -501,14 +581,16 @@ export async function collect() {
   console.log(
     `[collector] enriching ${repositories.length} non-fork owned repository/repositories with concurrency ${CONCURRENCY}`,
   );
-  const enriched = await mapWithConcurrency(repositories, CONCURRENCY, enrich);
+  const enriched = await mapWithConcurrency(repositories, CONCURRENCY, (repository) =>
+    enrich(repository, generatedAt),
+  );
   enriched.sort((left, right) =>
     left.name.localeCompare(right.name, 'en', { sensitivity: 'base' }),
   );
   const dataset = {
     schemaVersion: 2,
     owner: OWNER,
-    generatedAt: new Date().toISOString(),
+    generatedAt: new Date(generatedAt).toISOString(),
     repositories: enriched,
     collection: summarizeCollection(enriched),
     ...(warnings.length ? { warnings } : {}),

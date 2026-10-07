@@ -12,10 +12,12 @@ import {
   inferDeliveryType,
   mapDeliveryStatus,
   normalizeSecurityAlerts,
+  paginateWindow,
   securityWorkflowEvidence,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
   summarizeCollection,
+  summarizeActivity,
 } from './github-status-rules.mjs';
 
 describe('collection confidence', () => {
@@ -189,6 +191,75 @@ describe('open work item counts', () => {
     assert.equal(result.staleWorkItems.pullRequestsCount, 1);
     assert.equal(result.staleWorkItems.oldestPullRequests[0].number, 3);
     assert.equal(result.staleWorkItems.oldestIssues[0].number, 1);
+  });
+});
+
+describe('bounded activity metrics', () => {
+  const now = Date.parse('2026-10-01T00:00:00Z');
+  it('counts only evidence inside the 30-day window', () => {
+    assert.deepEqual(
+      summarizeActivity(
+        {
+          commits: [
+            { commit: { committer: { date: '2026-09-15T00:00:00Z' } } },
+            { commit: { committer: { date: '2026-08-01T00:00:00Z' } } },
+          ],
+          workflowRuns: [
+            run('CI', '2026-09-20T00:00:00Z'),
+            run('CI', '2026-09-21T00:00:00Z', { conclusion: 'failure' }),
+          ],
+          deployments: [{ created_at: '2026-09-10T00:00:00Z' }],
+          releases: [{ published_at: '2026-09-11T00:00:00Z', draft: false }],
+          availability: { commits: true, actions: true, deployments: true, releases: true },
+        },
+        now,
+      ),
+      {
+        windowDays: 30,
+        since: '2026-09-01T00:00:00.000Z',
+        commits: 1,
+        workflowRuns: 2,
+        successfulCiRuns: 1,
+        failedCiRuns: 1,
+        releases: 1,
+        deployments: 1,
+      },
+    );
+  });
+
+  it('returns zero for empty data and null for unavailable sources', () => {
+    const result = summarizeActivity(
+      {
+        commits: [],
+        workflowRuns: [],
+        deployments: [],
+        releases: [],
+        availability: { commits: true, actions: false, deployments: true, releases: false },
+      },
+      now,
+    );
+    assert.equal(result.commits, 0);
+    assert.equal(result.workflowRuns, null);
+    assert.equal(result.deployments, 0);
+    assert.equal(result.releases, null);
+  });
+
+  it('paginates full recent pages and stops after a short page', async () => {
+    const calls = [];
+    const first = Array.from({ length: 100 }, (_, index) => ({
+      id: index,
+      updated_at: '2026-09-20T00:00:00Z',
+    }));
+    const result = await paginateWindow(
+      async (page) => {
+        calls.push(page);
+        return page === 1 ? first : [{ id: 100, updated_at: '2026-09-19T00:00:00Z' }];
+      },
+      Date.parse('2026-09-01T00:00:00Z'),
+      (item) => item.updated_at,
+    );
+    assert.equal(result.length, 101);
+    assert.deepEqual(calls, [1, 2]);
   });
 });
 

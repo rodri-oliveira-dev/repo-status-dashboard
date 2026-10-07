@@ -132,6 +132,17 @@ export interface SecurityPosture {
   };
 }
 
+export interface RepositoryActivity {
+  readonly windowDays: number;
+  readonly since: string;
+  readonly commits: number | null;
+  readonly workflowRuns: number | null;
+  readonly successfulCiRuns: number | null;
+  readonly failedCiRuns: number | null;
+  readonly releases: number | null;
+  readonly deployments: number | null;
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -149,6 +160,7 @@ export interface RepositoryStatus {
   readonly openPullRequests: number | null;
   readonly staleWorkItems: StaleWorkItems | null;
   readonly security: SecurityPosture;
+  readonly activity: RepositoryActivity;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;

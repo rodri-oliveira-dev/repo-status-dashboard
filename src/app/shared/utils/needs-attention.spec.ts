@@ -52,6 +52,16 @@ const repository = (overrides: Partial<RepositoryStatus>): RepositoryStatus =>
       workflow: { status: 'not_configured', name: null, url: null, date: null },
       openSsf: { status: 'not_configured', score: null, date: null, url: null },
     },
+    activity: {
+      windowDays: 30,
+      since: '2026-09-01T00:00:00Z',
+      commits: 0,
+      workflowRuns: 0,
+      successfulCiRuns: 0,
+      failedCiRuns: 0,
+      releases: 0,
+      deployments: 0,
+    },
     ...overrides,
   }) as RepositoryStatus;
 

@@ -144,12 +144,14 @@ aside {
 }
 .links,
 .metadata,
-.security {
+.security,
+.activity {
   padding: 1.2rem;
 }
 .links h2,
 .metadata h2,
-.security h2 {
+.security h2,
+.activity h2 {
   margin-bottom: 1rem;
 }
 .links a {
@@ -178,6 +180,19 @@ aside {
   gap: 1rem;
   padding: 0.55rem 0;
   border-top: 1px solid var(--border);
+}
+.activity dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--border);
+}
+.activity dt {
+  margin: 0;
+}
+.activity dd {
+  text-align: right;
 }
 .security dt {
   margin: 0;
