@@ -426,6 +426,10 @@ describe('workflow semantic roles', () => {
       'maintenance',
     );
     assert.equal(
+      classifyWorkflowRole(run('Sync Docker images', '2026-10-01T10:00:00Z')),
+      'delivery',
+    );
+    assert.equal(
       classifyWorkflowRole(
         run('nuget in /. - Update #1610204674', '2026-10-05T12:17:18Z', {
           path: 'dynamic/dependabot/dependabot-updates',
@@ -480,6 +484,13 @@ describe('delivery workflow selection and type', () => {
         run('Publish NuGet', '2026-10-02T10:00:00Z'),
       ]).name,
       'Publish NuGet',
+    );
+  });
+
+  it('keeps generic sync workflows eligible for delivery when they contain delivery signals', () => {
+    assert.equal(
+      selectDeliveryWorkflow([run('Sync Docker images', '2026-10-04T10:00:00Z')]).name,
+      'Sync Docker images',
     );
   });
 
