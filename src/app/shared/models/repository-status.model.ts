@@ -102,7 +102,8 @@ export interface RepositoryStatus {
   readonly visibility: 'public' | 'private' | 'internal';
   readonly defaultBranch: string;
   readonly stars: number;
-  readonly openIssues: number;
+  readonly openIssues: number | null;
+  readonly openPullRequests: number | null;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;

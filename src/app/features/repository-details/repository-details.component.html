@@ -85,10 +85,12 @@
           </dd>
         </div>
         <div>
-          <dt title="GitHub reports open issues and pull requests in this count">
-            Open issues &amp; PRs
-          </dt>
-          <dd>{{ repository.openIssues }}</dd>
+          <dt>Open issues</dt>
+          <dd>{{ repository.openIssues ?? 'Unavailable' }}</dd>
+        </div>
+        <div>
+          <dt>Open pull requests</dt>
+          <dd>{{ repository.openPullRequests ?? 'Unavailable' }}</dd>
         </div>
         <div>
           <dt>Last commit</dt>

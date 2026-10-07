@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:35:05.923Z",
+  "generatedAt": "2026-10-07T09:37:05.856Z",
   "repositories": [
     {
       "name": ".github",
@@ -26,6 +26,7 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
       "lastCommitDate": "2026-10-06T17:25:33Z",
@@ -59,7 +60,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -84,6 +86,7 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 2,
+      "openPullRequests": 0,
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
       "lastCommitDate": "2026-10-06T16:53:37Z",
@@ -112,7 +115,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -138,6 +142,7 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 1,
+      "openPullRequests": 0,
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
       "lastCommitDate": "2026-10-06T13:44:17Z",
@@ -166,7 +171,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -190,6 +196,7 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
       "lastCommitDate": "2026-10-06T11:47:28Z",
@@ -218,7 +225,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -253,6 +261,7 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 9,
+      "openPullRequests": 0,
       "projectType": "Analyzer",
       "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
       "lastCommitDate": "2026-10-06T11:45:34Z",
@@ -281,7 +290,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -312,6 +322,7 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 6,
+      "openPullRequests": 0,
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
       "lastCommitDate": "2026-10-06T18:07:49Z",
@@ -340,7 +351,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -368,7 +380,8 @@
       "visibility": "public",
       "defaultBranch": "main",
       "stars": 453,
-      "openIssues": 39,
+      "openIssues": 37,
+      "openPullRequests": 2,
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
       "lastCommitDate": "2026-10-06T12:31:55Z",
@@ -397,7 +410,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -417,6 +431,7 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
       "lastCommitDate": "2026-10-07T08:57:51Z",
@@ -450,7 +465,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -475,6 +491,7 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
       "lastCommitDate": "2026-10-06T17:14:29Z",
@@ -508,7 +525,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -533,6 +551,7 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
       "lastCommitDate": "2026-10-06T11:53:45Z",
@@ -561,7 +580,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -585,6 +605,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Library",
       "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
       "lastCommitDate": "2026-09-24T19:22:08Z",
@@ -622,7 +643,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -642,6 +664,7 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 2,
+      "openPullRequests": 0,
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
       "lastCommitDate": "2026-10-06T12:08:11Z",
@@ -670,7 +693,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -697,6 +721,7 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 13,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
       "lastCommitDate": "2026-10-06T18:09:39Z",
@@ -730,7 +755,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -756,6 +782,7 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 15,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
       "lastCommitDate": "2026-10-06T17:09:43Z",
@@ -789,7 +816,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -818,6 +846,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
       "lastCommitDate": "2026-09-18T13:31:57Z",
@@ -851,7 +880,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -881,6 +911,7 @@
       "defaultBranch": "main",
       "stars": 6,
       "openIssues": 1,
+      "openPullRequests": 0,
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
       "lastCommitDate": "2026-10-06T18:55:32Z",
@@ -909,7 +940,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -934,6 +966,7 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
       "lastCommitDate": "2026-10-06T11:58:57Z",
@@ -962,7 +995,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -988,6 +1022,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 13,
+      "openPullRequests": 0,
       "projectType": "Angular",
       "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
       "lastCommitDate": "2026-10-07T08:13:24Z",
@@ -995,8 +1030,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T09:41:35Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602298240",
+      "lastWorkflowDate": "2026-10-07T09:43:49Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602563313",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -1016,7 +1051,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1042,6 +1078,7 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
@@ -1070,7 +1107,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1097,6 +1135,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
       "lastCommitDate": "2026-10-06T11:58:04Z",
@@ -1130,7 +1169,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1150,6 +1190,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
       "lastCommitDate": "2026-10-06T12:44:59Z",
@@ -1178,7 +1219,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1198,6 +1240,7 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
       "lastCommitDate": "2026-10-06T17:19:26Z",
@@ -1231,7 +1274,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1262,6 +1306,7 @@
       "defaultBranch": "main",
       "stars": 28,
       "openIssues": 5,
+      "openPullRequests": 0,
       "projectType": "Application",
       "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
       "lastCommitDate": "2026-10-07T00:02:41Z",
@@ -1290,7 +1335,8 @@
           "commits",
           "actions",
           "deployments",
-          "releases"
+          "releases",
+          "workItems"
         ],
         "unavailableSignals": [],
         "warnings": []

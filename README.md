@@ -106,6 +106,8 @@ npm run format:check  # valida Prettier
 
 [`scripts/collect-github-status.mjs`](scripts/collect-github-status.mjs) lista apenas repositórios cujo owner é `rodri-oliveira-dev`, remove forks, pagina resultados e enriquece cada item com commits, workflow runs, deployments e release mais recente. A concorrência padrão é quatro; altere com `COLLECTOR_CONCURRENCY` entre 1 e 8.
 
+Issues e pull requests abertos são contados separadamente pelo endpoint REST de issues, usando o campo `pull_request` de cada item. O custo normal é uma requisição por repositório com até 100 itens abertos, com páginas adicionais somente quando necessário. Se essa consulta falhar, ambos os valores ficam indisponíveis e o grupo `workItems` reduz a confiança da coleta, em vez de reutilizar o contador combinado `open_issues_count`.
+
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
 Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de cinco grupos: metadados, commits, Actions, deployments e releases; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.

@@ -7,6 +7,7 @@ export const COLLECTION_SIGNAL_GROUPS = [
   'actions',
   'deployments',
   'releases',
+  'workItems',
 ];
 
 export function calculateCollection(signalResults, warningMessages = []) {
@@ -25,7 +26,7 @@ export function calculateCollection(signalResults, warningMessages = []) {
         : collectedSignals.length === 0
           ? 'unavailable'
           : 'partial',
-    confidence: ratio === 1 ? 'high' : ratio >= 0.6 ? 'medium' : 'low',
+    confidence: ratio === 1 ? 'high' : ratio >= 0.5 ? 'medium' : 'low',
     collectedSignals,
     unavailableSignals,
     warnings: [...warningMessages],
@@ -41,6 +42,17 @@ export function summarizeCollection(repositories) {
     partial: count('partial'),
     unavailable: count('unavailable'),
   };
+}
+
+export function countOpenWorkItems(items) {
+  return items.reduce(
+    (counts, item) => {
+      if (item?.pull_request) counts.openPullRequests += 1;
+      else counts.openIssues += 1;
+      return counts;
+    },
+    { openIssues: 0, openPullRequests: 0 },
+  );
 }
 
 function workflowText(run) {

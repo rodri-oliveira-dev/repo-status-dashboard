@@ -6,6 +6,7 @@ import {
   calculateHealthAssessment,
   classifyWorkflowRole,
   classifyProjectType,
+  countOpenWorkItems,
   correlateReleaseVersion,
   inferDeliveryType,
   mapDeliveryStatus,
@@ -23,11 +24,19 @@ describe('collection confidence', () => {
         actions: 'available',
         deployments: 'available',
         releases: 'available',
+        workItems: 'available',
       }),
       {
         status: 'complete',
         confidence: 'high',
-        collectedSignals: ['metadata', 'commits', 'actions', 'deployments', 'releases'],
+        collectedSignals: [
+          'metadata',
+          'commits',
+          'actions',
+          'deployments',
+          'releases',
+          'workItems',
+        ],
         unavailableSignals: [],
         warnings: [],
       },
@@ -41,6 +50,7 @@ describe('collection confidence', () => {
       actions: 'unavailable',
       deployments: 'unavailable',
       releases: 'available',
+      workItems: 'unavailable',
     });
     const unavailable = calculateCollection({
       metadata: 'unavailable',
@@ -48,6 +58,7 @@ describe('collection confidence', () => {
       actions: 'unavailable',
       deployments: 'unavailable',
       releases: 'unavailable',
+      workItems: 'unavailable',
     });
     assert.equal(partial.status, 'partial');
     assert.equal(partial.confidence, 'medium');
@@ -64,6 +75,19 @@ describe('collection confidence', () => {
       ]),
       { total: 3, complete: 1, partial: 1, unavailable: 1 },
     );
+  });
+});
+
+describe('open work item counts', () => {
+  it('separates open issues and pull requests', () => {
+    assert.deepEqual(countOpenWorkItems([{}, { pull_request: { url: 'pr' } }, {}]), {
+      openIssues: 2,
+      openPullRequests: 1,
+    });
+  });
+
+  it('returns explicit zero counts for an empty repository', () => {
+    assert.deepEqual(countOpenWorkItems([]), { openIssues: 0, openPullRequests: 0 });
   });
 });
 

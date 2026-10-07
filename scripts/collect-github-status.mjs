@@ -6,6 +6,7 @@ import {
   calculateHealthAssessment,
   classifyProjectType,
   classifyWorkflowRole,
+  countOpenWorkItems,
   correlateReleaseVersion,
   extractVersion,
   inferDeliveryType,
@@ -101,6 +102,28 @@ async function collectSignal(path, fallback, repositoryName, { absentStatuses = 
   }
 }
 
+async function collectOpenWorkItems(base, repository) {
+  const total = repository.open_issues_count ?? 0;
+  const pages = Math.max(1, Math.ceil(total / 100));
+  const items = [];
+  for (let page = 1; page <= pages; page += 1) {
+    const result = await collectSignal(
+      `${base}/issues?state=open&per_page=100&page=${page}`,
+      [],
+      repository.name,
+    );
+    if (!result.available)
+      return {
+        openIssues: null,
+        openPullRequests: null,
+        available: false,
+        warning: result.warning,
+      };
+    items.push(...result.data);
+  }
+  return { ...countOpenWorkItems(items), available: true };
+}
+
 function latestDate(...values) {
   return (
     values.filter(Boolean).sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? null
@@ -169,17 +192,19 @@ async function enrich(repository) {
       console.warn(`[collector] ${name}: ${message}`);
     }
   }
-  const [commitResult, actionsResult, deploymentResult, releaseResult] = await Promise.all([
-    collectSignal(
-      `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
-      [],
-      name,
-      { absentStatuses: [404, 409] },
-    ),
-    collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
-    collectSignal(`${base}/deployments?per_page=1`, [], name),
-    collectSignal(`${base}/releases/latest`, null, name),
-  ]);
+  const [commitResult, actionsResult, deploymentResult, releaseResult, workItemsResult] =
+    await Promise.all([
+      collectSignal(
+        `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
+        [],
+        name,
+        { absentStatuses: [404, 409] },
+      ),
+      collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
+      collectSignal(`${base}/deployments?per_page=1`, [], name),
+      collectSignal(`${base}/releases/latest`, null, name),
+      collectOpenWorkItems(base, repository),
+    ]);
   const commits = commitResult.data;
   const workflowResponse = actionsResult.data;
   const deployments = deploymentResult.data;
@@ -210,6 +235,7 @@ async function enrich(repository) {
     actions: actionsResult.available ? 'available' : 'unavailable',
     deployments: deploymentResult.available && statusResult.available ? 'available' : 'unavailable',
     releases: releaseResult.available ? 'available' : 'unavailable',
+    workItems: workItemsResult.available ? 'available' : 'unavailable',
   };
   const repositoryWarnings = [
     commitResult.warning,
@@ -218,6 +244,7 @@ async function enrich(repository) {
     statusResult.warning,
     releaseResult.warning,
     configResult.warning,
+    workItemsResult.warning,
   ].filter(Boolean);
   const collection = calculateCollection(signalResults, repositoryWarnings);
   const assessment = calculateHealthAssessment({
@@ -241,7 +268,8 @@ async function enrich(repository) {
     visibility: repository.visibility,
     defaultBranch: repository.default_branch,
     stars: repository.stargazers_count,
-    openIssues: repository.open_issues_count,
+    openIssues: workItemsResult.openIssues,
+    openPullRequests: workItemsResult.openPullRequests,
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -297,6 +325,7 @@ function fallbackRepository(repository) {
       actions: 'unavailable',
       deployments: 'unavailable',
       releases: 'unavailable',
+      workItems: 'unavailable',
     },
     ['Repository enrichment failed; optional signals are unavailable.'],
   );
@@ -320,7 +349,8 @@ function fallbackRepository(repository) {
     visibility: repository.visibility,
     defaultBranch: repository.default_branch,
     stars: repository.stargazers_count,
-    openIssues: repository.open_issues_count,
+    openIssues: null,
+    openPullRequests: null,
     projectType: classifyProjectType(repository),
     lastCommitSha: null,
     lastCommitDate: repository.pushed_at ?? null,
