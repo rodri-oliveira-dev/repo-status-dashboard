@@ -87,7 +87,9 @@ export class DashboardComponent implements OnInit {
       stale: count('stale'),
     };
   });
-  protected readonly attentionItems = computed(() => rankNeedsAttention(this.activeRepositories()));
+  protected readonly attentionItems = computed(() =>
+    rankNeedsAttention(this.activeRepositories()),
+  );
   protected readonly portfolioInsights = computed(() =>
     calculatePortfolioInsights(
       this.activeRepositories(),
