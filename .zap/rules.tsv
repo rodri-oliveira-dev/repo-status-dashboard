@@ -19,6 +19,7 @@
 10109	INFO	(Informational modern web application fingerprint)
 90004	INFO	(Cross-Origin-Embedder-Policy and Cross-Origin-Opener-Policy headers are controlled by GitHub Pages)
 
-# CSP rules 10038 and 10055 are intentionally NOT reclassified. Angular
-# security.autoCsp generates an application-controlled meta CSP, so a missing,
-# malformed or weakened policy must continue to surface as actionable.
+# CSP remains application-controlled. Keep these rules explicit so the action
+# wrapper recognises the rules file and application regressions stay actionable.
+10038	WARN	(Content Security Policy must be present for the dashboard)
+10055	WARN	(CSP regressions remain actionable; only expected 10055-13 is filtered by the hook)
