@@ -334,6 +334,26 @@ describe('release and deployment frequency', () => {
     assert.equal(result.releases, 0);
     assert.equal(result.deliveryEvents, null);
   });
+
+  it('does not count successful Dependabot package updates as delivery events', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [
+          run('nuget in /. - Update #1610204674', '2026-09-20T10:00:00Z', {
+            id: 4,
+            path: 'dynamic/dependabot/dependabot-updates',
+            actor: { login: 'dependabot[bot]' },
+            triggering_actor: { login: 'dependabot[bot]' },
+          }),
+        ],
+        deployments: [],
+        releases: [],
+        availability: { actions: true, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, 0);
+  });
 });
 
 const run = (name, updated_at, extra = {}) => ({
@@ -361,6 +381,18 @@ describe('build workflow selection', () => {
       run('Build and test', '2026-10-02T10:00:00Z'),
     ]);
     assert.equal(result.name, 'Build and test');
+  });
+
+  it('keeps legitimate CI when its title or branch merely contains dependabot', () => {
+    const latest = run('CI', '2026-10-07T00:06:55Z', {
+      actor: { login: 'rodri-oliveira-dev' },
+      triggering_actor: { login: 'rodri-oliveira-dev' },
+      display_title:
+        'Merge pull request #47 from rodri-oliveira-dev/fix/dependabot-opentelemetry-version-trains',
+      head_branch: 'main',
+    });
+    const result = selectBuildWorkflow([run('Build and test', '2026-10-06T23:55:37Z'), latest]);
+    assert.equal(result, latest);
   });
 
   it('does not let auxiliary mutation or quality workflows override CI', () => {
@@ -391,6 +423,21 @@ describe('workflow semantic roles', () => {
     assert.equal(classifyWorkflowRole(run('Deploy GitHub Pages', '2026-10-01T10:00:00Z')), 'pages');
     assert.equal(
       classifyWorkflowRole(run('Dependabot Updates', '2026-10-01T10:00:00Z')),
+      'maintenance',
+    );
+    assert.equal(
+      classifyWorkflowRole(run('Sync Docker images', '2026-10-01T10:00:00Z')),
+      'delivery',
+    );
+    assert.equal(
+      classifyWorkflowRole(
+        run('nuget in /. - Update #1610204674', '2026-10-05T12:17:18Z', {
+          path: 'dynamic/dependabot/dependabot-updates',
+          actor: { login: 'dependabot[bot]' },
+          triggering_actor: { login: 'dependabot[bot]' },
+          conclusion: 'failure',
+        }),
+      ),
       'maintenance',
     );
     assert.equal(classifyWorkflowRole(run('Tests', '2026-10-01T10:00:00Z')), 'unknown');
@@ -438,6 +485,23 @@ describe('delivery workflow selection and type', () => {
       ]).name,
       'Publish NuGet',
     );
+  });
+
+  it('keeps generic sync workflows eligible for delivery when they contain delivery signals', () => {
+    assert.equal(
+      selectDeliveryWorkflow([run('Sync Docker images', '2026-10-04T10:00:00Z')]).name,
+      'Sync Docker images',
+    );
+  });
+
+  it('does not treat Dependabot package updates as delivery', () => {
+    const dependabotNuGet = run('nuget in /. - Update #1610204674', '2026-10-05T12:17:18Z', {
+      path: 'dynamic/dependabot/dependabot-updates',
+      actor: { login: 'dependabot[bot]' },
+      triggering_actor: { login: 'dependabot[bot]' },
+      conclusion: 'failure',
+    });
+    assert.equal(selectDeliveryWorkflow([dependabotNuGet]), null);
   });
 
   it('classifies supported delivery types', () => {

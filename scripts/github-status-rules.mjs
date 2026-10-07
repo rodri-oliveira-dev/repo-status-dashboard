@@ -1,4 +1,3 @@
-const DEPENDABOT = /dependabot/i;
 const SEMVER = /(?:^|[^\d])v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9a-z.-]+)?(?:$|[^\d])/i;
 
 export const COLLECTION_SIGNAL_GROUPS = [
@@ -195,6 +194,7 @@ export function calculateDeliveryFrequency(
   const workflowEvents = workflowRuns
     .filter(
       (run) =>
+        !isDependabotRun(run) &&
         ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run, configuredWorkflows)) &&
         mapWorkflowStatus(run) === 'passing' &&
         withinWindow(run.updated_at ?? run.created_at),
@@ -241,12 +241,6 @@ export function calculateDeliveryFrequency(
   };
 }
 
-function workflowText(run) {
-  return [run?.name, run?.display_title, run?.path, run?.actor?.login, run?.triggering_actor?.login]
-    .filter(Boolean)
-    .join(' ');
-}
-
 function workflowFileName(run) {
   return (
     String(run?.path ?? '')
@@ -256,11 +250,24 @@ function workflowFileName(run) {
   );
 }
 
+function isDependabotRun(run) {
+  const actor = String(run?.actor?.login ?? '');
+  const triggeringActor = String(run?.triggering_actor?.login ?? '');
+  const path = String(run?.path ?? '');
+
+  return (
+    /^dependabot(?:\[bot\])?$/i.test(actor) ||
+    /^dependabot(?:\[bot\])?$/i.test(triggeringActor) ||
+    /(^|\/)dynamic\/dependabot(?:\/|$)/i.test(path)
+  );
+}
+
 export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   const fileName = workflowFileName(run);
   for (const [role, files] of Object.entries(configuredWorkflows)) {
     if (files.some((file) => file.toLowerCase() === fileName)) return role;
   }
+  if (isDependabotRun(run)) return 'maintenance';
   const text = [run?.name, run?.path].filter(Boolean).join(' ').toLowerCase();
   if (!text) return 'unknown';
   let role = 'unknown';
@@ -268,11 +275,12 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   else if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) role = 'security';
   else if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) role = 'pages';
   else if (/release|create tag|changelog/.test(text)) role = 'release';
+  else if (/dependabot|renovate/.test(text)) role = 'maintenance';
   else if (
     /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
   )
     role = 'delivery';
-  else if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
+  else if (/stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
   else if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text))
     role = 'quality';
   else if (
@@ -288,9 +296,7 @@ export function selectBuildWorkflow(runs, configuredWorkflows = {}) {
   return (
     [...runs]
       .filter(
-        (run) =>
-          !DEPENDABOT.test(workflowText(run)) &&
-          classifyWorkflowRole(run, configuredWorkflows) === 'ci',
+        (run) => !isDependabotRun(run) && classifyWorkflowRole(run, configuredWorkflows) === 'ci',
       )
       .sort(
         (left, right) =>
@@ -303,8 +309,10 @@ export function selectBuildWorkflow(runs, configuredWorkflows = {}) {
 export function selectDeliveryWorkflow(runs, configuredWorkflows = {}) {
   return (
     [...runs]
-      .filter((run) =>
-        ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run, configuredWorkflows)),
+      .filter(
+        (run) =>
+          !isDependabotRun(run) &&
+          ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run, configuredWorkflows)),
       )
       .sort(
         (left, right) =>
