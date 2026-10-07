@@ -2,9 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import type {
+  CollectionStatus,
   RepositoryDataset,
   RepositoryStatus,
 } from '../../shared/models/repository-status.model';
+
+function withoutArchivedRepositories(dataset: RepositoryDataset): RepositoryDataset {
+  const repositories = dataset.repositories.filter((repository) => !repository.archived);
+  const count = (status: CollectionStatus) =>
+    repositories.filter((repository) => repository.collection.status === status).length;
+
+  return {
+    ...dataset,
+    repositories,
+    collection: {
+      total: repositories.length,
+      complete: count('complete'),
+      partial: count('partial'),
+      unavailable: count('unavailable'),
+    },
+  };
+}
 
 @Injectable({ providedIn: 'root' })
 export class RepositoryStatusService {
@@ -28,7 +46,7 @@ export class RepositoryStatusService {
       if (dataset.schemaVersion !== 2 || !Array.isArray(dataset.repositories)) {
         throw new Error('The repository dataset has an unsupported format.');
       }
-      this.datasetState.set(dataset);
+      this.datasetState.set(withoutArchivedRepositories(dataset));
     } catch (error: unknown) {
       this.error.set(error instanceof Error ? error.message : 'Could not load repository data.');
     } finally {
