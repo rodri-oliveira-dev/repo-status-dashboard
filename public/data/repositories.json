@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-06T19:30:27.323Z",
+  "generatedAt": "2026-10-07T09:27:12.453Z",
   "repositories": [
     {
       "name": ".github",
@@ -43,7 +43,20 @@
       "latestReleaseDate": "2026-09-24T14:31:42Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T17:25:39Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "adr-guard",
@@ -81,7 +94,20 @@
       "latestReleaseDate": "2026-09-28T11:52:57Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/adr-guard/releases/tag/v1.1.7",
       "updatedAt": "2026-10-06T16:53:42Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "angular-template",
@@ -120,7 +146,20 @@
       "latestReleaseDate": "2026-10-05T18:35:56Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/angular-template/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T13:49:14Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "brazilian-primitives",
@@ -141,23 +180,36 @@
       "stars": 5,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:47:32Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
+      "lastCommitDate": "2026-10-06T11:47:28Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:50:39Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/37458760951",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.3.0",
+      "deliveryDate": "2026-10-01T19:38:01Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/36913864152/job/110548873948",
+      "latestRelease": "v1.3.0",
+      "latestReleaseDate": "2026-10-01T19:38:08Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/releases/tag/v1.3.0",
       "updatedAt": "2026-10-06T11:47:35Z",
-      "health": "unknown"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "complexity-analyzers",
@@ -189,23 +241,36 @@
       "stars": 2,
       "openIssues": 9,
       "projectType": "Analyzer",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:45:36Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
+      "lastCommitDate": "2026-10-06T11:45:34Z",
+      "lastWorkflowName": "Analyzer CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:48:25Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/37458545425",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.5.0",
+      "deliveryDate": "2026-09-14T19:16:55Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/34885752217/job/104116340665",
+      "latestRelease": "v1.5.0",
+      "latestReleaseDate": "2026-09-14T19:17:03Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/releases/tag/v1.5.0",
       "updatedAt": "2026-10-06T11:45:40Z",
-      "health": "unknown"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "CSF.Analyzers",
@@ -249,7 +314,20 @@
       "latestReleaseDate": "2026-10-06T18:09:26Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/releases/tag/v2.1.18",
       "updatedAt": "2026-10-06T18:07:56Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Dapper-FluentMap",
@@ -291,7 +369,20 @@
       "latestReleaseDate": "2026-10-01T11:44:51Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper-FluentMap/releases/tag/v3.5.0",
       "updatedAt": "2026-10-06T12:32:01Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Dapper.TypedParameters",
@@ -308,23 +399,36 @@
       "stars": 3,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": "151e9dd99ef1c42cbe9883c9f41f64da7a871133",
-      "lastCommitDate": "2026-10-06T12:45:25Z",
+      "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
+      "lastCommitDate": "2026-10-07T08:57:51Z",
       "lastWorkflowName": "CI",
-      "lastWorkflowStatus": "failing",
-      "lastWorkflowConclusion": "failure",
-      "lastWorkflowDate": "2026-10-06T12:49:31Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/37465589336",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-07T09:02:03Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/37597310831",
       "deliveryType": "NuGet",
-      "deliveryStatus": "unknown",
+      "deliveryStatus": "success",
       "deliveryVersion": "v1.2.0",
       "deliveryDate": "2026-08-29T02:35:48Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/deployments",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/33228968852/job/99039162110",
       "latestRelease": "v1.2.0",
       "latestReleaseDate": "2026-08-29T02:35:52Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/releases/tag/v1.2.0",
-      "updatedAt": "2026-10-06T12:45:31Z",
-      "health": "failed"
+      "updatedAt": "2026-10-07T08:57:57Z",
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotfiles",
@@ -362,7 +466,20 @@
       "latestReleaseDate": "2026-09-23T18:56:36Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotfiles/releases/tag/v1.0.0",
       "updatedAt": "2026-10-06T17:14:35Z",
-      "health": "warning"
+      "health": "warning",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-code-coverage",
@@ -384,23 +501,36 @@
       "stars": 2,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:53:47Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
+      "lastCommitDate": "2026-10-06T11:53:45Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:54:49Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37459465491",
+      "deliveryType": "NuGet",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
+      "deliveryDate": "2026-10-05T12:17:29Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37308276767",
       "latestRelease": null,
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T11:53:51Z",
-      "health": "unknown"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-copilot-code-review-skills",
@@ -421,7 +551,7 @@
       "stars": 1,
       "openIssues": 0,
       "projectType": "Library",
-      "lastCommitSha": null,
+      "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
       "lastCommitDate": "2026-09-24T19:22:08Z",
       "lastWorkflowName": null,
       "lastWorkflowStatus": "unknown",
@@ -437,7 +567,20 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:12:55Z",
-      "health": "unknown"
+      "health": "unknown",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-library-template",
@@ -454,23 +597,36 @@
       "stars": 4,
       "openIssues": 2,
       "projectType": "Template",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T12:08:21Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
+      "lastCommitDate": "2026-10-06T12:08:11Z",
+      "lastWorkflowName": "Validação de versionamento",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:09:33Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124554",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.4.2",
+      "deliveryDate": "2026-09-28T15:49:47Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/36446281059/job/109009892110",
+      "latestRelease": "v1.4.2",
+      "latestReleaseDate": "2026-09-28T15:49:43Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/releases/tag/v1.4.2",
       "updatedAt": "2026-10-06T12:08:18Z",
-      "health": "unknown"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-observability-lab",
@@ -501,7 +657,7 @@
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
       "lastWorkflowUrl": null,
-      "deliveryType": "Deployment",
+      "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T18:12:50Z",
@@ -510,7 +666,20 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T18:09:44Z",
-      "health": "warning"
+      "health": "warning",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "DotNetRepoInspector",
@@ -549,7 +718,20 @@
       "latestReleaseDate": "2026-10-02T12:24:24Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/releases/tag/v1.6.5",
       "updatedAt": "2026-10-06T17:09:48Z",
-      "health": "warning"
+      "health": "warning",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "gerador-de-camadas",
@@ -575,8 +757,8 @@
       "stars": 1,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-09-18T13:34:58Z",
+      "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
+      "lastCommitDate": "2026-09-18T13:31:57Z",
       "lastWorkflowName": null,
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
@@ -591,7 +773,20 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:13:01Z",
-      "health": "archived"
+      "health": "archived",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "poc-arquitetura",
@@ -623,9 +818,9 @@
       "lastWorkflowName": "mutation-tests",
       "lastWorkflowStatus": "cancelled",
       "lastWorkflowConclusion": "cancelled",
-      "lastWorkflowDate": "2026-10-06T19:17:43Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37510123786",
-      "deliveryType": "Deployment",
+      "lastWorkflowDate": "2026-10-06T20:05:25Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37516250993",
+      "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T14:07:12Z",
@@ -634,7 +829,20 @@
       "latestReleaseDate": "2026-10-06T19:05:30Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/releases/tag/v0.21.21",
       "updatedAt": "2026-10-06T18:55:39Z",
-      "health": "warning"
+      "health": "warning",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "ReliableWebhooks",
@@ -656,56 +864,88 @@
       "stars": 4,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:59:00Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
+      "lastCommitDate": "2026-10-06T11:58:57Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:00:51Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/37460045917",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.0.3",
+      "deliveryDate": "2026-09-28T15:58:05Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/36447319621/job/109013536113",
+      "latestRelease": "v1.0.3",
+      "latestReleaseDate": "2026-09-28T16:03:54Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/releases/tag/v1.0.3",
       "updatedAt": "2026-10-06T11:59:03Z",
-      "health": "unknown"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "repo-status-dashboard",
       "fullName": "rodri-oliveira-dev/repo-status-dashboard",
       "url": "https://github.com/rodri-oliveira-dev/repo-status-dashboard",
-      "description": null,
-      "homepage": null,
-      "language": null,
-      "topics": [],
+      "description": "Dashboard Angular para monitorar repositórios GitHub: status do CI, entregas, versões, atividade e saúde. Um collector executado pelo GitHub Actions consulta a API, gera um snapshot JSON e publica a aplicação no GitHub Pages, sem backend permanente ou credenciais no navegador.",
+      "homepage": "https://rodri-oliveira-dev.github.io/repo-status-dashboard/",
+      "language": "JavaScript",
+      "topics": [
+        "angular",
+        "github-actions",
+        "github-api",
+        "github-pages",
+        "typescript"
+      ],
       "fork": false,
       "archived": false,
       "visibility": "public",
       "defaultBranch": "main",
-      "stars": 0,
-      "openIssues": 0,
-      "projectType": "Unknown",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T19:18:31Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "stars": 1,
+      "openIssues": 13,
+      "projectType": "Angular",
+      "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
+      "lastCommitDate": "2026-10-07T08:13:24Z",
+      "lastWorkflowName": "Lighthouse CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-07T08:15:05Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37592340167",
+      "deliveryType": "GitHub Pages",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
-      "updatedAt": "2026-10-06T19:18:31Z",
-      "health": "unknown"
+      "deliveryDate": "2026-10-07T08:14:21Z",
+      "deliveryUrl": "https://rodri-oliveira-dev.github.io/repo-status-dashboard/",
+      "latestRelease": "v1.0.0",
+      "latestReleaseDate": "2026-10-06T22:07:55Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/releases/tag/v1.0.0",
+      "updatedAt": "2026-10-07T08:13:29Z",
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Repo2C4",
@@ -730,21 +970,34 @@
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
+      "lastWorkflowName": "CI",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:28:27Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37462794533",
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.2.0",
-      "deliveryDate": "2026-10-05T23:23:44Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/releases/tag/v1.2.0",
+      "deliveryDate": "2026-10-05T23:23:46Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37387903186/job/112026773365",
       "latestRelease": "v1.2.0",
       "latestReleaseDate": "2026-10-05T23:23:44Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/releases/tag/v1.2.0",
       "updatedAt": "2026-10-06T12:22:37Z",
-      "health": "warning"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "rodri-oliveira-dev",
@@ -768,23 +1021,36 @@
       "stars": 1,
       "openIssues": 0,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:58:34Z",
+      "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
+      "lastCommitDate": "2026-10-06T11:58:04Z",
       "lastWorkflowName": null,
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
       "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.0.9",
+      "deliveryDate": "2026-10-06T11:58:39Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/actions/runs/37459982984",
+      "latestRelease": "v1.0.9",
+      "latestReleaseDate": "2026-10-06T11:58:36Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/releases/tag/v1.0.9",
       "updatedAt": "2026-10-06T11:58:09Z",
-      "health": "unknown"
+      "health": "warning",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "rodri-oliveira-dev.github.io",
@@ -808,16 +1074,29 @@
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T12:47:37Z",
       "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/actions/runs/37465531120",
-      "deliveryType": "Deployment",
-      "deliveryStatus": "unknown",
+      "deliveryType": "GitHub Pages",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T12:45:31Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/deployments",
+      "deliveryUrl": "https://rodri-oliveira-dev.github.io/",
       "latestRelease": "1.5.7",
       "latestReleaseDate": "2026-09-17T23:08:07Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/releases/tag/1.5.7",
       "updatedAt": "2026-10-06T12:45:03Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "terraform-gcp-dotnet-blueprint",
@@ -850,7 +1129,20 @@
       "latestReleaseDate": "2026-09-15T21:05:14Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/terraform-gcp-dotnet-blueprint/releases/tag/1.0.0",
       "updatedAt": "2026-10-06T17:19:31Z",
-      "health": "healthy"
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "web-api-core-seed",
@@ -878,66 +1170,42 @@
       "stars": 28,
       "openIssues": 5,
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T12:09:23Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
+      "lastCommitDate": "2026-10-07T00:02:41Z",
+      "lastWorkflowName": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T23:55:37Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37548730104",
+      "deliveryType": "Unknown",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
+      "deliveryDate": "2026-10-06T23:55:37Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37548730104",
       "latestRelease": null,
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
-      "updatedAt": "2026-10-06T12:09:33Z",
-      "health": "unknown"
+      "updatedAt": "2026-10-07T00:02:46Z",
+      "health": "healthy",
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     }
   ],
-  "warnings": [
-    "repo-status-dashboard: GitHub API 409 for /repos/rodri-oliveira-dev/repo-status-dashboard/commits?sha=main&per_page=1: Conflict",
-    "Repo2C4: GitHub API 403 for /repos/rodri-oliveira-dev/Repo2C4/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev.github.io: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev.github.io/deployments/6884281380/statuses?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "Repo2C4: GitHub API 403 for /repos/rodri-oliveira-dev/Repo2C4/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "Dapper.TypedParameters: GitHub API 403 for /repos/rodri-oliveira-dev/Dapper.TypedParameters/deployments/6151576409/statuses?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z"
-  ]
+  "collection": {
+    "total": 23,
+    "complete": 23,
+    "partial": 0,
+    "unavailable": 0
+  }
 }

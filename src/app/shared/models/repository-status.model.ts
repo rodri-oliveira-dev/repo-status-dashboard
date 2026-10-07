@@ -49,6 +49,17 @@ export type ProjectType = (typeof PROJECT_TYPES)[number];
 export type DeliveryStatus =
   'success' | 'failure' | 'running' | 'queued' | 'cancelled' | 'unknown' | 'none';
 
+export type CollectionStatus = 'complete' | 'partial' | 'unavailable';
+export type CollectionConfidence = 'high' | 'medium' | 'low';
+
+export interface RepositoryCollection {
+  readonly status: CollectionStatus;
+  readonly confidence: CollectionConfidence;
+  readonly collectedSignals: readonly string[];
+  readonly unavailableSignals: readonly string[];
+  readonly warnings: readonly string[];
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -81,12 +92,19 @@ export interface RepositoryStatus {
   readonly latestReleaseUrl: string | null;
   readonly updatedAt: string;
   readonly health: HealthStatus;
+  readonly collection: RepositoryCollection;
 }
 
 export interface RepositoryDataset {
-  readonly schemaVersion: 1;
+  readonly schemaVersion: 2;
   readonly owner: string;
   readonly generatedAt: string;
   readonly repositories: readonly RepositoryStatus[];
+  readonly collection: {
+    readonly total: number;
+    readonly complete: number;
+    readonly partial: number;
+    readonly unavailable: number;
+  };
   readonly warnings?: readonly string[];
 }

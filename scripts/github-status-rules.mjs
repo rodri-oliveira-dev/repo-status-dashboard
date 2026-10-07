@@ -4,6 +4,48 @@ const DELIVERY_TERMS =
 const DEPENDABOT = /dependabot/i;
 const SEMVER = /(?:^|[^\d])v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9a-z.-]+)?(?:$|[^\d])/i;
 
+export const COLLECTION_SIGNAL_GROUPS = [
+  'metadata',
+  'commits',
+  'actions',
+  'deployments',
+  'releases',
+];
+
+export function calculateCollection(signalResults, warningMessages = []) {
+  const collectedSignals = COLLECTION_SIGNAL_GROUPS.filter(
+    (signal) => signalResults[signal] !== 'unavailable',
+  );
+  const unavailableSignals = COLLECTION_SIGNAL_GROUPS.filter(
+    (signal) => signalResults[signal] === 'unavailable',
+  );
+  const ratio = collectedSignals.length / COLLECTION_SIGNAL_GROUPS.length;
+
+  return {
+    status:
+      unavailableSignals.length === 0
+        ? 'complete'
+        : collectedSignals.length === 0
+          ? 'unavailable'
+          : 'partial',
+    confidence: ratio === 1 ? 'high' : ratio >= 0.6 ? 'medium' : 'low',
+    collectedSignals,
+    unavailableSignals,
+    warnings: [...warningMessages],
+  };
+}
+
+export function summarizeCollection(repositories) {
+  const count = (status) =>
+    repositories.filter((repository) => repository.collection.status === status).length;
+  return {
+    total: repositories.length,
+    complete: count('complete'),
+    partial: count('partial'),
+    unavailable: count('unavailable'),
+  };
+}
+
 function workflowText(run) {
   return [run?.name, run?.display_title, run?.path, run?.actor?.login, run?.triggering_actor?.login]
     .filter(Boolean)

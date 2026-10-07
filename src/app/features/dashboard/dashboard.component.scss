@@ -48,6 +48,18 @@ h1 {
   gap: 0.8rem;
   margin-bottom: 1rem;
 }
+.collection-notice {
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--warning);
+  border-radius: 9px;
+  background: var(--warning-soft);
+  color: var(--text-subtle);
+  font-size: 0.8rem;
+}
+.collection-notice strong {
+  margin-right: 0.25rem;
+}
 .workspace {
   overflow: hidden;
 }

@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
+  calculateCollection,
   calculateHealth,
   classifyProjectType,
   correlateReleaseVersion,
@@ -11,6 +12,7 @@ import {
   mapWorkflowStatus,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
+  summarizeCollection,
 } from './github-status-rules.mjs';
 
 const OWNER = process.env.GITHUB_OWNER || 'rodri-oliveira-dev';
@@ -21,14 +23,14 @@ const CONCURRENCY = Math.max(1, Math.min(8, Number(process.env.COLLECTOR_CONCURR
 const warnings = [];
 let rateLimitReset = null;
 
-class GitHubApiError extends Error {
+export class GitHubApiError extends Error {
   constructor(status, path, message) {
     super(`GitHub API ${status} for ${path}: ${message}`);
     this.status = status;
   }
 }
 
-async function github(path, { optional = false } = {}) {
+async function github(path, { absentStatuses = [], attempt = 0 } = {}) {
   if (rateLimitReset && Date.now() < rateLimitReset) {
     throw new GitHubApiError(
       403,
@@ -42,8 +44,14 @@ async function github(path, { optional = false } = {}) {
     'User-Agent': 'repo-control-center-collector',
   };
   if (TOKEN) headers.Authorization = `Bearer ${TOKEN}`;
-  const response = await fetch(`${API}${path}`, { headers });
-  if (response.status === 404 && optional) return null;
+  let response;
+  try {
+    response = await fetch(`${API}${path}`, { headers });
+  } catch (error) {
+    if (attempt === 0) return github(path, { absentStatuses, attempt: 1 });
+    throw error;
+  }
+  if (absentStatuses.includes(response.status)) return null;
   if (!response.ok) {
     const remaining = response.headers.get('x-ratelimit-remaining');
     const reset = response.headers.get('x-ratelimit-reset');
@@ -52,6 +60,8 @@ async function github(path, { optional = false } = {}) {
       remaining === '0' && reset
         ? `rate limit resets at ${new Date(Number(reset) * 1000).toISOString()}`
         : response.statusText;
+    if (response.status >= 500 && attempt === 0)
+      return github(path, { absentStatuses, attempt: 1 });
     throw new GitHubApiError(response.status, path, details);
   }
   return response.json();
@@ -73,14 +83,19 @@ async function listOwnedRepositories() {
   );
 }
 
-async function optionalRequest(path, fallback, repositoryName) {
+function safeWarning(error) {
+  const message = error instanceof Error ? error.message : String(error);
+  return message.replace(/(token|authorization|bearer)(\s*[:=]?\s*)[^\s,;]+/gi, '$1$2[redacted]');
+}
+
+async function collectSignal(path, fallback, repositoryName, { absentStatuses = [404] } = {}) {
   try {
-    return (await github(path, { optional: true })) ?? fallback;
+    return { data: (await github(path, { absentStatuses })) ?? fallback, available: true };
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = safeWarning(error);
     warnings.push(`${repositoryName}: ${message}`);
     console.warn(`[collector] ${repositoryName}: optional data unavailable (${message})`);
-    return fallback;
+    return { data: fallback, available: false, warning: message };
   }
 }
 
@@ -140,23 +155,29 @@ function deliveryFrom({ deployment, deploymentStatus, deliveryWorkflow, release,
 async function enrich(repository) {
   const name = repository.name;
   const base = `/repos/${encodeURIComponent(OWNER)}/${encodeURIComponent(name)}`;
-  const [commits, workflowResponse, deployments, release] = await Promise.all([
-    optionalRequest(
+  const [commitResult, actionsResult, deploymentResult, releaseResult] = await Promise.all([
+    collectSignal(
       `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
       [],
       name,
+      { absentStatuses: [404, 409] },
     ),
-    optionalRequest(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
-    optionalRequest(`${base}/deployments?per_page=1`, [], name),
-    optionalRequest(`${base}/releases/latest`, null, name),
+    collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
+    collectSignal(`${base}/deployments?per_page=1`, [], name),
+    collectSignal(`${base}/releases/latest`, null, name),
   ]);
+  const commits = commitResult.data;
+  const workflowResponse = actionsResult.data;
+  const deployments = deploymentResult.data;
+  const release = releaseResult.data;
   const runs = workflowResponse.workflow_runs ?? [];
   const build = selectBuildWorkflow(runs);
   const deliveryWorkflow = selectDeliveryWorkflow(runs);
   const deployment = deployments[0] ?? null;
-  const statuses = deployment
-    ? await optionalRequest(`${base}/deployments/${deployment.id}/statuses?per_page=1`, [], name)
-    : [];
+  const statusResult = deployment
+    ? await collectSignal(`${base}/deployments/${deployment.id}/statuses?per_page=1`, [], name)
+    : { data: [], available: true };
+  const statuses = statusResult.data;
   const deploymentStatus = statuses[0] ?? null;
   const commit = commits[0]?.commit ?? null;
   const delivery = deliveryFrom({
@@ -175,6 +196,20 @@ async function enrich(repository) {
     deliveryStatus: delivery.status,
     lastActivityDate: latestDate(lastCommitDate, build?.updated_at, delivery.date),
   });
+  const signalResults = {
+    metadata: 'available',
+    commits: commitResult.available ? 'available' : 'unavailable',
+    actions: actionsResult.available ? 'available' : 'unavailable',
+    deployments: deploymentResult.available && statusResult.available ? 'available' : 'unavailable',
+    releases: releaseResult.available ? 'available' : 'unavailable',
+  };
+  const repositoryWarnings = [
+    commitResult.warning,
+    actionsResult.warning,
+    deploymentResult.warning,
+    statusResult.warning,
+    releaseResult.warning,
+  ].filter(Boolean);
 
   return {
     name,
@@ -208,6 +243,7 @@ async function enrich(repository) {
     latestReleaseUrl: release?.html_url ?? null,
     updatedAt: repository.updated_at,
     health,
+    collection: calculateCollection(signalResults, repositoryWarnings),
   };
 }
 
@@ -221,7 +257,7 @@ async function mapWithConcurrency(items, limit, mapper) {
         results[index] = await mapper(items[index]);
       } catch (error) {
         const name = items[index]?.name ?? `item ${index}`;
-        const message = error instanceof Error ? error.message : String(error);
+        const message = safeWarning(error);
         warnings.push(`${name}: ${message}`);
         console.error(
           `[collector] ${name}: enrichment failed; preserving repository with unknown signals (${message})`,
@@ -272,6 +308,16 @@ function fallbackRepository(repository) {
       deliveryStatus: 'unknown',
       lastActivityDate: repository.pushed_at,
     }),
+    collection: calculateCollection(
+      {
+        metadata: 'available',
+        commits: 'unavailable',
+        actions: 'unavailable',
+        deployments: 'unavailable',
+        releases: 'unavailable',
+      },
+      ['Repository enrichment failed; optional signals are unavailable.'],
+    ),
   };
 }
 
@@ -288,10 +334,11 @@ export async function collect() {
     left.name.localeCompare(right.name, 'en', { sensitivity: 'base' }),
   );
   const dataset = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     owner: OWNER,
     generatedAt: new Date().toISOString(),
     repositories: enriched,
+    collection: summarizeCollection(enriched),
     ...(warnings.length ? { warnings } : {}),
   };
   await mkdir(dirname(OUTPUT), { recursive: true });

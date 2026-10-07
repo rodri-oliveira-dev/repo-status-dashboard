@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  calculateCollection,
   calculateHealth,
   classifyProjectType,
   correlateReleaseVersion,
@@ -8,7 +9,61 @@ import {
   mapDeliveryStatus,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
+  summarizeCollection,
 } from './github-status-rules.mjs';
+
+describe('collection confidence', () => {
+  it('is complete and high when every signal group was collected', () => {
+    assert.deepEqual(
+      calculateCollection({
+        metadata: 'available',
+        commits: 'available',
+        actions: 'available',
+        deployments: 'available',
+        releases: 'available',
+      }),
+      {
+        status: 'complete',
+        confidence: 'high',
+        collectedSignals: ['metadata', 'commits', 'actions', 'deployments', 'releases'],
+        unavailableSignals: [],
+        warnings: [],
+      },
+    );
+  });
+
+  it('distinguishes partial and unavailable collection deterministically', () => {
+    const partial = calculateCollection({
+      metadata: 'available',
+      commits: 'available',
+      actions: 'unavailable',
+      deployments: 'unavailable',
+      releases: 'available',
+    });
+    const unavailable = calculateCollection({
+      metadata: 'unavailable',
+      commits: 'unavailable',
+      actions: 'unavailable',
+      deployments: 'unavailable',
+      releases: 'unavailable',
+    });
+    assert.equal(partial.status, 'partial');
+    assert.equal(partial.confidence, 'medium');
+    assert.equal(unavailable.status, 'unavailable');
+    assert.equal(unavailable.confidence, 'low');
+  });
+
+  it('summarizes repository collection states', () => {
+    assert.deepEqual(
+      summarizeCollection([
+        { collection: { status: 'complete' } },
+        { collection: { status: 'partial' } },
+        { collection: { status: 'unavailable' } },
+      ]),
+      { total: 3, complete: 1, partial: 1, unavailable: 1 },
+    );
+  });
+});
 
 const run = (name, updated_at, extra = {}) => ({
   name,
