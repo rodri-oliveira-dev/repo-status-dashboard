@@ -44,7 +44,6 @@
     <app-summary-card label="Warning" [value]="stats().warning" tone="warning" />
     <app-summary-card label="Failed" [value]="stats().failed" tone="danger" />
     <app-summary-card label="Stale" [value]="stats().stale" tone="stale" />
-    <app-summary-card label="Archived" [value]="stats().archived" tone="archived" />
   </section>
   <app-portfolio-insights [insights]="portfolioInsights()" />
 
@@ -88,13 +87,6 @@
               <option [value]="delivery">{{ delivery }}</option>
             }
           </select></label
-        >
-        <label class="checkbox"
-          ><input
-            type="checkbox"
-            [ngModel]="showArchived()"
-            (ngModelChange)="showArchived.set($event)"
-          />Show archived</label
         >
       </div>
     </div>
@@ -153,7 +145,7 @@
           </thead>
           <tbody>
             @for (repository of filteredRepositories(); track trackRepository($index, repository)) {
-              <tr [class.archived]="repository.archived">
+              <tr>
                 <td data-label="Repository">
                   <a class="repo-name" [routerLink]="['/repository', repository.name]">{{
                     repository.name

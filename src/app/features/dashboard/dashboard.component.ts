@@ -56,7 +56,6 @@ export class DashboardComponent implements OnInit {
   protected readonly typeFilter = signal('all');
   protected readonly technologyFilter = signal('all');
   protected readonly deliveryFilter = signal('all');
-  protected readonly showArchived = signal(false);
   protected readonly sortColumn = signal<SortColumn>('updated');
   protected readonly sortDirection = signal<SortDirection>('desc');
 
@@ -70,7 +69,6 @@ export class DashboardComponent implements OnInit {
       warning: count('warning'),
       failed: count('failed'),
       stale: count('stale'),
-      archived: count('archived'),
     };
   });
   protected readonly attentionItems = computed(() => rankNeedsAttention(this.store.repositories()));
@@ -107,7 +105,7 @@ export class DashboardComponent implements OnInit {
       type: this.typeFilter(),
       technology: this.technologyFilter(),
       delivery: this.deliveryFilter(),
-      showArchived: this.showArchived(),
+      showArchived: false,
     });
     const direction = this.sortDirection() === 'asc' ? 1 : -1;
     return [...filtered].sort((left, right) => {

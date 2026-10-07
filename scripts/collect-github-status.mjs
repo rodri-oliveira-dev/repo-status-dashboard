@@ -92,6 +92,14 @@ async function github(path, { absentStatuses = [], attempt = 0, includeNext = fa
   return includeNext ? { data, nextPath: nextGithubPath(response.headers.get('link')) } : data;
 }
 
+export function shouldIncludeRepository(repository, owner = OWNER) {
+  return (
+    !repository.fork &&
+    !repository.archived &&
+    repository.owner?.login?.toLowerCase() === owner.toLowerCase()
+  );
+}
+
 async function listOwnedRepositories() {
   const repositories = [];
   for (let page = 1; ; page += 1) {
@@ -102,10 +110,7 @@ async function listOwnedRepositories() {
     console.log(`[collector] repository page ${page}: ${batch.length} item(s)`);
     if (batch.length < 100) break;
   }
-  return repositories.filter(
-    (repository) =>
-      !repository.fork && repository.owner?.login?.toLowerCase() === OWNER.toLowerCase(),
-  );
+  return repositories.filter((repository) => shouldIncludeRepository(repository));
 }
 
 function safeWarning(error) {
@@ -812,7 +817,7 @@ export async function collect() {
   );
   const repositories = await listOwnedRepositories();
   console.log(
-    `[collector] enriching ${repositories.length} non-fork owned repository/repositories with concurrency ${CONCURRENCY}`,
+    `[collector] enriching ${repositories.length} active non-fork owned repository/repositories with concurrency ${CONCURRENCY}`,
   );
   const enriched = await mapWithConcurrency(repositories, CONCURRENCY, (repository) =>
     enrich(repository, generatedAt),
