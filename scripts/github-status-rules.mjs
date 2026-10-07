@@ -36,9 +36,10 @@ export function calculateCollection(signalResults, warningMessages = []) {
 }
 
 export function normalizeSecurityAlerts(alerts, configuredStatus) {
-  if (configuredStatus === 'disabled')
-    return { status: 'disabled', openAlerts: 0, highCritical: 0 };
-  if (alerts === null) return { status: 'not_configured', openAlerts: 0, highCritical: 0 };
+  if (alerts === null)
+    return configuredStatus === 'disabled'
+      ? { status: 'disabled', openAlerts: 0, highCritical: 0 }
+      : { status: 'not_configured', openAlerts: 0, highCritical: 0 };
   const highCritical = alerts.filter((alert) => {
     const severity = alert?.security_advisory?.severity ?? alert?.rule?.security_severity_level;
     return severity === 'high' || severity === 'critical';
@@ -200,22 +201,40 @@ export function calculateDeliveryFrequency(
     )
     .map((run) => ({ source: 'workflow', id: run.id, date: run.updated_at ?? run.created_at }));
   const correlationMs = correlationMinutes * 60 * 1000;
-  const correlated = (event, candidates) =>
-    candidates.some(
-      (candidate) => Math.abs(Date.parse(event.date) - Date.parse(candidate.date)) <= correlationMs,
-    );
-  const deliveryEvents = [...deploymentEvents];
-  for (const event of workflowEvents)
-    if (!correlated(event, deploymentEvents)) deliveryEvents.push(event);
-  for (const event of releaseEvents)
-    if (!correlated(event, [...deploymentEvents, ...workflowEvents])) deliveryEvents.push(event);
+  const clusters = deploymentEvents.map((event) => ({
+    dates: [event.date],
+    sources: new Set([event.source]),
+  }));
+  for (const event of [...workflowEvents, ...releaseEvents]) {
+    const match = clusters
+      .filter(
+        (cluster) =>
+          !cluster.sources.has(event.source) &&
+          cluster.dates.some(
+            (date) => Math.abs(Date.parse(event.date) - Date.parse(date)) <= correlationMs,
+          ),
+      )
+      .sort((left, right) => {
+        const distance = (cluster) =>
+          Math.min(
+            ...cluster.dates.map((date) => Math.abs(Date.parse(event.date) - Date.parse(date))),
+          );
+        return distance(left) - distance(right);
+      })[0];
+    if (match) {
+      match.dates.push(event.date);
+      match.sources.add(event.source);
+    } else {
+      clusters.push({ dates: [event.date], sources: new Set([event.source]) });
+    }
+  }
 
   return {
     windowDays,
     releases: availability.releases ? releaseEvents.length : null,
     deliveryEvents:
       availability.deployments && availability.actions && availability.releases
-        ? deliveryEvents.length
+        ? clusters.length
         : null,
     evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
     correlationMinutes,
@@ -242,17 +261,17 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   for (const [role, files] of Object.entries(configuredWorkflows)) {
     if (files.some((file) => file.toLowerCase() === fileName)) return role;
   }
-  const text = workflowText(run).toLowerCase();
+  const text = [run?.name, run?.path].filter(Boolean).join(' ').toLowerCase();
   if (!text) return 'unknown';
   let role = 'unknown';
   if (/mutation|stryker|pitest/.test(text)) role = 'mutation';
   else if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) role = 'security';
   else if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) role = 'pages';
   else if (/release|create tag|changelog/.test(text)) role = 'release';
-  if (
+  else if (
     /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
   )
-    role = role === 'unknown' ? 'delivery' : role;
+    role = 'delivery';
   else if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
   else if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text))
     role = 'quality';

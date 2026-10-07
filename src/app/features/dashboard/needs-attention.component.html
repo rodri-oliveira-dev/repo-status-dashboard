@@ -10,7 +10,7 @@
     <p class="empty" role="status">No repositories currently require action.</p>
   } @else {
     <ul>
-      @for (item of items(); track item.repository.fullName) {
+      @for (item of items(); track item.repository.fullName + ':' + item.reason) {
         <li [attr.data-severity]="item.severity">
           <div>
             <a [routerLink]="['/repository', item.repository.name]">{{ item.repository.name }}</a>
@@ -27,7 +27,7 @@
                 [href]="item.externalUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                [attr.aria-label]="'Open evidence for ' + item.repository.name"
+                [attr.aria-label]="'Open evidence for ' + item.repository.name + ': ' + item.reason"
                 >Evidence ↗</a
               >
             }

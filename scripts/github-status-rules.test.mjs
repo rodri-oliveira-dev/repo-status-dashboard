@@ -100,6 +100,11 @@ describe('security posture normalization', () => {
       highCritical: 0,
     });
     assert.deepEqual(normalizeSecurityAlerts([], 'disabled'), {
+      status: 'clean',
+      openAlerts: 0,
+      highCritical: 0,
+    });
+    assert.deepEqual(normalizeSecurityAlerts(null, 'disabled'), {
       status: 'disabled',
       openAlerts: 0,
       highCritical: 0,
@@ -300,6 +305,22 @@ describe('release and deployment frequency', () => {
     assert.equal(result.deliveryEvents, 3);
   });
 
+  it('correlates at most one event from each source into a delivery event', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [
+          run('Deploy', '2026-09-20T10:05:00Z', { id: 1 }),
+          run('Deploy', '2026-09-20T10:10:00Z', { id: 2 }),
+        ],
+        deployments: [{ id: 3, created_at: '2026-09-20T10:00:00Z' }],
+        releases: [],
+        availability: { actions: true, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, 2);
+  });
+
   it('renders incomplete delivery evidence as unavailable instead of zero', () => {
     const result = calculateDeliveryFrequency(
       {
@@ -373,6 +394,23 @@ describe('workflow semantic roles', () => {
       'maintenance',
     );
     assert.equal(classifyWorkflowRole(run('Tests', '2026-10-01T10:00:00Z')), 'unknown');
+  });
+
+  it('preserves a specific workflow role when the run title looks like CI', () => {
+    assert.equal(
+      classifyWorkflowRole(
+        run('CodeQL', '2026-10-01T10:00:00Z', { display_title: 'ci: update analysis' }),
+      ),
+      'security',
+    );
+    assert.equal(
+      classifyWorkflowRole(
+        run('Release', '2026-10-01T10:00:00Z', {
+          display_title: 'Release 1.0.0-ci.135136.1',
+        }),
+      ),
+      'release',
+    );
   });
 
   it('uses configured files authoritatively only for configured roles', () => {

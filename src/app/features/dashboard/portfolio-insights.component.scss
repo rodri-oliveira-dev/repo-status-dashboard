@@ -59,6 +59,10 @@ dd {
   font-size: 1.3rem;
   font-weight: 750;
 }
+dd span,
+dd small {
+  display: block;
+}
 .lower {
   display: grid;
   grid-template-columns: 1fr 1fr;

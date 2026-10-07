@@ -78,7 +78,7 @@ describe('portfolio insights', () => {
     const result = calculatePortfolioInsights(
       [
         repository({ name: 'approaching', lastCommitDate: '2026-07-20T00:00:00Z' }),
-        repository({ name: 'stale', health: 'stale', lastCommitDate: '2026-01-01T00:00:00Z' }),
+        repository({ name: 'stale', health: 'failed', lastCommitDate: '2026-01-01T00:00:00Z' }),
         repository({
           name: 'archived',
           archived: true,
@@ -91,5 +91,14 @@ describe('portfolio insights', () => {
     expect(result.approachingStale).toEqual(['approaching']);
     expect(result.stale).toEqual(['stale']);
     expect(result.healthDistribution.archived).toBe(1);
+  });
+
+  it('does not derive staleness when the dataset timestamp is the epoch fallback', () => {
+    const result = calculatePortfolioInsights(
+      [repository({ lastCommitDate: '1960-01-01T00:00:00Z' })],
+      '1970-01-01T00:00:00Z',
+    );
+    expect(result.approachingStale).toEqual([]);
+    expect(result.stale).toEqual([]);
   });
 });

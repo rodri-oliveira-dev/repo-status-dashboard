@@ -22,7 +22,8 @@ export function calculatePortfolioInsights(
   repositories: readonly RepositoryStatus[],
   generatedAt: string,
 ): PortfolioInsights {
-  const now = Date.parse(generatedAt);
+  const parsedNow = Date.parse(generatedAt);
+  const now = Number.isFinite(parsedNow) && parsedNow > 0 ? parsedNow : null;
   const activityData = repositories.filter((repository) =>
     [
       repository.activity.commits,
@@ -60,7 +61,7 @@ export function calculatePortfolioInsights(
   );
   const ageDays = (repository: RepositoryStatus) => {
     const timestamp = Date.parse(repository.lastCommitDate ?? repository.updatedAt);
-    return Number.isFinite(timestamp) && Number.isFinite(now)
+    return Number.isFinite(timestamp) && now !== null
       ? (now - timestamp) / (24 * 60 * 60 * 1000)
       : null;
   };
@@ -99,7 +100,10 @@ export function calculatePortfolioInsights(
       .map((repository) => repository.name)
       .sort(),
     stale: active
-      .filter((repository) => repository.health === 'stale')
+      .filter((repository) => {
+        const age = ageDays(repository);
+        return age !== null && age > 90;
+      })
       .map((repository) => repository.name)
       .sort(),
     healthDistribution: distribution,

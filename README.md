@@ -128,7 +128,7 @@ Versão e publicação npm vêm do registro público `registry.npmjs.org`; downl
 
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
-Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de cinco grupos: metadados, commits, Actions, deployments e releases; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
+Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de oito grupos: metadados, commits, Actions, deployments, releases, `workItems`, `security` e `packages`; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
 
 Ausência esperada (`404` em APIs opcionais e `409` ao consultar commits de repositório vazio) conta como consulta concluída. `403`, demais `4xx`, falhas de rede e `5xx` tornam o grupo indisponível; falhas transitórias de rede e `5xx` recebem uma tentativa adicional. Rate limiting é preservado como aviso sem expor credenciais.
 

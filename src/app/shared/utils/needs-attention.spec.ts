@@ -142,4 +142,31 @@ describe('needs attention ranking', () => {
     expect(items[0].severity).toBe('critical');
     expect(items[0].reason).toContain('2 high/critical Dependabot');
   });
+
+  it('preserves independent critical reasons for the same repository', () => {
+    const items = rankNeedsAttention([
+      repository({
+        health: 'failed',
+        healthReasons: [{ code: 'CI_FAILING', severity: 'critical' }],
+        security: {
+          dependabot: { status: 'findings_present', openAlerts: 1, highCritical: 1 },
+          codeScanning: { status: 'clean', openAlerts: 0, highCritical: 0 },
+          workflow: { status: 'passing', name: 'CodeQL', url: 'workflow', date: null },
+          openSsf: { status: 'available', score: 8, date: null, url: 'scorecard' },
+        },
+      }),
+    ]);
+    expect(items.map((item) => item.reason)).toEqual([
+      '1 high/critical Dependabot finding',
+      'Primary CI is failing',
+    ]);
+  });
+
+  it('sorts missing dates consistently after dated items', () => {
+    const items = rankNeedsAttention([
+      repository({ name: 'missing', lastWorkflowDate: null }),
+      repository({ name: 'dated', lastWorkflowDate: '2026-01-01T00:00:00Z' }),
+    ]);
+    expect(items.map((item) => item.repository.name)).toEqual(['dated', 'missing']);
+  });
 });

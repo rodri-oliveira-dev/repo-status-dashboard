@@ -82,16 +82,21 @@ function fromStaleWork(repository: RepositoryStatus): AttentionItem | null {
 export function rankNeedsAttention(repositories: readonly RepositoryStatus[]): AttentionItem[] {
   return repositories
     .filter((repository) => !repository.archived)
-    .map(
-      (repository) =>
-        fromSecurity(repository) ?? fromHealth(repository) ?? fromStaleWork(repository),
+    .flatMap((repository) =>
+      [fromSecurity(repository), fromHealth(repository), fromStaleWork(repository)].filter(
+        (item): item is AttentionItem => item !== null,
+      ),
     )
-    .filter((item): item is AttentionItem => item !== null)
     .sort((left, right) => {
       const severity = Number(left.severity === 'warning') - Number(right.severity === 'warning');
       if (severity) return severity;
-      const date = Date.parse(left.date ?? '') - Date.parse(right.date ?? '');
-      if (Number.isFinite(date) && date) return date;
+      const timestamp = (value: string | null) => {
+        const parsed = value ? Date.parse(value) : Number.NaN;
+        return Number.isFinite(parsed) ? parsed : Number.POSITIVE_INFINITY;
+      };
+      const leftTimestamp = timestamp(left.date);
+      const rightTimestamp = timestamp(right.date);
+      if (leftTimestamp !== rightTimestamp) return leftTimestamp < rightTimestamp ? -1 : 1;
       return left.repository.name.localeCompare(right.repository.name);
     });
 }

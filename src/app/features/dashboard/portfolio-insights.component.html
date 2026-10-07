@@ -9,29 +9,37 @@
   <dl class="metrics">
     <div>
       <dt>Active repositories</dt>
-      <dd>{{ insights().activeRepositories }}</dd>
-      <small>{{ insights().activityCoverage }}/{{ insights().totalRepositories }} observed</small>
+      <dd>
+        <span>{{ insights().activeRepositories }}</span>
+        <small>{{ insights().activityCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
     </div>
     <div>
       <dt>Observed CI success</dt>
       <dd>
-        {{
-          insights().ciSuccessRate === null
-            ? 'Unavailable'
-            : (insights().ciSuccessRate | number: '1.0-1') + '%'
-        }}
+        <span>
+          {{
+            insights().ciSuccessRate === null
+              ? 'Unavailable'
+              : (insights().ciSuccessRate | number: '1.0-1') + '%'
+          }}
+        </span>
+        <small>{{ insights().ciSuccessful }}/{{ insights().ciObservedRuns }} runs passed</small>
       </dd>
-      <small>{{ insights().ciSuccessful }}/{{ insights().ciObservedRuns }} runs passed</small>
     </div>
     <div>
       <dt>Releases</dt>
-      <dd>{{ insights().releases }}</dd>
-      <small>{{ insights().releaseCoverage }}/{{ insights().totalRepositories }} observed</small>
+      <dd>
+        <span>{{ insights().releases }}</span>
+        <small>{{ insights().releaseCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
     </div>
     <div>
       <dt>Delivery events</dt>
-      <dd>{{ insights().deliveryEvents }}</dd>
-      <small>{{ insights().deliveryCoverage }}/{{ insights().totalRepositories }} observed</small>
+      <dd>
+        <span>{{ insights().deliveryEvents }}</span>
+        <small>{{ insights().deliveryCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
     </div>
   </dl>
   <div class="lower">

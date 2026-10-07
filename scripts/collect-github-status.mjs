@@ -45,7 +45,16 @@ export class GitHubApiError extends Error {
   }
 }
 
-async function github(path, { absentStatuses = [], attempt = 0 } = {}) {
+export function nextGithubPath(link) {
+  const next = link?.split(',').find((part) => /rel="next"/.test(part));
+  const match = next?.match(/<([^>]+)>/);
+  if (!match) return null;
+  const url = new URL(match[1], API);
+  if (url.origin !== API) throw new Error(`Unexpected GitHub pagination origin: ${url.origin}`);
+  return `${url.pathname}${url.search}`;
+}
+
+async function github(path, { absentStatuses = [], attempt = 0, includeNext = false } = {}) {
   if (rateLimitReset && Date.now() < rateLimitReset) {
     throw new GitHubApiError(
       403,
@@ -63,7 +72,7 @@ async function github(path, { absentStatuses = [], attempt = 0 } = {}) {
   try {
     response = await fetch(`${API}${path}`, { headers });
   } catch (error) {
-    if (attempt === 0) return github(path, { absentStatuses, attempt: 1 });
+    if (attempt === 0) return github(path, { absentStatuses, attempt: 1, includeNext });
     throw error;
   }
   if (absentStatuses.includes(response.status)) return null;
@@ -76,10 +85,11 @@ async function github(path, { absentStatuses = [], attempt = 0 } = {}) {
         ? `rate limit resets at ${new Date(Number(reset) * 1000).toISOString()}`
         : response.statusText;
     if (response.status >= 500 && attempt === 0)
-      return github(path, { absentStatuses, attempt: 1 });
+      return github(path, { absentStatuses, attempt: 1, includeNext });
     throw new GitHubApiError(response.status, path, details);
   }
-  return response.json();
+  const data = await response.json();
+  return includeNext ? { data, nextPath: nextGithubPath(response.headers.get('link')) } : data;
 }
 
 async function listOwnedRepositories() {
@@ -145,7 +155,7 @@ async function collectWindowSignal({
   return { data: items, available: true };
 }
 
-async function collectOpenWorkItems(base, repository) {
+async function collectOpenWorkItems(base, repository, generatedAt) {
   const total = repository.open_issues_count ?? 0;
   const pages = Math.max(1, Math.ceil(total / 100));
   const items = [];
@@ -165,12 +175,20 @@ async function collectOpenWorkItems(base, repository) {
       };
     items.push(...result.data);
   }
-  return { ...analyzeOpenWorkItems(items), available: true };
+  return { ...analyzeOpenWorkItems(items, generatedAt), available: true };
 }
 
 async function collectSecurityAlerts(path, repositoryName, configuredStatus) {
   try {
-    const alerts = await github(path, { absentStatuses: [404] });
+    const alerts = [];
+    let nextPath = `${path}${path.includes('?') ? '&' : '?'}per_page=100`;
+    while (nextPath) {
+      const result = await github(nextPath, { absentStatuses: [404], includeNext: true });
+      if (result === null)
+        return { ...normalizeSecurityAlerts(null, configuredStatus), available: true };
+      alerts.push(...result.data);
+      nextPath = result.nextPath;
+    }
     return {
       ...normalizeSecurityAlerts(alerts, configuredStatus),
       available: true,
@@ -189,6 +207,8 @@ async function collectSecurityAlerts(path, repositoryName, configuredStatus) {
   }
 }
 
+class NonRetryableResponseError extends Error {}
+
 async function collectOpenSsf(repositoryName, attempt = 0) {
   const url = `https://api.securityscorecards.dev/projects/github.com/${encodeURIComponent(OWNER)}/${encodeURIComponent(repositoryName)}`;
   try {
@@ -197,7 +217,7 @@ async function collectOpenSsf(repositoryName, attempt = 0) {
       return { status: 'not_configured', score: null, date: null, url: null, available: true };
     if (!response.ok) {
       if (response.status >= 500 && attempt === 0) return collectOpenSsf(repositoryName, 1);
-      throw new Error(`OpenSSF API ${response.status}: ${response.statusText}`);
+      throw new NonRetryableResponseError(`OpenSSF API ${response.status}: ${response.statusText}`);
     }
     const result = await response.json();
     return {
@@ -208,7 +228,12 @@ async function collectOpenSsf(repositoryName, attempt = 0) {
       available: true,
     };
   } catch (error) {
-    if (attempt === 0) return collectOpenSsf(repositoryName, 1);
+    if (
+      attempt === 0 &&
+      !(error instanceof NonRetryableResponseError) &&
+      !(error instanceof SyntaxError)
+    )
+      return collectOpenSsf(repositoryName, 1);
     const message = safeWarning(error);
     warnings.push(`${repositoryName}: ${message}`);
     console.warn(`[collector] ${repositoryName}: OpenSSF data unavailable (${message})`);
@@ -235,11 +260,18 @@ async function publicJson(url, source, repositoryName, attempt = 0) {
     if (!response.ok) {
       if (response.status >= 500 && attempt === 0)
         return publicJson(url, source, repositoryName, 1);
-      throw new Error(`${source} API ${response.status}: ${response.statusText}`);
+      throw new NonRetryableResponseError(
+        `${source} API ${response.status}: ${response.statusText}`,
+      );
     }
     return { data: await response.json(), available: true };
   } catch (error) {
-    if (attempt === 0) return publicJson(url, source, repositoryName, 1);
+    if (
+      attempt === 0 &&
+      !(error instanceof NonRetryableResponseError) &&
+      !(error instanceof SyntaxError)
+    )
+      return publicJson(url, source, repositoryName, 1);
     const message = safeWarning(error);
     warnings.push(`${repositoryName}: ${message}`);
     console.warn(`[collector] ${repositoryName}: ${source} data unavailable (${message})`);
@@ -491,14 +523,14 @@ async function enrich(repository, generatedAt) {
       cutoff: activityCutoff,
       itemDate: (release) => release.published_at ?? release.created_at,
     }),
-    collectOpenWorkItems(base, repository),
+    collectOpenWorkItems(base, repository, generatedAt),
     collectSecurityAlerts(
-      `${base}/dependabot/alerts?state=open&per_page=100`,
+      `${base}/dependabot/alerts?state=open`,
       name,
       repository.security_and_analysis?.dependabot_security_updates?.status,
     ),
     collectSecurityAlerts(
-      `${base}/code-scanning/alerts?state=open&per_page=100`,
+      `${base}/code-scanning/alerts?state=open`,
       name,
       repository.security_and_analysis?.advanced_security?.status,
     ),
