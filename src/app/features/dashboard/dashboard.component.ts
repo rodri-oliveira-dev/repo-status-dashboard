@@ -21,6 +21,10 @@ import {
 import { FullDatePipe } from '../../shared/pipes/full-date.pipe';
 import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { filterRepositories } from '../../shared/utils/repository-filter';
+import { rankNeedsAttention } from '../../shared/utils/needs-attention';
+import { calculatePortfolioInsights } from '../../shared/utils/portfolio-insights';
+import { NeedsAttentionComponent } from './needs-attention.component';
+import { PortfolioInsightsComponent } from './portfolio-insights.component';
 
 type SortColumn = 'repository' | 'updated' | 'health';
 type SortDirection = 'asc' | 'desc';
@@ -34,6 +38,8 @@ type SortDirection = 'asc' | 'desc';
     SummaryCardComponent,
     RelativeDatePipe,
     FullDatePipe,
+    NeedsAttentionComponent,
+    PortfolioInsightsComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -67,6 +73,13 @@ export class DashboardComponent implements OnInit {
       archived: count('archived'),
     };
   });
+  protected readonly attentionItems = computed(() => rankNeedsAttention(this.store.repositories()));
+  protected readonly portfolioInsights = computed(() =>
+    calculatePortfolioInsights(
+      this.store.repositories(),
+      this.store.dataset()?.generatedAt ?? '1970-01-01T00:00:00Z',
+    ),
+  );
 
   protected readonly technologies = computed(() =>
     [

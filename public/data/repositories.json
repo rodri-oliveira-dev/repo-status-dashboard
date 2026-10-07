@@ -1,7 +1,7 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-06T19:30:27.323Z",
+  "generatedAt": "2026-10-07T13:16:12.895Z",
   "repositories": [
     {
       "name": ".github",
@@ -26,24 +26,104 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "Control plane secret scan",
+          "url": "https://github.com/rodri-oliveira-dev/.github/actions/runs/37503452721",
+          "date": "2026-10-06T17:25:48Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 35,
+        "workflowRuns": 561,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 2,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 2,
+        "deliveryEvents": 2,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
       "lastCommitDate": "2026-10-06T17:25:33Z",
-      "lastWorkflowName": "Agent governance validation",
-      "lastWorkflowStatus": "passing",
-      "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-06T17:26:08Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/.github/actions/runs/37503452212",
+      "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
+      "lastWorkflowStatus": "unknown",
+      "lastWorkflowConclusion": null,
+      "lastWorkflowDate": null,
+      "lastWorkflowUrl": null,
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.1.0",
-      "deliveryDate": "2026-09-24T14:31:42Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
+      "deliveryDate": "2026-09-24T14:31:46Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/.github/actions/runs/36013424070",
       "latestRelease": "v1.1.0",
       "latestReleaseDate": "2026-09-24T14:31:42Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T17:25:39Z",
-      "health": "healthy"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "adr-guard",
@@ -64,10 +144,82 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 2,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 19,
+        "workflowRuns": 800,
+        "successfulCiRuns": 136,
+        "failedCiRuns": 68,
+        "releases": 15,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 15,
+        "deliveryEvents": 41,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "RodriOliveira.AdrGuard",
+            "status": "published",
+            "version": "1.1.7",
+            "url": "https://www.nuget.org/packages/RodriOliveira.AdrGuard",
+            "downloads": {
+              "count": 2147,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
       "lastCommitDate": "2026-10-06T16:53:37Z",
       "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T16:54:59Z",
@@ -75,13 +227,30 @@
       "deliveryType": "Container",
       "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": "2026-10-06T12:47:38Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/adr-guard/actions/runs/37465740646",
+      "deliveryDate": "2026-10-07T12:47:37Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/adr-guard/actions/runs/37623472640",
       "latestRelease": "v1.1.7",
       "latestReleaseDate": "2026-09-28T11:52:57Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/adr-guard/releases/tag/v1.1.7",
       "updatedAt": "2026-10-06T16:53:42Z",
-      "health": "healthy"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "angular-template",
@@ -103,10 +272,68 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 1,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/angular-template/actions/runs/37473178816",
+          "date": "2026-10-06T13:45:51Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 369,
+        "workflowRuns": 307,
+        "successfulCiRuns": 42,
+        "failedCiRuns": 49,
+        "releases": 1,
+        "deployments": 9
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 14,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
       "lastCommitDate": "2026-10-06T13:44:17Z",
       "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T13:47:17Z",
@@ -120,7 +347,24 @@
       "latestReleaseDate": "2026-10-05T18:35:56Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/angular-template/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T13:49:14Z",
-      "health": "healthy"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "brazilian-primitives",
@@ -140,24 +384,99 @@
       "defaultBranch": "main",
       "stars": 5,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/37458760876",
+          "date": "2026-10-06T11:50:20Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 71,
+        "workflowRuns": 167,
+        "successfulCiRuns": 28,
+        "failedCiRuns": 7,
+        "releases": 1,
+        "deployments": 2
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 9,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:47:32Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
+      "lastCommitDate": "2026-10-06T11:47:28Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:50:39Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/37458760951",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.3.0",
+      "deliveryDate": "2026-10-01T19:38:01Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/36913864152/job/110548873948",
+      "latestRelease": "v1.3.0",
+      "latestReleaseDate": "2026-10-01T19:38:08Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/releases/tag/v1.3.0",
       "updatedAt": "2026-10-06T11:47:35Z",
-      "health": "unknown"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "complexity-analyzers",
@@ -188,24 +507,113 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 9,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/37458545530",
+          "date": "2026-10-06T11:48:09Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 9,
+        "workflowRuns": 229,
+        "successfulCiRuns": 74,
+        "failedCiRuns": 16,
+        "releases": 1,
+        "deployments": 1
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 16,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "ComplexityAnalysis.Analyzers",
+            "status": "published",
+            "version": "1.5.0",
+            "url": "https://www.nuget.org/packages/ComplexityAnalysis.Analyzers",
+            "downloads": {
+              "count": 640,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "Analyzer",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:45:36Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
+      "lastCommitDate": "2026-10-06T11:45:34Z",
+      "lastWorkflowName": "Analyzer CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:48:25Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/37458545425",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.5.0",
+      "deliveryDate": "2026-09-14T19:16:55Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/34885752217/job/104116340665",
+      "latestRelease": "v1.5.0",
+      "latestReleaseDate": "2026-09-14T19:17:03Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/releases/tag/v1.5.0",
       "updatedAt": "2026-10-06T11:45:40Z",
-      "health": "unknown"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "CSF.Analyzers",
@@ -232,10 +640,87 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 6,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 6,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 56,
+            "title": "chore: preparar o repositório para adoção como projeto OSS",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/56",
+            "updatedAt": "2026-09-05T01:52:50Z"
+          },
+          {
+            "number": 57,
+            "title": "build: definir e validar a compatibilidade mínima de Roslyn e .NET",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/57",
+            "updatedAt": "2026-09-05T01:53:12Z"
+          },
+          {
+            "number": 58,
+            "title": "ci: publicar os pacotes no NuGet.org com Trusted Publishing",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/58",
+            "updatedAt": "2026-09-05T01:53:31Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "Security - CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/actions/runs/37508918683",
+          "date": "2026-10-06T18:11:02Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 27,
+        "workflowRuns": 97,
+        "successfulCiRuns": 15,
+        "failedCiRuns": 1,
+        "releases": 7,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 7,
+        "deliveryEvents": 30,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
       "lastCommitDate": "2026-10-06T18:07:49Z",
       "lastWorkflowName": "CI - Build and Test",
+      "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T18:10:39Z",
@@ -249,7 +734,24 @@
       "latestReleaseDate": "2026-10-06T18:09:26Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/releases/tag/v2.1.18",
       "updatedAt": "2026-10-06T18:07:56Z",
-      "health": "healthy"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Dapper-FluentMap",
@@ -273,11 +775,69 @@
       "visibility": "public",
       "defaultBranch": "main",
       "stars": 453,
-      "openIssues": 39,
+      "openIssues": 37,
+      "openPullRequests": 2,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/Dapper-FluentMap/actions/runs/37467341736",
+          "date": "2026-10-06T13:03:01Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 224,
+        "workflowRuns": 355,
+        "successfulCiRuns": 117,
+        "failedCiRuns": 28,
+        "releases": 4,
+        "deployments": 37
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 4,
+        "deliveryEvents": 46,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
+      },
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
       "lastCommitDate": "2026-10-06T12:31:55Z",
       "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T13:04:23Z",
@@ -291,7 +851,24 @@
       "latestReleaseDate": "2026-10-01T11:44:51Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper-FluentMap/releases/tag/v3.5.0",
       "updatedAt": "2026-10-06T12:32:01Z",
-      "health": "healthy"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Dapper.TypedParameters",
@@ -307,24 +884,99 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 5,
+        "workflowRuns": 17,
+        "successfulCiRuns": 11,
+        "failedCiRuns": 5,
+        "releases": 0,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 0,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": "151e9dd99ef1c42cbe9883c9f41f64da7a871133",
-      "lastCommitDate": "2026-10-06T12:45:25Z",
+      "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
+      "lastCommitDate": "2026-10-07T08:57:51Z",
       "lastWorkflowName": "CI",
-      "lastWorkflowStatus": "failing",
-      "lastWorkflowConclusion": "failure",
-      "lastWorkflowDate": "2026-10-06T12:49:31Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/37465589336",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-07T09:02:03Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/37597310831",
       "deliveryType": "NuGet",
-      "deliveryStatus": "unknown",
+      "deliveryStatus": "success",
       "deliveryVersion": "v1.2.0",
       "deliveryDate": "2026-08-29T02:35:48Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/deployments",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/actions/runs/33228968852/job/99039162110",
       "latestRelease": "v1.2.0",
       "latestReleaseDate": "2026-08-29T02:35:52Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/releases/tag/v1.2.0",
-      "updatedAt": "2026-10-06T12:45:31Z",
-      "health": "failed"
+      "updatedAt": "2026-10-07T08:57:57Z",
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotfiles",
@@ -345,10 +997,68 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 19,
+        "workflowRuns": 97,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 1,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
       "lastCommitDate": "2026-10-06T17:14:29Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
@@ -356,13 +1066,35 @@
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.0.0",
-      "deliveryDate": "2026-09-23T19:06:50Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotfiles/actions/runs/35906990211",
+      "deliveryDate": "2026-09-23T18:56:39Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotfiles/actions/runs/35905907225",
       "latestRelease": "v1.0.0",
       "latestReleaseDate": "2026-09-23T18:56:36Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotfiles/releases/tag/v1.0.0",
       "updatedAt": "2026-10-06T17:14:35Z",
-      "health": "warning"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-code-coverage",
@@ -383,24 +1115,99 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37459465458",
+          "date": "2026-10-06T11:55:53Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 69,
+        "workflowRuns": 122,
+        "successfulCiRuns": 36,
+        "failedCiRuns": 3,
+        "releases": 0,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 4,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:53:47Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
+      "lastCommitDate": "2026-10-06T11:53:45Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T11:54:49Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37459465491",
+      "deliveryType": "NuGet",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
+      "deliveryDate": "2026-10-05T12:17:29Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37308276767",
       "latestRelease": null,
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T11:53:51Z",
-      "health": "unknown"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-copilot-code-review-skills",
@@ -420,10 +1227,68 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 2,
+        "workflowRuns": 0,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 0,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Library",
-      "lastCommitSha": null,
+      "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
       "lastCommitDate": "2026-09-24T19:22:08Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
@@ -437,7 +1302,33 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:12:55Z",
-      "health": "unknown"
+      "health": "unknown",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_DELIVERY_EVIDENCE",
+          "severity": "info"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-library-template",
@@ -453,24 +1344,113 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 2,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124332",
+          "date": "2026-10-06T12:10:40Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 66,
+        "workflowRuns": 509,
+        "successfulCiRuns": 37,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 1
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 103,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "RodriOliveira.DotNet.Library.Template",
+            "status": "published",
+            "version": "1.4.2",
+            "url": "https://www.nuget.org/packages/RodriOliveira.DotNet.Library.Template",
+            "downloads": {
+              "count": 513,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "Template",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T12:08:21Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
+      "lastCommitDate": "2026-10-06T12:08:11Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:09:23Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124454",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.4.2",
+      "deliveryDate": "2026-09-28T15:49:47Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/36446281059/job/109009892110",
+      "latestRelease": "v1.4.2",
+      "latestReleaseDate": "2026-09-28T15:49:43Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/releases/tag/v1.4.2",
       "updatedAt": "2026-10-06T12:08:18Z",
-      "health": "unknown"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "dotnet-observability-lab",
@@ -493,15 +1473,73 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 13,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-observability-lab/actions/runs/37509152006",
+          "date": "2026-10-06T18:13:09Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 252,
+        "workflowRuns": 522,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 12
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 38,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
       "lastCommitDate": "2026-10-06T18:09:39Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
       "lastWorkflowUrl": null,
-      "deliveryType": "Deployment",
+      "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T18:12:50Z",
@@ -510,7 +1548,29 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T18:09:44Z",
-      "health": "warning"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "DotNetRepoInspector",
@@ -532,10 +1592,95 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 15,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/actions/runs/37501390997",
+          "date": "2026-10-06T17:14:12Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 33,
+        "workflowRuns": 835,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 3,
+        "deployments": 23
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 3,
+        "deliveryEvents": 173,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "DotNetRepoInspector",
+            "status": "published",
+            "version": "1.6.5",
+            "url": "https://www.nuget.org/packages/DotNetRepoInspector",
+            "downloads": {
+              "count": 1007,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "DotNetRepoInspector.Mcp",
+            "status": "published",
+            "version": "1.6.5",
+            "url": "https://www.nuget.org/packages/DotNetRepoInspector.Mcp",
+            "downloads": {
+              "count": 168,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
       "lastCommitDate": "2026-10-06T17:09:43Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
@@ -549,7 +1694,29 @@
       "latestReleaseDate": "2026-10-02T12:24:24Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/releases/tag/v1.6.5",
       "updatedAt": "2026-10-06T17:09:48Z",
-      "health": "warning"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "gerador-de-camadas",
@@ -574,10 +1741,68 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "unavailable",
+          "openAlerts": null,
+          "highCritical": null
+        },
+        "codeScanning": {
+          "status": "unavailable",
+          "openAlerts": null,
+          "highCritical": null
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 2,
+        "workflowRuns": 0,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 0,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 0,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-09-18T13:34:58Z",
+      "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
+      "lastCommitDate": "2026-09-18T13:31:57Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
@@ -591,7 +1816,37 @@
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:13:01Z",
-      "health": "archived"
+      "health": "archived",
+      "healthReasons": [
+        {
+          "code": "REPOSITORY_ARCHIVED",
+          "severity": "info"
+        },
+        {
+          "code": "COLLECTION_PARTIAL",
+          "severity": "info"
+        }
+      ],
+      "collection": {
+        "status": "partial",
+        "confidence": "medium",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "packages"
+        ],
+        "unavailableSignals": [
+          "security"
+        ],
+        "warnings": [
+          "GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/dependabot/alerts?state=open&per_page=100: Forbidden",
+          "GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/code-scanning/alerts?state=open&per_page=100: Forbidden"
+        ]
+      }
     },
     {
       "name": "poc-arquitetura",
@@ -617,15 +1872,80 @@
       "defaultBranch": "main",
       "stars": 6,
       "openIssues": 1,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 1,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 88,
+            "title": "Avaliar recuperação operacional para commit ambíguo no cadastro do IdentityService",
+            "url": "https://github.com/rodri-oliveira-dev/poc-arquitetura/issues/88",
+            "updatedAt": "2026-07-16T20:20:14Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "owasp-zap-baseline",
+          "url": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37516250954",
+          "date": "2026-10-06T19:13:45Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 19,
+        "workflowRuns": 977,
+        "successfulCiRuns": 60,
+        "failedCiRuns": 13,
+        "releases": 16,
+        "deployments": 4
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 16,
+        "deliveryEvents": 110,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
+      },
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
       "lastCommitDate": "2026-10-06T18:55:32Z",
-      "lastWorkflowName": "mutation-tests",
-      "lastWorkflowStatus": "cancelled",
-      "lastWorkflowConclusion": "cancelled",
-      "lastWorkflowDate": "2026-10-06T19:17:43Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37510123786",
-      "deliveryType": "Deployment",
+      "lastWorkflowName": "main-dotnet-ci",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T19:04:51Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37515053653",
+      "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T14:07:12Z",
@@ -634,7 +1954,24 @@
       "latestReleaseDate": "2026-10-06T19:05:30Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/releases/tag/v0.21.21",
       "updatedAt": "2026-10-06T18:55:39Z",
-      "health": "warning"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "ReliableWebhooks",
@@ -655,57 +1992,232 @@
       "defaultBranch": "main",
       "stars": 4,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/37460045946",
+          "date": "2026-10-06T12:00:47Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 29,
+        "workflowRuns": 852,
+        "successfulCiRuns": 86,
+        "failedCiRuns": 43,
+        "releases": 2,
+        "deployments": 9
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 2,
+        "deliveryEvents": 82,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "ReliableWebhooks",
+            "status": "published",
+            "version": "1.0.3",
+            "url": "https://www.nuget.org/packages/ReliableWebhooks",
+            "downloads": {
+              "count": 375,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:59:00Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
+      "lastCommitDate": "2026-10-06T11:58:57Z",
+      "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:00:51Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/37460045917",
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.0.3",
+      "deliveryDate": "2026-09-28T15:58:05Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/36447319621/job/109013536113",
+      "latestRelease": "v1.0.3",
+      "latestReleaseDate": "2026-09-28T16:03:54Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/releases/tag/v1.0.3",
       "updatedAt": "2026-10-06T11:59:03Z",
-      "health": "unknown"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "repo-status-dashboard",
       "fullName": "rodri-oliveira-dev/repo-status-dashboard",
       "url": "https://github.com/rodri-oliveira-dev/repo-status-dashboard",
-      "description": null,
-      "homepage": null,
-      "language": null,
-      "topics": [],
+      "description": "Dashboard Angular para monitorar repositórios GitHub: status do CI, entregas, versões, atividade e saúde. Um collector executado pelo GitHub Actions consulta a API, gera um snapshot JSON e publica a aplicação no GitHub Pages, sem backend permanente ou credenciais no navegador.",
+      "homepage": "https://rodri-oliveira-dev.github.io/repo-status-dashboard/",
+      "language": "JavaScript",
+      "topics": [
+        "angular",
+        "github-actions",
+        "github-api",
+        "github-pages",
+        "typescript"
+      ],
       "fork": false,
       "archived": false,
       "visibility": "public",
       "defaultBranch": "main",
-      "stars": 0,
-      "openIssues": 0,
-      "projectType": "Unknown",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T19:18:31Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "stars": 1,
+      "openIssues": 13,
+      "openPullRequests": 1,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "OWASP ZAP Baseline",
+          "url": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37592439730",
+          "date": "2026-10-07T08:15:29Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 12,
+        "workflowRuns": 156,
+        "successfulCiRuns": 74,
+        "failedCiRuns": 16,
+        "releases": 1,
+        "deployments": 9
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 10,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
+      "projectType": "Angular",
+      "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
+      "lastCommitDate": "2026-10-07T08:13:24Z",
+      "lastWorkflowName": "Lighthouse CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "failing",
+      "lastWorkflowConclusion": "failure",
+      "lastWorkflowDate": "2026-10-07T10:14:17Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37605877300",
+      "deliveryType": "GitHub Pages",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
-      "updatedAt": "2026-10-06T19:18:31Z",
-      "health": "unknown"
+      "deliveryDate": "2026-10-07T08:14:21Z",
+      "deliveryUrl": "https://rodri-oliveira-dev.github.io/repo-status-dashboard/",
+      "latestRelease": "v1.0.0",
+      "latestReleaseDate": "2026-10-06T22:07:55Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/releases/tag/v1.0.0",
+      "updatedAt": "2026-10-07T08:13:29Z",
+      "health": "failed",
+      "healthReasons": [
+        {
+          "code": "CI_FAILING",
+          "severity": "critical"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "Repo2C4",
@@ -727,24 +2239,139 @@
       "defaultBranch": "main",
       "stars": 3,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37462794125",
+          "date": "2026-10-06T12:25:21Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 719,
+        "workflowRuns": 1518,
+        "successfulCiRuns": 144,
+        "failedCiRuns": 171,
+        "releases": 3,
+        "deployments": 14
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 3,
+        "deliveryEvents": 34,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Agent",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Agent",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Cli",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Cli",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Mcp",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Mcp",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
+      },
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
+      "lastWorkflowName": "CI",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T12:28:27Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37462794533",
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.2.0",
-      "deliveryDate": "2026-10-05T23:23:44Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/releases/tag/v1.2.0",
+      "deliveryDate": "2026-10-05T23:23:46Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37387903186/job/112026773365",
       "latestRelease": "v1.2.0",
       "latestReleaseDate": "2026-10-05T23:23:44Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/releases/tag/v1.2.0",
       "updatedAt": "2026-10-06T12:22:37Z",
-      "health": "warning"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "rodri-oliveira-dev",
@@ -767,24 +2394,104 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 120,
+        "workflowRuns": 309,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 10,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 10,
+        "deliveryEvents": 13,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T11:58:34Z",
+      "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
+      "lastCommitDate": "2026-10-06T11:58:04Z",
       "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
       "lastWorkflowStatus": "unknown",
       "lastWorkflowConclusion": null,
       "lastWorkflowDate": null,
       "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
-      "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
-      "latestRelease": null,
-      "latestReleaseDate": null,
-      "latestReleaseUrl": null,
+      "deliveryType": "GitHub Release",
+      "deliveryStatus": "success",
+      "deliveryVersion": "v1.0.9",
+      "deliveryDate": "2026-10-06T11:58:39Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/actions/runs/37459982984",
+      "latestRelease": "v1.0.9",
+      "latestReleaseDate": "2026-10-06T11:58:36Z",
+      "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/releases/tag/v1.0.9",
       "updatedAt": "2026-10-06T11:58:09Z",
-      "health": "unknown"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "rodri-oliveira-dev.github.io",
@@ -800,24 +2507,99 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "GitHub Actions security",
+          "url": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/actions/runs/37465531079",
+          "date": "2026-10-06T12:45:37Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 166,
+        "workflowRuns": 1081,
+        "successfulCiRuns": 115,
+        "failedCiRuns": 7,
+        "releases": 4,
+        "deployments": 36
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 4,
+        "deliveryEvents": 60,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
       "lastCommitDate": "2026-10-06T12:44:59Z",
       "lastWorkflowName": "Lighthouse CI",
+      "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
       "lastWorkflowDate": "2026-10-06T12:47:37Z",
       "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/actions/runs/37465531120",
-      "deliveryType": "Deployment",
-      "deliveryStatus": "unknown",
+      "deliveryType": "GitHub Pages",
+      "deliveryStatus": "success",
       "deliveryVersion": null,
       "deliveryDate": "2026-10-06T12:45:31Z",
-      "deliveryUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/deployments",
+      "deliveryUrl": "https://rodri-oliveira-dev.github.io/",
       "latestRelease": "1.5.7",
       "latestReleaseDate": "2026-09-17T23:08:07Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/releases/tag/1.5.7",
       "updatedAt": "2026-10-06T12:45:03Z",
-      "health": "healthy"
+      "health": "healthy",
+      "healthReasons": [],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "terraform-gcp-dotnet-blueprint",
@@ -833,14 +2615,72 @@
       "defaultBranch": "main",
       "stars": 2,
       "openIssues": 0,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 295,
+        "workflowRuns": 109,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
+        "releases": 1,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 1,
+        "deliveryEvents": 72,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
       "lastCommitDate": "2026-10-06T17:19:26Z",
-      "lastWorkflowName": "Terraform CI",
-      "lastWorkflowStatus": "passing",
-      "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-06T17:20:25Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/terraform-gcp-dotnet-blueprint/actions/runs/37502656608",
+      "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
+      "lastWorkflowStatus": "unknown",
+      "lastWorkflowConclusion": null,
+      "lastWorkflowDate": null,
+      "lastWorkflowUrl": null,
       "deliveryType": "Terraform",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -850,7 +2690,29 @@
       "latestReleaseDate": "2026-09-15T21:05:14Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/terraform-gcp-dotnet-blueprint/releases/tag/1.0.0",
       "updatedAt": "2026-10-06T17:19:31Z",
-      "health": "healthy"
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     },
     {
       "name": "web-api-core-seed",
@@ -877,67 +2739,133 @@
       "defaultBranch": "main",
       "stars": 28,
       "openIssues": 5,
+      "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 5,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 1,
+            "title": "[Question] How to run the API, tests, migrations, and seed data",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/1",
+            "updatedAt": "2026-08-24T19:03:15Z"
+          },
+          {
+            "number": 21,
+            "title": "[19 · Phase 5] Rewrite onboarding and architecture documentation",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/21",
+            "updatedAt": "2026-08-24T19:03:37Z"
+          },
+          {
+            "number": 22,
+            "title": "[20 · Phase 5] Package the project as a dotnet new template",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/22",
+            "updatedAt": "2026-08-24T19:03:38Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "findings_present",
+          "openAlerts": 5,
+          "highCritical": 5
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "codeql",
+          "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37549841696",
+          "date": "2026-10-07T00:05:27Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
+      "activity": {
+        "windowDays": 30,
+        "since": "2026-09-07T13:16:12.895Z",
+        "commits": 28,
+        "workflowRuns": 64,
+        "successfulCiRuns": 15,
+        "failedCiRuns": 3,
+        "releases": 0,
+        "deployments": 0
+      },
+      "deliveryFrequency": {
+        "windowDays": 30,
+        "releases": 0,
+        "deliveryEvents": 1,
+        "evidence": [
+          "github_deployments",
+          "delivery_workflows",
+          "github_releases"
+        ],
+        "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Application",
-      "lastCommitSha": null,
-      "lastCommitDate": "2026-10-06T12:09:23Z",
-      "lastWorkflowName": null,
-      "lastWorkflowStatus": "unknown",
-      "lastWorkflowConclusion": null,
-      "lastWorkflowDate": null,
-      "lastWorkflowUrl": null,
-      "deliveryType": "None",
-      "deliveryStatus": "none",
+      "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
+      "lastCommitDate": "2026-10-07T00:02:41Z",
+      "lastWorkflowName": "ci",
+      "lastWorkflowRole": "ci",
+      "lastWorkflowStatus": "passing",
+      "lastWorkflowConclusion": "success",
+      "lastWorkflowDate": "2026-10-06T23:55:37Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37548730104",
+      "deliveryType": "NuGet",
+      "deliveryStatus": "failure",
       "deliveryVersion": null,
-      "deliveryDate": null,
-      "deliveryUrl": null,
+      "deliveryDate": "2026-10-05T12:17:18Z",
+      "deliveryUrl": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37307902268",
       "latestRelease": null,
       "latestReleaseDate": null,
       "latestReleaseUrl": null,
-      "updatedAt": "2026-10-06T12:09:33Z",
-      "health": "unknown"
+      "updatedAt": "2026-10-07T00:02:46Z",
+      "health": "failed",
+      "healthReasons": [
+        {
+          "code": "DELIVERY_FAILING",
+          "severity": "critical"
+        }
+      ],
+      "collection": {
+        "status": "complete",
+        "confidence": "high",
+        "collectedSignals": [
+          "metadata",
+          "commits",
+          "actions",
+          "deployments",
+          "releases",
+          "workItems",
+          "security",
+          "packages"
+        ],
+        "unavailableSignals": [],
+        "warnings": []
+      }
     }
   ],
+  "collection": {
+    "total": 23,
+    "complete": 22,
+    "partial": 1,
+    "unavailable": 0
+  },
   "warnings": [
-    "repo-status-dashboard: GitHub API 409 for /repos/rodri-oliveira-dev/repo-status-dashboard/commits?sha=main&per_page=1: Conflict",
-    "Repo2C4: GitHub API 403 for /repos/rodri-oliveira-dev/Repo2C4/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev.github.io: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev.github.io/deployments/6884281380/statuses?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "Repo2C4: GitHub API 403 for /repos/rodri-oliveira-dev/Repo2C4/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "web-api-core-seed: GitHub API 403 for /repos/rodri-oliveira-dev/web-api-core-seed/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "ReliableWebhooks: GitHub API 403 for /repos/rodri-oliveira-dev/ReliableWebhooks/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-library-template: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-library-template/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "rodri-oliveira-dev: GitHub API 403 for /repos/rodri-oliveira-dev/rodri-oliveira-dev/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-code-coverage: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-code-coverage/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "brazilian-primitives: GitHub API 403 for /repos/rodri-oliveira-dev/brazilian-primitives/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/actions/runs?per_page=50: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/commits?sha=main&per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/deployments?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "dotnet-copilot-code-review-skills: GitHub API 403 for /repos/rodri-oliveira-dev/dotnet-copilot-code-review-skills/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "complexity-analyzers: GitHub API 403 for /repos/rodri-oliveira-dev/complexity-analyzers/releases/latest: rate limit resets at 2026-10-06T20:38:11.000Z",
-    "Dapper.TypedParameters: GitHub API 403 for /repos/rodri-oliveira-dev/Dapper.TypedParameters/deployments/6151576409/statuses?per_page=1: rate limit resets at 2026-10-06T20:38:11.000Z"
+    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/code-scanning/alerts?state=open&per_page=100: Forbidden",
+    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/dependabot/alerts?state=open&per_page=100: Forbidden"
   ]
 }

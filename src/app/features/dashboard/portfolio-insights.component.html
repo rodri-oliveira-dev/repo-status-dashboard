@@ -1,0 +1,91 @@
+<section class="insights panel" aria-labelledby="portfolio-insights-title">
+  <div class="heading">
+    <div>
+      <p>Current-window aggregation</p>
+      <h2 id="portfolio-insights-title">Portfolio insights</h2>
+    </div>
+    <span>Last {{ insights().windowDays }} days</span>
+  </div>
+  <dl class="metrics">
+    <div>
+      <dt>Active repositories</dt>
+      <dd>
+        <span>{{ insights().activeRepositories }}</span>
+        <small>{{ insights().activityCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
+    </div>
+    <div>
+      <dt>Observed CI success</dt>
+      <dd>
+        <span>
+          {{
+            insights().ciSuccessRate === null
+              ? 'Unavailable'
+              : (insights().ciSuccessRate | number: '1.0-1') + '%'
+          }}
+        </span>
+        <small>{{ insights().ciSuccessful }}/{{ insights().ciObservedRuns }} runs passed</small>
+      </dd>
+    </div>
+    <div>
+      <dt>Releases</dt>
+      <dd>
+        <span>{{ insights().releases }}</span>
+        <small>{{ insights().releaseCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
+    </div>
+    <div>
+      <dt>Delivery events</dt>
+      <dd>
+        <span>{{ insights().deliveryEvents }}</span>
+        <small>{{ insights().deliveryCoverage }}/{{ insights().totalRepositories }} observed</small>
+      </dd>
+    </div>
+  </dl>
+  <div class="lower">
+    <div>
+      <h3>Health distribution</h3>
+      <ul class="distribution">
+        <li>
+          <span>healthy</span><strong>{{ insights().healthDistribution.healthy }}</strong>
+        </li>
+        <li>
+          <span>warning</span><strong>{{ insights().healthDistribution.warning }}</strong>
+        </li>
+        <li>
+          <span>failed</span><strong>{{ insights().healthDistribution.failed }}</strong>
+        </li>
+        <li>
+          <span>stale</span><strong>{{ insights().healthDistribution.stale }}</strong>
+        </li>
+        <li>
+          <span>unknown</span><strong>{{ insights().healthDistribution.unknown }}</strong>
+        </li>
+        <li>
+          <span>archived</span><strong>{{ insights().healthDistribution.archived }}</strong>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h3>Staleness watch</h3>
+      @if (insights().approachingStale.length || insights().stale.length) {
+        <ul class="watch">
+          @for (name of insights().stale; track name) {
+            <li>
+              <a [routerLink]="['/repository', name]">{{ name }}</a
+              ><span>stale</span>
+            </li>
+          }
+          @for (name of insights().approachingStale; track name) {
+            <li>
+              <a [routerLink]="['/repository', name]">{{ name }}</a
+              ><span>60–90 days</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="empty">No active repositories are near the 90-day stale threshold.</p>
+      }
+    </div>
+  </div>
+</section>

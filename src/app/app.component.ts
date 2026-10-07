@@ -10,7 +10,6 @@ import { ThemeService } from './core/services/theme.service';
       <a
         class="brand"
         href="https://rodri-oliveira-dev.github.io/"
-        aria-label="Visit Rodrigo de Oliveira's personal site"
         title="Rodrigo de Oliveira — personal site"
       >
         <span class="brand-mark" aria-hidden="true">RC</span>

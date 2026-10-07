@@ -28,6 +28,16 @@
     <button type="button" (click)="store.load(true)">Try again</button>
   </section>
 } @else {
+  @if (store.dataset(); as dataset) {
+    @if (dataset.collection.partial || dataset.collection.unavailable) {
+      <section class="collection-notice" role="status">
+        <strong>Some repository signals could not be collected.</strong>
+        Health reflects available evidence only: {{ dataset.collection.partial }} partial and
+        {{ dataset.collection.unavailable }} unavailable.
+      </section>
+    }
+  }
+  <app-needs-attention [items]="attentionItems()" />
   <section class="summary-grid" aria-label="Repository health summary">
     <app-summary-card label="Repositories" [value]="stats().total" />
     <app-summary-card label="Healthy" [value]="stats().healthy" tone="success" />
@@ -36,6 +46,7 @@
     <app-summary-card label="Stale" [value]="stats().stale" tone="stale" />
     <app-summary-card label="Archived" [value]="stats().archived" tone="archived" />
   </section>
+  <app-portfolio-insights [insights]="portfolioInsights()" />
 
   <section class="workspace panel">
     <div class="toolbar">

@@ -25,7 +25,7 @@ export class RepositoryStatusService {
       const dataset = await firstValueFrom(
         this.http.get<RepositoryDataset>('data/repositories.json'),
       );
-      if (dataset.schemaVersion !== 1 || !Array.isArray(dataset.repositories)) {
+      if (dataset.schemaVersion !== 2 || !Array.isArray(dataset.repositories)) {
         throw new Error('The repository dataset has an unsupported format.');
       }
       this.datasetState.set(dataset);

@@ -106,7 +106,31 @@ npm run format:check  # valida Prettier
 
 [`scripts/collect-github-status.mjs`](scripts/collect-github-status.mjs) lista apenas repositórios cujo owner é `rodri-oliveira-dev`, remove forks, pagina resultados e enriquece cada item com commits, workflow runs, deployments e release mais recente. A concorrência padrão é quatro; altere com `COLLECTOR_CONCURRENCY` entre 1 e 8.
 
-O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos ficam no log e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
+Issues e pull requests abertos são contados separadamente pelo endpoint REST de issues, usando o campo `pull_request` de cada item. O custo normal é uma requisição por repositório com até 100 itens abertos, com páginas adicionais somente quando necessário. Se essa consulta falhar, ambos os valores ficam indisponíveis e o grupo `workItems` reduz a confiança da coleta, em vez de reutilizar o contador combinado `open_issues_count`.
+
+Um item aberto é considerado stale quando `updated_at` está há mais de 30 dias sem mudança; o limite é a constante `STALE_WORK_ITEM_DAYS` do collector. O instante exatamente no limite ainda não é stale. Itens fechados ou PRs mesclados são excluídos. O snapshot mantém as contagens e, para limitar o tamanho, somente os três itens mais antigos de cada tipo com seus links.
+
+### Atividade
+
+Cada snapshot recalcula uma janela móvel de 30 dias (`ACTIVITY_WINDOW_DAYS`) para commits, workflow runs, CI primário aprovado/reprovado, releases publicadas e deployments. As mesmas consultas usadas pelos sinais atuais são paginadas em blocos de 100 até ultrapassar o início da janela, evitando chamadas duplicadas. Zero significa fonte consultada sem eventos; `null` significa fonte indisponível. A janela é um retrato recomputável, não uma série histórica, e não exige backend permanente.
+
+Release frequency é a contagem de GitHub Releases publicadas na janela. Delivery frequency combina deployments, workflows de delivery/release/Pages concluídos com sucesso e releases; sinais de fontes diferentes separados por até 30 minutos são tratados como evidência do mesmo evento. Eventos distintos da mesma fonte não são colapsados. A contagem de delivery fica indisponível se qualquer fonte necessária falhar, evitando exibir subcontagem como zero. Essas métricas são contagens observadas no período, não uma medição ou certificação DORA; automações externas ao GitHub podem não aparecer.
+
+### Insights do portfólio
+
+A visão agregada usa somente o snapshot atual e a mesma janela de 30 dias; não simula tendência temporal sem snapshots anteriores. Repositórios ativos têm pelo menos um commit, workflow, release ou deployment observado. A taxa de sucesso de CI é `execuções de CI aprovadas / (aprovadas + reprovadas)` e exibe o denominador. Totais de release e delivery somam apenas repositórios com a fonte disponível e mostram a cobertura. O watch de staleness lista repositórios ativos entre 60 e 90 dias sem commit e os que já cruzaram 90 dias. Dados ausentes são excluídos com cobertura explícita, nunca convertidos silenciosamente em zero.
+
+### Pacotes NuGet e npm
+
+O collector considera uma identidade npm somente quando um `package.json` público, não privado, declara `name` e `repository` apontando exatamente para o repositório coletado. Para NuGet, cada `.csproj` descoberto deve declarar `PackageId` e `RepositoryUrl` correspondente; vários projetos verificados geram vários pacotes. IDs não são inferidos do nome do repositório. Manifestos ausentes resultam em `none`; metadados insuficientes ou divergentes resultam em `ambiguous`.
+
+Versão e publicação npm vêm do registro público `registry.npmjs.org`; downloads usam a API pública `api.npmjs.org` e representam `last-month`, com datas no contrato. NuGet usa a busca pública oficial e expõe a versão atual e `totalDownloads` de toda a vida do pacote. Falhas externas geram `partial`/`unavailable` e reduzem a confiança do grupo `packages`. Métricas de download têm caches e critérios dos próprios registros e não são comparáveis diretamente entre ecossistemas.
+
+O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
+
+Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de oito grupos: metadados, commits, Actions, deployments, releases, `workItems`, `security` e `packages`; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
+
+Ausência esperada (`404` em APIs opcionais e `409` ao consultar commits de repositório vazio) conta como consulta concluída. `403`, demais `4xx`, falhas de rede e `5xx` tornam o grupo indisponível; falhas transitórias de rede e `5xx` recebem uma tentativa adicional. Rate limiting é preservado como aviso sem expor credenciais.
 
 ### Variáveis de ambiente
 
@@ -123,9 +147,33 @@ Sem token, a coleta funciona com dados públicos e o limite anônimo da API. Par
 
 As regras puras e testáveis ficam em [`scripts/github-status-rules.mjs`](scripts/github-status-rules.mjs).
 
-### Build
+### Workflows e build
 
-O collector procura o workflow mais recente cujo nome, título ou arquivo contenha `ci`, `build`, `test`, `quality` ou `validation`. Execuções atribuídas ao Dependabot são excluídas dessa escolha. O resultado é normalizado para `passing`, `failing`, `running`, `queued`, `cancelled` ou `unknown`.
+O collector classifica workflows semanticamente como `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages`, `maintenance` ou `unknown`. A ordem das regras resolve termos sobrepostos (por exemplo, Pages antes de delivery), e nomes ambíguos permanecem `unknown`.
+
+Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente, e Dependabot continua excluído. Assim, cancelamentos de mutation tests, quality gates e outras automações auxiliares não degradam a saúde. A configuração opcional por repositório pode substituir essa descoberta quando uma convenção de nomes não for suficiente.
+
+### Configuração por repositório
+
+Um repositório pode declarar arquivos de workflow em `.repo-dashboard.yml` na raiz:
+
+```yaml
+workflows:
+  ci:
+    - ci.yml
+    - build.yml
+  quality: [sonar.yml, mutation-tests.yml]
+  security: [codeql.yml]
+  delivery: [release.yml, deploy-pages.yml]
+```
+
+Papéis suportados: `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages` e `maintenance`. Cada entrada deve ser somente o nome de um arquivo `.yml` ou `.yaml`. Um papel declarado é autoritativo: arquivos não listados não são classificados heuristicamente naquele papel; papéis ausentes continuam usando heurísticas. Arquivo ausente mantém o comportamento padrão, enquanto conteúdo inválido gera um aviso restrito ao repositório e não interrompe a coleta. O conteúdo da configuração não é publicado no snapshot.
+
+### Postura de segurança
+
+A postura apresenta evidências separadas: contagens agregadas de alertas Dependabot e code scanning, status do workflow de segurança e resultado público do OpenSSF Scorecard. Não existe score composto nem alegação de que um repositório está seguro. Estados `clean`, `findings_present`, `disabled`, `not_configured` e `unavailable` distinguem resultado, configuração e falta de acesso.
+
+Os endpoints de alertas exigem leitura de Dependabot alerts e code scanning alerts (`security_events` em tokens clássicos ou as permissões equivalentes somente leitura em fine-grained tokens). O Scorecard vem da API pública `api.securityscorecards.dev`. O snapshot publica apenas estados, score público e contagens; nomes de dependências, CVEs, caminhos, trechos e outros detalhes sensíveis não são serializados. Falhas de permissão ou da API externa reduzem a confiança do grupo `security` sem interromper a coleta. Somente contagens high/critical entram em `Needs Attention`.
 
 ### Delivery
 
@@ -150,6 +198,10 @@ Precedência atual:
 6. `Unknown` quando CI e delivery não podem ser determinados.
 
 A classificação cria uma linguagem comum para interpretar rapidamente o estado dos projetos, sem depender de convenções visuais diferentes em cada repositório.
+
+Cada status também possui `healthReasons`, uma lista ordenada e independente de apresentação. O catálogo fechado inclui `REPOSITORY_ARCHIVED`, `CI_FAILING`, `DELIVERY_FAILING`, `ACTIVITY_STALE`, `CI_RUNNING`, `CI_QUEUED`, `CI_CANCELLED`, `CI_UNKNOWN`, `DELIVERY_IN_PROGRESS`, `NO_DELIVERY_EVIDENCE`, `COLLECTION_PARTIAL` e `COLLECTION_UNAVAILABLE`. Severidades `critical` e `warning` explicam problemas ou estados operacionais; `info` acrescenta contexto. Motivos de coleta aparecem sem transformar falha de observabilidade em falha do repositório.
+
+`Needs Attention` ordena primeiro falhas críticas, depois warnings e trabalho stale; empates usam a evidência mais antiga e o nome do repositório. Repositórios arquivados e degradação exclusivamente informacional da coleta ficam fora da fila, enquanto o aviso de observabilidade permanece separado. Cada entrada leva aos detalhes e, quando disponível, à evidência correspondente no GitHub.
 
 ## GitHub Pages
 
