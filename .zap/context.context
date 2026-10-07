@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+    <context>
+        <name>repo-status-dashboard</name>
+        <desc>Restricts OWASP ZAP crawling to the Repo Control Center GitHub Pages path.</desc>
+        <inscope>true</inscope>
+        <incregexes>https://rodri-oliveira-dev\.github\.io/repo-status-dashboard(?:/.*)?</incregexes>
+        <excregexes>https://rodri-oliveira-dev\.github\.io/(?!repo-status-dashboard(?:/|$)).*</excregexes>
+        <urlparser>
+            <class>org.zaproxy.zap.model.StandardParameterParser</class>
+            <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
+        </urlparser>
+        <postparser>
+            <class>org.zaproxy.zap.model.StandardParameterParser</class>
+            <config>{"kvps":"&amp;","kvs":"=","struct":[]}</config>
+        </postparser>
+        <authentication>
+            <type>0</type>
+            <strategy>EACH_RESP</strategy>
+            <pollurl/>
+            <polldata/>
+            <pollfreq>60</pollfreq>
+            <pollunits>REQUESTS</pollunits>
+        </authentication>
+        <forceduser>-1</forceduser>
+        <session>
+            <type>0</type>
+        </session>
+        <authorization>
+            <type>0</type>
+            <basic>
+                <header/>
+                <body/>
+                <logic>AND</logic>
+                <code>-1</code>
+            </basic>
+        </authorization>
+    </context>
+</configuration>
