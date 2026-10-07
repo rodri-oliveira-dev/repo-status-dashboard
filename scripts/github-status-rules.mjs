@@ -275,11 +275,12 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   else if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) role = 'security';
   else if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) role = 'pages';
   else if (/release|create tag|changelog/.test(text)) role = 'release';
-  else if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
+  else if (/dependabot|renovate/.test(text)) role = 'maintenance';
   else if (
     /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
   )
     role = 'delivery';
+  else if (/stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
   else if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text))
     role = 'quality';
   else if (
