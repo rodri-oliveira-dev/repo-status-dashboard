@@ -8,7 +8,7 @@
     "build:pages": "ng build --base-href /repo-status-dashboard/ && node scripts/harden-csp.mjs",
     "collect": "node scripts/collect-github-status.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --write scripts/github-status-rules.mjs scripts/github-status-rules.test.mjs && git diff -- scripts/github-status-rules.mjs scripts/github-status-rules.test.mjs && exit 1",
+    "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",
     "watch": "ng build --watch --configuration development",
     "test": "npm run test:app && npm run test:collector",
