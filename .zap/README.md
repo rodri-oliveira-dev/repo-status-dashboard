@@ -18,7 +18,6 @@ CSP is application-controlled: Angular `security.autoCsp` generates a meta CSP d
 
 Application-controlled findings are intentionally not suppressed. New ZAP alerts that are not explicitly scoped out or reclassified continue to surface as warnings and are tracked in the repository issue created by the workflow.
 
-
 ## Report filtering hook
 
 The workflow also loads [`hooks.py`](hooks.py). It removes alerts for sibling sites from the ZAP session before the JSON/Markdown/HTML reports are generated, so the GitHub issue cannot be repopulated with findings from the shared host.
