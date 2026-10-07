@@ -63,7 +63,19 @@ Esse desenho mantém a solução simples: o GitHub Actions atua como processo de
 - SCSS responsivo com light/dark mode
 - ESLint, Prettier, Vitest e `node:test`
 - GitHub Actions e GitHub Pages
+- Lighthouse CI para performance, acessibilidade, boas práticas e SEO
+- OWASP ZAP Baseline para validação passiva da Pages publicada
 - Node.js 24 apenas para desenvolvimento, build e coleta
+
+## SEO, qualidade e segurança da Pages
+
+A página publicada é tratada também como uma vitrine técnica do portfólio. O HTML base inclui canonical URL, Open Graph, Twitter Cards, autoria e structured data com `WebSite`, `WebApplication` e `Person`. Um sitemap dedicado expõe a URL canônica do dashboard.
+
+O workflow [`seo-validation.yml`](.github/workflows/seo-validation.yml) valida esses metadados, structured data, sitemap e o backlink para o site pessoal. O [`lighthouse.yml`](.github/workflows/lighthouse.yml), adaptado do site principal, executa três medições e aplica quality gates para SEO, boas práticas e acessibilidade, mantendo performance como warning.
+
+O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. Os achados são mantidos em issue e artifact. O scan começa como report-only para evitar que headers gerenciados pela própria infraestrutura do GitHub Pages gerem falsos bloqueios de deploy; depois do baseline inicial, regras controláveis pela aplicação podem ser promovidas a gate.
+
+O logo do Repo Control Center aponta para [o site pessoal](https://rodri-oliveira-dev.github.io/), transformando o dashboard também em um ponto de entrada para o restante do portfólio.
 
 ## Executar localmente
 
@@ -160,7 +172,8 @@ Essa atualização periódica mantém o dashboard próximo do estado real dos re
 - Workflows com nomes fora das palavras-chave podem resultar em `unknown`.
 - O `GITHUB_TOKEN` do próprio repositório pode não ler Actions/Deployments de outros repositórios; use o PAT somente leitura para cobertura completa.
 - O limite anônimo da API é baixo para contas com muitos repositórios.
-- Estatísticas externas e sinais de segurança não fazem parte desta primeira versão.
+- Os detalhes de repositório usam hash routes; para mecanismos de busca, a URL indexável principal é a raiz do dashboard.
+- Alguns headers de segurança são controlados pela infraestrutura do GitHub Pages e podem aparecer como findings informativos no ZAP.
 
 ## Roadmap
 
@@ -185,7 +198,7 @@ src/app/features/             dashboard e detalhes do repositório
 src/app/shared/               contrato, componentes, pipes e busca
 public/data/repositories.json fixture/snapshot consumido pela SPA
 scripts/                      collector e regras de classificação
-.github/workflows/            CI e deploy agendado no Pages
+.github/workflows/            CI, SEO, Lighthouse, segurança e deploy
 ```
 
 ## Segurança
@@ -193,6 +206,8 @@ scripts/                      collector e regras de classificação
 A aplicação publicada consome somente o JSON estático. Não há token, chamada autenticada ao GitHub, OAuth, armazenamento de credenciais ou mutação de repositórios no frontend.
 
 A autenticação necessária para enriquecer os dados fica restrita ao ambiente controlado do GitHub Actions. Isso permite publicar o dashboard como site estático sem transformar o navegador em cliente privilegiado da API do GitHub.
+
+Além da segurança por desenho, a Pages publicada recebe validação dinâmica periódica com OWASP ZAP Baseline. O objetivo é detectar regressões e sinais de configuração insegura sem realizar ataques ativos contra o serviço hospedado.
 
 ## Releases
 

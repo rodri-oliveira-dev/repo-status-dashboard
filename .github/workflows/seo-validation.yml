@@ -1,0 +1,95 @@
+name: SEO validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  seo-validation:
+    name: SEO metadata consistency
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Validate SEO metadata and structured data
+        run: |
+          python3 - <<'PY'
+          import json
+          import re
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          html = Path("src/index.html").read_text(encoding="utf-8")
+          app = Path("src/app/app.component.ts").read_text(encoding="utf-8")
+          sitemap = Path("public/sitemap.xml")
+
+          required_fragments = (
+              '<meta name="robots" content="index, follow, max-image-preview:large" />',
+              '<meta name="author" content="Rodrigo de Oliveira" />',
+              'rel="canonical"',
+              'property="og:title"',
+              'property="og:description"',
+              'property="og:url"',
+              'property="og:image"',
+              'name="twitter:card"',
+              'name="twitter:title"',
+              'name="twitter:description"',
+              'name="twitter:image"',
+              'type="application/ld+json"',
+          )
+          for fragment in required_fragments:
+              if fragment not in html:
+                  raise SystemExit(f"Missing SEO metadata: {fragment}")
+
+          canonical = "https://rodri-oliveira-dev.github.io/repo-status-dashboard/"
+          if f'href="{canonical}"' not in html:
+              raise SystemExit("Canonical URL is missing or incorrect.")
+          if f'content="{canonical}"' not in html:
+              raise SystemExit("Open Graph URL is missing or incorrect.")
+
+          if 'href="https://rodri-oliveira-dev.github.io/"' not in app:
+              raise SystemExit("Dashboard brand must link to the personal site.")
+
+          match = re.search(
+              r'<script type="application/ld\+json">\s*(\{.*?\})\s*</script>',
+              html,
+              re.DOTALL,
+          )
+          if not match:
+              raise SystemExit("Structured data block missing.")
+
+          payload = json.loads(match.group(1))
+          graph = payload.get("@graph", [])
+          types = {node.get("@type") for node in graph if isinstance(node, dict)}
+          for required_type in ("WebSite", "WebApplication", "Person"):
+              if required_type not in types:
+                  raise SystemExit(f"{required_type} structured data missing.")
+
+          root = ET.parse(sitemap).getroot()
+          namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+          urls = root.findall("sm:url", namespace)
+          if len(urls) != 1:
+              raise SystemExit("Dashboard sitemap must contain exactly one canonical URL.")
+
+          location = (urls[0].findtext("sm:loc", namespaces=namespace) or "").strip()
+          if location != canonical:
+              raise SystemExit(f"Unexpected sitemap URL: {location}")
+
+          lastmod = (urls[0].findtext("sm:lastmod", namespaces=namespace) or "").strip()
+          if not lastmod:
+              raise SystemExit("Sitemap URL must include lastmod.")
+
+          print("SEO metadata, structured data, backlink, and sitemap are consistent.")
+          PY
