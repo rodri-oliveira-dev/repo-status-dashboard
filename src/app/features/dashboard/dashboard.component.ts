@@ -21,6 +21,8 @@ import {
 import { FullDatePipe } from '../../shared/pipes/full-date.pipe';
 import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { filterRepositories } from '../../shared/utils/repository-filter';
+import { rankNeedsAttention } from '../../shared/utils/needs-attention';
+import { NeedsAttentionComponent } from './needs-attention.component';
 
 type SortColumn = 'repository' | 'updated' | 'health';
 type SortDirection = 'asc' | 'desc';
@@ -34,6 +36,7 @@ type SortDirection = 'asc' | 'desc';
     SummaryCardComponent,
     RelativeDatePipe,
     FullDatePipe,
+    NeedsAttentionComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -67,6 +70,7 @@ export class DashboardComponent implements OnInit {
       archived: count('archived'),
     };
   });
+  protected readonly attentionItems = computed(() => rankNeedsAttention(this.store.repositories()));
 
   protected readonly technologies = computed(() =>
     [

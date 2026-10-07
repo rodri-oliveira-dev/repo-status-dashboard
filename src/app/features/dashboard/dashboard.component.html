@@ -37,6 +37,7 @@
       </section>
     }
   }
+  <app-needs-attention [items]="attentionItems()" />
   <section class="summary-grid" aria-label="Repository health summary">
     <app-summary-card label="Repositories" [value]="stats().total" />
     <app-summary-card label="Healthy" [value]="stats().healthy" tone="success" />

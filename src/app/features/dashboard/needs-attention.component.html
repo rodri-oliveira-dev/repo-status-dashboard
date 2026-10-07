@@ -1,0 +1,39 @@
+<section class="attention panel" aria-labelledby="attention-title">
+  <div class="heading">
+    <div>
+      <p>Action queue</p>
+      <h2 id="attention-title">Needs Attention</h2>
+    </div>
+    <span>{{ items().length }} actionable</span>
+  </div>
+  @if (items().length === 0) {
+    <p class="empty" role="status">No repositories currently require action.</p>
+  } @else {
+    <ul>
+      @for (item of items(); track item.repository.fullName) {
+        <li [attr.data-severity]="item.severity">
+          <div>
+            <a [routerLink]="['/repository', item.repository.name]">{{ item.repository.name }}</a>
+            <span>{{ item.reason }}</span>
+          </div>
+          <div class="meta">
+            @if (item.date) {
+              <time [attr.datetime]="item.date" [title]="item.date | fullDate">{{
+                item.date | relativeDate
+              }}</time>
+            }
+            @if (item.externalUrl) {
+              <a
+                [href]="item.externalUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                [attr.aria-label]="'Open evidence for ' + item.repository.name"
+                >Evidence ↗</a
+              >
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>
