@@ -26,11 +26,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Check formatting
-        run: npm run format:check
-      - name: Lint
-        run: npm run lint
-      - name: Test
-        run: npm test
-      - name: Build
-        run: npm run build
+      - name: Prettier probe
+        run: |
+          npm run format
+          git diff -- src/index.html .github/scripts/summarize-lighthouse.mjs
+          exit 1
