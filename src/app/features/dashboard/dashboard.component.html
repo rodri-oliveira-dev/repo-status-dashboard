@@ -28,12 +28,12 @@
     <button type="button" (click)="store.load(true)">Try again</button>
   </section>
 } @else {
-  @if (store.dataset(); as dataset) {
-    @if (dataset.collection.partial || dataset.collection.unavailable) {
+  @if (collectionSummary(); as collection) {
+    @if (collection.partial || collection.unavailable) {
       <section class="collection-notice" role="status">
         <strong>Some repository signals could not be collected.</strong>
-        Health reflects available evidence only: {{ dataset.collection.partial }} partial and
-        {{ dataset.collection.unavailable }} unavailable.
+        Health reflects available evidence only: {{ collection.partial }} partial and
+        {{ collection.unavailable }} unavailable.
       </section>
     }
   }
