@@ -16,7 +16,7 @@ O dashboard coleta e organiza automaticamente informações dos repositórios pr
 - data do último commit e atividade recente;
 - última GitHub Release;
 - linguagem e tipo do projeto;
-- quantidade de estrelas e issues abertas;
+- quantidade de estrelas e total combinado de issues e pull requests abertos;
 - classificação de saúde do repositório;
 - filtros por saúde, tipo de projeto, tecnologia e tipo de entrega;
 - busca por repositório;
