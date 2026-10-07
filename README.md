@@ -116,6 +116,10 @@ Cada snapshot recalcula uma janela móvel de 30 dias (`ACTIVITY_WINDOW_DAYS`) pa
 
 Release frequency é a contagem de GitHub Releases publicadas na janela. Delivery frequency combina deployments, workflows de delivery/release/Pages concluídos com sucesso e releases; sinais de fontes diferentes separados por até 30 minutos são tratados como evidência do mesmo evento. Eventos distintos da mesma fonte não são colapsados. A contagem de delivery fica indisponível se qualquer fonte necessária falhar, evitando exibir subcontagem como zero. Essas métricas são contagens observadas no período, não uma medição ou certificação DORA; automações externas ao GitHub podem não aparecer.
 
+### Insights do portfólio
+
+A visão agregada usa somente o snapshot atual e a mesma janela de 30 dias; não simula tendência temporal sem snapshots anteriores. Repositórios ativos têm pelo menos um commit, workflow, release ou deployment observado. A taxa de sucesso de CI é `execuções de CI aprovadas / (aprovadas + reprovadas)` e exibe o denominador. Totais de release e delivery somam apenas repositórios com a fonte disponível e mostram a cobertura. O watch de staleness lista repositórios ativos entre 60 e 90 dias sem commit e os que já cruzaram 90 dias. Dados ausentes são excluídos com cobertura explícita, nunca convertidos silenciosamente em zero.
+
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
 Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de cinco grupos: metadados, commits, Actions, deployments e releases; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.

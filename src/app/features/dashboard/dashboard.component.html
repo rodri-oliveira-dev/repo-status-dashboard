@@ -46,6 +46,7 @@
     <app-summary-card label="Stale" [value]="stats().stale" tone="stale" />
     <app-summary-card label="Archived" [value]="stats().archived" tone="archived" />
   </section>
+  <app-portfolio-insights [insights]="portfolioInsights()" />
 
   <section class="workspace panel">
     <div class="toolbar">
