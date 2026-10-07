@@ -168,6 +168,59 @@ export function summarizeActivity(
   };
 }
 
+export function calculateDeliveryFrequency(
+  { workflowRuns, deployments, releases, availability, configuredWorkflows = {} },
+  now = Date.now(),
+  windowDays = ACTIVITY_WINDOW_DAYS,
+  correlationMinutes = 30,
+) {
+  const cutoff = now - windowDays * 24 * 60 * 60 * 1000;
+  const withinWindow = (date) => inWindow(date, cutoff);
+  const releaseEvents = releases
+    .filter((release) => !release.draft && withinWindow(release.published_at ?? release.created_at))
+    .map((release) => ({
+      source: 'release',
+      id: release.id,
+      date: release.published_at ?? release.created_at,
+    }));
+  const deploymentEvents = deployments
+    .filter((deployment) => withinWindow(deployment.updated_at ?? deployment.created_at))
+    .map((deployment) => ({
+      source: 'deployment',
+      id: deployment.id,
+      date: deployment.updated_at ?? deployment.created_at,
+    }));
+  const workflowEvents = workflowRuns
+    .filter(
+      (run) =>
+        ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run, configuredWorkflows)) &&
+        mapWorkflowStatus(run) === 'passing' &&
+        withinWindow(run.updated_at ?? run.created_at),
+    )
+    .map((run) => ({ source: 'workflow', id: run.id, date: run.updated_at ?? run.created_at }));
+  const correlationMs = correlationMinutes * 60 * 1000;
+  const correlated = (event, candidates) =>
+    candidates.some(
+      (candidate) => Math.abs(Date.parse(event.date) - Date.parse(candidate.date)) <= correlationMs,
+    );
+  const deliveryEvents = [...deploymentEvents];
+  for (const event of workflowEvents)
+    if (!correlated(event, deploymentEvents)) deliveryEvents.push(event);
+  for (const event of releaseEvents)
+    if (!correlated(event, [...deploymentEvents, ...workflowEvents])) deliveryEvents.push(event);
+
+  return {
+    windowDays,
+    releases: availability.releases ? releaseEvents.length : null,
+    deliveryEvents:
+      availability.deployments && availability.actions && availability.releases
+        ? deliveryEvents.length
+        : null,
+    evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
+    correlationMinutes,
+  };
+}
+
 function workflowText(run) {
   return [run?.name, run?.display_title, run?.path, run?.actor?.login, run?.triggering_actor?.login]
     .filter(Boolean)

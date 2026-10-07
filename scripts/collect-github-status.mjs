@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   ACTIVITY_WINDOW_DAYS,
   calculateCollection,
+  calculateDeliveryFrequency,
   calculateHealthAssessment,
   analyzeOpenWorkItems,
   classifyProjectType,
@@ -412,6 +413,20 @@ async function enrich(repository, generatedAt) {
     },
     generatedAt,
   );
+  const deliveryFrequency = calculateDeliveryFrequency(
+    {
+      workflowRuns: runs,
+      deployments,
+      releases,
+      configuredWorkflows,
+      availability: {
+        actions: actionsResult.available,
+        deployments: deploymentResult.available,
+        releases: releaseResult.available,
+      },
+    },
+    generatedAt,
+  );
 
   return {
     name,
@@ -449,6 +464,7 @@ async function enrich(repository, generatedAt) {
       },
     },
     activity,
+    deliveryFrequency,
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -547,6 +563,13 @@ function fallbackRepository(repository, generatedAt = Date.now()) {
       failedCiRuns: null,
       releases: null,
       deployments: null,
+    },
+    deliveryFrequency: {
+      windowDays: ACTIVITY_WINDOW_DAYS,
+      releases: null,
+      deliveryEvents: null,
+      evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
+      correlationMinutes: 30,
     },
     projectType: classifyProjectType(repository),
     lastCommitSha: null,

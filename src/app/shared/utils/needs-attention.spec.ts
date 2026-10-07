@@ -62,6 +62,13 @@ const repository = (overrides: Partial<RepositoryStatus>): RepositoryStatus =>
       releases: 0,
       deployments: 0,
     },
+    deliveryFrequency: {
+      windowDays: 30,
+      releases: 0,
+      deliveryEvents: 0,
+      evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
+      correlationMinutes: 30,
+    },
     ...overrides,
   }) as RepositoryStatus;
 

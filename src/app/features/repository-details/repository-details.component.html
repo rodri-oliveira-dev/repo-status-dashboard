@@ -261,6 +261,20 @@
             <dt>Deployments</dt>
             <dd>{{ repository.activity.deployments ?? 'Unavailable' }}</dd>
           </div>
+          <div>
+            <dt>Release frequency</dt>
+            <dd>
+              {{ repository.deliveryFrequency.releases ?? 'Unavailable' }} /
+              {{ repository.deliveryFrequency.windowDays }} days
+            </dd>
+          </div>
+          <div>
+            <dt>Delivery frequency</dt>
+            <dd>
+              {{ repository.deliveryFrequency.deliveryEvents ?? 'Unavailable' }} /
+              {{ repository.deliveryFrequency.windowDays }} days
+            </dd>
+          </div>
         </dl>
       </section>
     </aside>

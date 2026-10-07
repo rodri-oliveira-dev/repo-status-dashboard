@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import {
   analyzeOpenWorkItems,
   calculateCollection,
+  calculateDeliveryFrequency,
   calculateHealth,
   calculateHealthAssessment,
   classifyWorkflowRole,
@@ -260,6 +261,53 @@ describe('bounded activity metrics', () => {
     );
     assert.equal(result.length, 101);
     assert.deepEqual(calls, [1, 2]);
+  });
+});
+
+describe('release and deployment frequency', () => {
+  const now = Date.parse('2026-10-01T00:00:00Z');
+  it('deduplicates cross-source evidence inside the correlation window', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [run('Deploy', '2026-09-20T10:05:00Z')],
+        deployments: [{ id: 1, created_at: '2026-09-20T10:00:00Z' }],
+        releases: [{ id: 2, published_at: '2026-09-20T10:10:00Z', draft: false }],
+        availability: { actions: true, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.releases, 1);
+    assert.equal(result.deliveryEvents, 1);
+  });
+
+  it('keeps independent same-source events and separate cross-source events', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [
+          run('Deploy', '2026-09-20T10:00:00Z', { id: 1 }),
+          run('Deploy', '2026-09-21T10:00:00Z', { id: 2 }),
+        ],
+        deployments: [],
+        releases: [{ id: 3, published_at: '2026-09-25T10:00:00Z', draft: false }],
+        availability: { actions: true, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, 3);
+  });
+
+  it('renders incomplete delivery evidence as unavailable instead of zero', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [],
+        deployments: [],
+        releases: [],
+        availability: { actions: false, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.releases, 0);
+    assert.equal(result.deliveryEvents, null);
   });
 });
 

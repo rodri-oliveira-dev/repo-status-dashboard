@@ -143,6 +143,14 @@ export interface RepositoryActivity {
   readonly deployments: number | null;
 }
 
+export interface DeliveryFrequency {
+  readonly windowDays: number;
+  readonly releases: number | null;
+  readonly deliveryEvents: number | null;
+  readonly evidence: readonly ['github_deployments', 'delivery_workflows', 'github_releases'];
+  readonly correlationMinutes: number;
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -161,6 +169,7 @@ export interface RepositoryStatus {
   readonly staleWorkItems: StaleWorkItems | null;
   readonly security: SecurityPosture;
   readonly activity: RepositoryActivity;
+  readonly deliveryFrequency: DeliveryFrequency;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;
