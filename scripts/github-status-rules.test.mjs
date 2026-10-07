@@ -391,10 +391,7 @@ describe('build workflow selection', () => {
         'Merge pull request #47 from rodri-oliveira-dev/fix/dependabot-opentelemetry-version-trains',
       head_branch: 'main',
     });
-    const result = selectBuildWorkflow([
-      run('Build and test', '2026-10-06T23:55:37Z'),
-      latest,
-    ]);
+    const result = selectBuildWorkflow([run('Build and test', '2026-10-06T23:55:37Z'), latest]);
     assert.equal(result, latest);
   });
 
