@@ -276,8 +276,20 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
     if (files.some((file) => file.toLowerCase() === fileName)) return role;
   }
   if (isDependabotRun(run)) return 'maintenance';
+  const workflowName = String(run?.name ?? '')
+    .trim()
+    .toLowerCase();
+  const fileStem = fileName.replace(/\.ya?ml$/, '');
   const text = [run?.name, run?.path].filter(Boolean).join(' ').toLowerCase();
   if (!text) return 'unknown';
+  const auxiliaryValidation =
+    /(?:validate|validation|validação).*(?:release|publishing|version|versionamento|template|governance|package|metadata|config|manifest|schema|spell|links?)|(?:release|publishing|version|versionamento|template|governance|package|metadata|config|manifest|schema|spell|links?).*(?:validate|validation|validação)/.test(
+      text,
+    );
+  const primaryValidation =
+    /^(?:validate(?:\s+(?:\.?net|profile|container))?|site validation)$/.test(workflowName) ||
+    /^(?:validate(?:-(?:net|profile|container))?|site-validation)$/.test(fileStem) ||
+    /validation pipeline/.test(text);
   let role = 'unknown';
   if (/dependabot|renovate|stale|maintenance|cleanup/.test(text)) role = 'maintenance';
   else if (/security|codeql|dependency review|secret scan|owasp|zap|trivy|snyk/.test(text))
@@ -285,7 +297,10 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   else if (/github[- ]pages|pages build|pages deploy|deploy[-_ ]pages|gh-pages/.test(text))
     role = 'pages';
   else if (/mutation|stryker|pitest/.test(text)) role = 'mutation';
-  else if (/sonar|codecov|coverage|lint|lighthouse|quality(?:\s+gate)?|static analysis/.test(text))
+  else if (
+    auxiliaryValidation ||
+    /sonar|codecov|coverage|lint|lighthouse|quality(?:\s+gate)?|static analysis/.test(text)
+  )
     role = 'quality';
   else if (
     /create[-_ ]release|publish[-_ ]release|release[-_ ]publish|create[-_ ]tag|changelog/.test(
@@ -302,7 +317,8 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
     role = 'delivery';
   else if (/\bsync\b/.test(text)) role = 'maintenance';
   else if (
-    /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build(?:\s+and|\s*&)?\s+test|compile(?:\s+and|\s*&)?\s+test|(^|[\s._/-])validate(?:[\s._/-]|$)|(^|[\s._/-])validation(?:[\s._/-]|$)|ingestion integration/.test(
+    primaryValidation ||
+    /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build(?:\s+and|\s*&)?\s+test|compile(?:\s+and|\s*&)?\s+test|ingestion integration/.test(
       text,
     )
   )

@@ -350,6 +350,19 @@ describe('release and deployment frequency', () => {
     assert.equal(result.deliveryEvents, null);
   });
 
+  it('renders failed deployment-status collection as unavailable', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [],
+        deployments: [{ id: 1, created_at: '2026-09-20T10:00:00Z' }],
+        releases: [],
+        availability: { actions: true, deployments: false, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, null);
+  });
+
   it('does not count successful Dependabot package updates as delivery events', () => {
     const result = calculateDeliveryFrequency(
       {
@@ -437,6 +450,25 @@ describe('build workflow selection', () => {
           conclusion: 'cancelled',
         }),
         run('Sonar quality', '2026-10-04T10:00:00Z', { head_branch: 'main' }),
+      ],
+      {},
+      'main',
+    );
+    assert.equal(result.name, 'CI');
+  });
+
+  it('does not let auxiliary validation workflows override primary CI', () => {
+    const result = selectBuildWorkflow(
+      [
+        run('CI', '2026-10-01T10:00:00Z', { head_branch: 'main' }),
+        run('Validação de versionamento', '2026-10-04T10:00:00Z', {
+          path: '.github/workflows/versioning-validation.yml',
+          head_branch: 'main',
+        }),
+        run('Template package validation', '2026-10-05T10:00:00Z', {
+          path: '.github/workflows/template-package-validation.yml',
+          head_branch: 'main',
+        }),
       ],
       {},
       'main',
@@ -557,7 +589,9 @@ describe('workflow semantic roles', () => {
       ['Publish package', 'delivery'],
       ['Create Release', 'release'],
       ['Deploy Pages', 'pages'],
-      ['Package validation', 'ci'],
+      ['Package validation', 'quality'],
+      ['Release publishing validation', 'quality'],
+      ['Agent governance validation', 'quality'],
     ];
     for (const [name, expected] of cases) {
       assert.equal(classifyWorkflowRole(run(name, '2026-10-01T10:00:00Z')), expected, name);

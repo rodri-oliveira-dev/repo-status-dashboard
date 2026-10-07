@@ -267,11 +267,12 @@ function isProductionProjectPath(path) {
   );
 }
 
-async function collectRepositoryStructure(repository, base) {
+export async function collectRepositoryStructure(repository, base) {
   const treeResult = await collectSignal(
     `${base}/git/trees/${encodeURIComponent(repository.default_branch)}?recursive=1`,
     null,
     repository.name,
+    { absentStatuses: [404, 409] },
   );
   const tree = treeResult.data?.tree ?? [];
   const sourceEntries = tree.filter(
@@ -614,12 +615,12 @@ async function enrich(repository, generatedAt) {
   const lastCommitDate =
     commit?.committer?.date ?? commit?.author?.date ?? repository.pushed_at ?? null;
   const buildStatus = mapWorkflowStatus(build);
+  const deploymentDataAvailable = deploymentResult.available && deploymentStatuses.available;
   const signalResults = {
     metadata: structure.available ? 'available' : 'unavailable',
     commits: commitResult.available ? 'available' : 'unavailable',
     actions: actionsResult.available ? 'available' : 'unavailable',
-    deployments:
-      deploymentResult.available && deploymentStatuses.available ? 'available' : 'unavailable',
+    deployments: deploymentDataAvailable ? 'available' : 'unavailable',
     releases: releaseResult.available ? 'available' : 'unavailable',
     workItems: workItemsResult.available ? 'available' : 'unavailable',
     security:
@@ -677,7 +678,7 @@ async function enrich(repository, generatedAt) {
       configuredWorkflows,
       availability: {
         actions: actionsResult.available,
-        deployments: deploymentResult.available,
+        deployments: deploymentDataAvailable,
         releases: releaseResult.available,
       },
     },

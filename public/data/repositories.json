@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T18:43:38.375Z",
+  "generatedAt": "2026-10-07T18:55:40.129Z",
   "repositories": [
     {
       "name": ".github",
@@ -60,11 +60,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 35,
-        "workflowRuns": 560,
-        "successfulCiRuns": 115,
-        "failedCiRuns": 23,
+        "workflowRuns": 561,
+        "successfulCiRuns": 0,
+        "failedCiRuns": 0,
         "releases": 2,
         "deployments": 0
       },
@@ -86,12 +86,12 @@
       "projectType": "Unknown",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
       "lastCommitDate": "2026-10-06T17:25:33Z",
-      "lastWorkflowName": "Agent governance validation",
-      "lastWorkflowRole": "ci",
-      "lastWorkflowStatus": "passing",
-      "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-06T17:26:08Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/.github/actions/runs/37503452212",
+      "lastWorkflowName": null,
+      "lastWorkflowRole": "unknown",
+      "lastWorkflowStatus": "unknown",
+      "lastWorkflowConclusion": null,
+      "lastWorkflowDate": null,
+      "lastWorkflowUrl": null,
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.1.0",
@@ -101,8 +101,13 @@
       "latestReleaseDate": "2026-09-24T14:31:42Z",
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T17:25:39Z",
-      "health": "healthy",
-      "healthReasons": [],
+      "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -173,7 +178,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 19,
         "workflowRuns": 800,
         "successfulCiRuns": 122,
@@ -301,11 +306,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 369,
         "workflowRuns": 307,
-        "successfulCiRuns": 53,
-        "failedCiRuns": 57,
+        "successfulCiRuns": 42,
+        "failedCiRuns": 48,
         "releases": 1,
         "deployments": 9
       },
@@ -413,7 +418,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 71,
         "workflowRuns": 166,
         "successfulCiRuns": 20,
@@ -536,7 +541,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 9,
         "workflowRuns": 228,
         "successfulCiRuns": 59,
@@ -688,7 +693,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 27,
         "workflowRuns": 97,
         "successfulCiRuns": 8,
@@ -805,11 +810,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
-        "commits": 219,
-        "workflowRuns": 346,
+        "since": "2026-09-07T18:55:40.129Z",
+        "commits": 207,
+        "workflowRuns": 345,
         "successfulCiRuns": 103,
-        "failedCiRuns": 22,
+        "failedCiRuns": 21,
         "releases": 4,
         "deployments": 37
       },
@@ -913,7 +918,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 5,
         "workflowRuns": 17,
         "successfulCiRuns": 11,
@@ -1026,7 +1031,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 19,
         "workflowRuns": 97,
         "successfulCiRuns": 44,
@@ -1139,11 +1144,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 69,
         "workflowRuns": 122,
-        "successfulCiRuns": 35,
-        "failedCiRuns": 4,
+        "successfulCiRuns": 34,
+        "failedCiRuns": 3,
         "releases": 0,
         "deployments": 0
       },
@@ -1256,7 +1261,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 2,
         "workflowRuns": 0,
         "successfulCiRuns": 0,
@@ -1373,18 +1378,18 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 65,
         "workflowRuns": 485,
-        "successfulCiRuns": 170,
-        "failedCiRuns": 6,
+        "successfulCiRuns": 31,
+        "failedCiRuns": 0,
         "releases": 1,
         "deployments": 1
       },
       "deliveryFrequency": {
         "windowDays": 30,
         "releases": 1,
-        "deliveryEvents": 48,
+        "deliveryEvents": 1,
         "evidence": [
           "github_deployments",
           "delivery_workflows",
@@ -1413,12 +1418,12 @@
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
       "lastCommitDate": "2026-10-06T12:08:11Z",
-      "lastWorkflowName": "Validação de versionamento",
+      "lastWorkflowName": "CI",
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-06T12:09:33Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124554",
+      "lastWorkflowDate": "2026-10-06T12:09:23Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124454",
       "deliveryType": "GitHub Release",
       "deliveryStatus": "success",
       "deliveryVersion": "v1.4.2",
@@ -1502,11 +1507,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 252,
         "workflowRuns": 522,
-        "successfulCiRuns": 102,
-        "failedCiRuns": 39,
+        "successfulCiRuns": 96,
+        "failedCiRuns": 19,
         "releases": 0,
         "deployments": 12
       },
@@ -1616,11 +1621,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 33,
         "workflowRuns": 834,
-        "successfulCiRuns": 189,
-        "failedCiRuns": 26,
+        "successfulCiRuns": 142,
+        "failedCiRuns": 23,
         "releases": 3,
         "deployments": 23
       },
@@ -1768,11 +1773,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 19,
         "workflowRuns": 977,
-        "successfulCiRuns": 83,
-        "failedCiRuns": 9,
+        "successfulCiRuns": 29,
+        "failedCiRuns": 6,
         "releases": 16,
         "deployments": 4
       },
@@ -1881,7 +1886,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 29,
         "workflowRuns": 851,
         "successfulCiRuns": 79,
@@ -1892,7 +1897,7 @@
       "deliveryFrequency": {
         "windowDays": 30,
         "releases": 2,
-        "deliveryEvents": 67,
+        "deliveryEvents": 19,
         "evidence": [
           "github_deployments",
           "delivery_workflows",
@@ -1975,7 +1980,7 @@
       "defaultBranch": "main",
       "stars": 1,
       "openIssues": 0,
-      "openPullRequests": 0,
+      "openPullRequests": 1,
       "staleWorkItems": {
         "thresholdDays": 30,
         "issuesCount": 0,
@@ -2009,10 +2014,10 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 15,
-        "workflowRuns": 262,
-        "successfulCiRuns": 109,
+        "workflowRuns": 267,
+        "successfulCiRuns": 73,
         "failedCiRuns": 29,
         "releases": 3,
         "deployments": 18
@@ -2123,10 +2128,10 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 719,
         "workflowRuns": 1518,
-        "successfulCiRuns": 158,
+        "successfulCiRuns": 141,
         "failedCiRuns": 170,
         "releases": 3,
         "deployments": 14
@@ -2134,7 +2139,7 @@
       "deliveryFrequency": {
         "windowDays": 30,
         "releases": 3,
-        "deliveryEvents": 17,
+        "deliveryEvents": 10,
         "evidence": [
           "github_deployments",
           "delivery_workflows",
@@ -2278,11 +2283,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 127,
         "workflowRuns": 321,
-        "successfulCiRuns": 101,
-        "failedCiRuns": 3,
+        "successfulCiRuns": 99,
+        "failedCiRuns": 2,
         "releases": 11,
         "deployments": 0
       },
@@ -2386,11 +2391,11 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 168,
-        "workflowRuns": 1137,
-        "successfulCiRuns": 241,
-        "failedCiRuns": 40,
+        "workflowRuns": 1138,
+        "successfulCiRuns": 129,
+        "failedCiRuns": 34,
         "releases": 4,
         "deployments": 38
       },
@@ -2494,7 +2499,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 295,
         "workflowRuns": 109,
         "successfulCiRuns": 56,
@@ -2632,7 +2637,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T18:43:38.375Z",
+        "since": "2026-09-07T18:55:40.129Z",
         "commits": 28,
         "workflowRuns": 63,
         "successfulCiRuns": 15,
