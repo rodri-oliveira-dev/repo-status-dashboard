@@ -1,0 +1,26 @@
+# OWASP ZAP baseline rules for Repo Control Center
+#
+# The scanner starts from a github.io project page, but the legacy baseline
+# spider resets the crawl root to the host. Exclude every URL that does not
+# belong to this project so findings from the personal site and sibling Pages
+# applications never leak into this repository's security issue.
+*	OUTOFSCOPE	^(?!https://rodri-oliveira-dev\.github\.io/repo-status-dashboard(?:/|$)).*
+
+# GitHub Pages controls the response headers and edge caching below. These
+# cannot be changed from this Angular repository. Keep them out of the
+# application baseline while continuing to scan all application-controlled
+# rules.
+10020	IGNORE	(Missing Anti-clickjacking Header - managed by GitHub Pages)
+10021	IGNORE	(X-Content-Type-Options Header Missing - managed by GitHub Pages)
+10035	IGNORE	(Strict-Transport-Security Header Not Set - managed by GitHub Pages)
+10063	IGNORE	(Permissions Policy Header Not Set - managed by GitHub Pages)
+10098	IGNORE	(Cross-Domain Misconfiguration - managed by GitHub Pages)
+90004	IGNORE	(Cross-Origin policy headers - managed by GitHub Pages)
+10015	IGNORE	(Cache-Control directives - managed by GitHub Pages)
+10049	IGNORE	(Storable/cacheable content - managed by GitHub Pages)
+10050	IGNORE	(Retrieved from cache - managed by GitHub Pages)
+
+# CSP directives such as frame-ancestors cannot be enforced from a meta policy,
+# and Angular component styles on static hosting require inline style support.
+# Script CSP remains enforced by Angular security.autoCsp and is validated by CI.
+10055	IGNORE	(CSP header-only/static-host limitations; script CSP enforced by Angular autoCsp)
