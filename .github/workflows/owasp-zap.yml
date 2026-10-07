@@ -74,6 +74,7 @@ jobs:
             echo "- **Scope:** /repo-status-dashboard/** only"
             echo "- **Mode:** passive baseline scan"
             echo "- **Deployment gate:** report-only"
-            echo "- **GitHub Pages managed headers:** classified as INFO"
+            echo "- **GitHub Pages managed headers/cache:** classified as INFO"
+            echo "- **CSP:** application-controlled findings remain actionable"
             echo "- **Actionable findings:** maintained in the OWASP ZAP Baseline Report issue and workflow artifact"
           } >> "$GITHUB_STEP_SUMMARY"
