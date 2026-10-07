@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import {
   calculateCollection,
   calculateHealth,
+  classifyWorkflowRole,
   classifyProjectType,
   correlateReleaseVersion,
   inferDeliveryType,
@@ -87,9 +88,42 @@ describe('build workflow selection', () => {
   it('does not treat Dependabot as the primary CI run', () => {
     const result = selectBuildWorkflow([
       run('CI', '2026-10-03T10:00:00Z', { actor: { login: 'dependabot[bot]' } }),
-      run('Validation', '2026-10-02T10:00:00Z'),
+      run('Build and test', '2026-10-02T10:00:00Z'),
     ]);
-    assert.equal(result.name, 'Validation');
+    assert.equal(result.name, 'Build and test');
+  });
+
+  it('does not let auxiliary mutation or quality workflows override CI', () => {
+    const result = selectBuildWorkflow([
+      run('CI', '2026-10-01T10:00:00Z'),
+      run('mutation-tests', '2026-10-03T10:00:00Z', { conclusion: 'cancelled' }),
+      run('Sonar quality', '2026-10-04T10:00:00Z'),
+    ]);
+    assert.equal(result.name, 'CI');
+  });
+
+  it('returns no primary CI for ambiguous test names', () => {
+    assert.equal(selectBuildWorkflow([run('Tests', '2026-10-01T10:00:00Z')]), null);
+  });
+});
+
+describe('workflow semantic roles', () => {
+  it('classifies representative workflow roles', () => {
+    assert.equal(classifyWorkflowRole(run('CI', '2026-10-01T10:00:00Z')), 'ci');
+    assert.equal(classifyWorkflowRole(run('Sonar quality', '2026-10-01T10:00:00Z')), 'quality');
+    assert.equal(classifyWorkflowRole(run('CodeQL security', '2026-10-01T10:00:00Z')), 'security');
+    assert.equal(classifyWorkflowRole(run('mutation-tests', '2026-10-01T10:00:00Z')), 'mutation');
+    assert.equal(
+      classifyWorkflowRole(run('Deploy application', '2026-10-01T10:00:00Z')),
+      'delivery',
+    );
+    assert.equal(classifyWorkflowRole(run('Create Release', '2026-10-01T10:00:00Z')), 'release');
+    assert.equal(classifyWorkflowRole(run('Deploy GitHub Pages', '2026-10-01T10:00:00Z')), 'pages');
+    assert.equal(
+      classifyWorkflowRole(run('Dependabot Updates', '2026-10-01T10:00:00Z')),
+      'maintenance',
+    );
+    assert.equal(classifyWorkflowRole(run('Tests', '2026-10-01T10:00:00Z')), 'unknown');
   });
 });
 

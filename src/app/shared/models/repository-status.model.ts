@@ -51,6 +51,16 @@ export type DeliveryStatus =
 
 export type CollectionStatus = 'complete' | 'partial' | 'unavailable';
 export type CollectionConfidence = 'high' | 'medium' | 'low';
+export type WorkflowRole =
+  | 'ci'
+  | 'quality'
+  | 'security'
+  | 'mutation'
+  | 'delivery'
+  | 'release'
+  | 'pages'
+  | 'maintenance'
+  | 'unknown';
 
 export interface RepositoryCollection {
   readonly status: CollectionStatus;
@@ -78,6 +88,7 @@ export interface RepositoryStatus {
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;
   readonly lastWorkflowName: string | null;
+  readonly lastWorkflowRole: WorkflowRole;
   readonly lastWorkflowStatus: BuildStatus;
   readonly lastWorkflowConclusion: string | null;
   readonly lastWorkflowDate: string | null;

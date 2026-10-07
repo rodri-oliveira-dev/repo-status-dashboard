@@ -127,9 +127,11 @@ Sem token, a coleta funciona com dados públicos e o limite anônimo da API. Par
 
 As regras puras e testáveis ficam em [`scripts/github-status-rules.mjs`](scripts/github-status-rules.mjs).
 
-### Build
+### Workflows e build
 
-O collector procura o workflow mais recente cujo nome, título ou arquivo contenha `ci`, `build`, `test`, `quality` ou `validation`. Execuções atribuídas ao Dependabot são excluídas dessa escolha. O resultado é normalizado para `passing`, `failing`, `running`, `queued`, `cancelled` ou `unknown`.
+O collector classifica workflows semanticamente como `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages`, `maintenance` ou `unknown`. A ordem das regras resolve termos sobrepostos (por exemplo, Pages antes de delivery), e nomes ambíguos permanecem `unknown`.
+
+Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente, e Dependabot continua excluído. Assim, cancelamentos de mutation tests, quality gates e outras automações auxiliares não degradam a saúde. A configuração opcional por repositório pode substituir essa descoberta quando uma convenção de nomes não for suficiente.
 
 ### Delivery
 

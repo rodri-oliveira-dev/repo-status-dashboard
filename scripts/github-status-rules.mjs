@@ -1,6 +1,3 @@
-const BUILD_TERMS = /(^|[\s._/-])(ci|build|test|tests|quality|validation)([\s._/-]|$)/i;
-const DELIVERY_TERMS =
-  /(^|[\s._/-])(deploy|deployment|publish|release|pages|nuget|npm|package|docker|container|terraform)([\s._/-]|$)/i;
 const DEPENDABOT = /dependabot/i;
 const SEMVER = /(?:^|[^\d])v?\d+\.\d+(?:\.\d+)?(?:[-+][0-9a-z.-]+)?(?:$|[^\d])/i;
 
@@ -52,10 +49,32 @@ function workflowText(run) {
     .join(' ');
 }
 
+export function classifyWorkflowRole(run) {
+  const text = workflowText(run).toLowerCase();
+  if (!text) return 'unknown';
+  if (/mutation|stryker|pitest/.test(text)) return 'mutation';
+  if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) return 'security';
+  if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) return 'pages';
+  if (/release|create tag|changelog/.test(text)) return 'release';
+  if (
+    /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
+  )
+    return 'delivery';
+  if (/dependabot|renovate|stale|sync|maintenance|cleanup/.test(text)) return 'maintenance';
+  if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text)) return 'quality';
+  if (
+    /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build and test|build & test|compile and test/.test(
+      text,
+    )
+  )
+    return 'ci';
+  return 'unknown';
+}
+
 export function selectBuildWorkflow(runs) {
   return (
     [...runs]
-      .filter((run) => !DEPENDABOT.test(workflowText(run)) && BUILD_TERMS.test(workflowText(run)))
+      .filter((run) => !DEPENDABOT.test(workflowText(run)) && classifyWorkflowRole(run) === 'ci')
       .sort(
         (left, right) =>
           Date.parse(right.updated_at ?? right.created_at) -
@@ -67,7 +86,7 @@ export function selectBuildWorkflow(runs) {
 export function selectDeliveryWorkflow(runs) {
   return (
     [...runs]
-      .filter((run) => DELIVERY_TERMS.test(workflowText(run)))
+      .filter((run) => ['delivery', 'release', 'pages'].includes(classifyWorkflowRole(run)))
       .sort(
         (left, right) =>
           Date.parse(right.updated_at ?? right.created_at) -
