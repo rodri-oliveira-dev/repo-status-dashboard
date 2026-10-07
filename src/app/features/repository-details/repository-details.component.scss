@@ -52,6 +52,28 @@
   padding-bottom: 1.15rem;
   border-bottom: 1px solid var(--border);
 }
+.health-reasons {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.health-reasons h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+}
+.health-reasons ul {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--text-subtle);
+  font-size: 0.78rem;
+}
+.health-reasons li[data-severity='critical']::marker {
+  color: var(--danger);
+}
+.health-reasons li[data-severity='warning']::marker {
+  color: var(--warning);
+}
 h2 {
   margin: 0;
   font-size: 1rem;

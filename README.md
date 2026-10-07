@@ -173,6 +173,8 @@ Precedência atual:
 
 A classificação cria uma linguagem comum para interpretar rapidamente o estado dos projetos, sem depender de convenções visuais diferentes em cada repositório.
 
+Cada status também possui `healthReasons`, uma lista ordenada e independente de apresentação. O catálogo fechado inclui `REPOSITORY_ARCHIVED`, `CI_FAILING`, `DELIVERY_FAILING`, `ACTIVITY_STALE`, `CI_RUNNING`, `CI_QUEUED`, `CI_CANCELLED`, `CI_UNKNOWN`, `DELIVERY_IN_PROGRESS`, `NO_DELIVERY_EVIDENCE`, `COLLECTION_PARTIAL` e `COLLECTION_UNAVAILABLE`. Severidades `critical` e `warning` explicam problemas ou estados operacionais; `info` acrescenta contexto. Motivos de coleta aparecem sem transformar falha de observabilidade em falha do repositório.
+
 ## GitHub Pages
 
 O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, deriva o `base href` do nome real do repositório e publica o artifact oficial do Pages.

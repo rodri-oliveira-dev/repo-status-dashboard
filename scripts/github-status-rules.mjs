@@ -230,3 +230,29 @@ export function calculateHealth(
     return 'unknown';
   return 'warning';
 }
+
+export function calculateHealthAssessment(input, now = Date.now()) {
+  const health = calculateHealth(input, now);
+  const reasons = [];
+  const add = (code, severity) => reasons.push({ code, severity });
+
+  if (input.archived) add('REPOSITORY_ARCHIVED', 'info');
+  else {
+    if (input.buildStatus === 'failing') add('CI_FAILING', 'critical');
+    if (input.deliveryStatus === 'failure') add('DELIVERY_FAILING', 'critical');
+    const activityTime = Date.parse(input.lastActivityDate ?? '');
+    if (!Number.isNaN(activityTime) && now - activityTime > 90 * 24 * 60 * 60 * 1000)
+      add('ACTIVITY_STALE', 'warning');
+    if (input.buildStatus === 'running') add('CI_RUNNING', 'warning');
+    if (input.buildStatus === 'queued') add('CI_QUEUED', 'warning');
+    if (input.buildStatus === 'cancelled') add('CI_CANCELLED', 'warning');
+    if (input.buildStatus === 'unknown') add('CI_UNKNOWN', 'warning');
+    if (['running', 'queued', 'cancelled'].includes(input.deliveryStatus))
+      add('DELIVERY_IN_PROGRESS', 'warning');
+    if (input.deliveryStatus === 'none') add('NO_DELIVERY_EVIDENCE', 'info');
+  }
+  if (input.collectionStatus === 'partial') add('COLLECTION_PARTIAL', 'info');
+  if (input.collectionStatus === 'unavailable') add('COLLECTION_UNAVAILABLE', 'warning');
+
+  return { health, reasons };
+}

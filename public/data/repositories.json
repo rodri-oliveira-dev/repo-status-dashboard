@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:32:09.314Z",
+  "generatedAt": "2026-10-07T09:35:05.923Z",
   "repositories": [
     {
       "name": ".github",
@@ -45,6 +45,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/.github/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T17:25:39Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -97,6 +103,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/adr-guard/releases/tag/v1.1.7",
       "updatedAt": "2026-10-06T16:53:42Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -150,6 +157,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/angular-template/releases/tag/v1.1.0",
       "updatedAt": "2026-10-06T13:49:14Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -201,6 +209,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/brazilian-primitives/releases/tag/v1.3.0",
       "updatedAt": "2026-10-06T11:47:35Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -263,6 +272,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/complexity-analyzers/releases/tag/v1.5.0",
       "updatedAt": "2026-10-06T11:45:40Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -321,6 +331,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/releases/tag/v2.1.18",
       "updatedAt": "2026-10-06T18:07:56Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -377,6 +388,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper-FluentMap/releases/tag/v3.5.0",
       "updatedAt": "2026-10-06T12:32:01Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -424,6 +436,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Dapper.TypedParameters/releases/tag/v1.2.0",
       "updatedAt": "2026-10-07T08:57:57Z",
       "health": "failed",
+      "healthReasons": [
+        {
+          "code": "CI_FAILING",
+          "severity": "critical"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -476,6 +494,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotfiles/releases/tag/v1.0.0",
       "updatedAt": "2026-10-06T17:14:35Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -528,6 +552,7 @@
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T11:53:51Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -579,6 +604,16 @@
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:12:55Z",
       "health": "unknown",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        },
+        {
+          "code": "NO_DELIVERY_EVIDENCE",
+          "severity": "info"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -626,6 +661,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/dotnet-library-template/releases/tag/v1.4.2",
       "updatedAt": "2026-10-06T12:08:18Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -680,6 +716,12 @@
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-06T18:09:44Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -733,6 +775,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/releases/tag/v1.6.5",
       "updatedAt": "2026-10-06T17:09:48Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -789,6 +837,12 @@
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-05T20:13:01Z",
       "health": "archived",
+      "healthReasons": [
+        {
+          "code": "REPOSITORY_ARCHIVED",
+          "severity": "info"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -846,6 +900,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/poc-arquitetura/releases/tag/v0.21.21",
       "updatedAt": "2026-10-06T18:55:39Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -898,6 +953,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/releases/tag/v1.0.3",
       "updatedAt": "2026-10-06T11:59:03Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -939,8 +995,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T09:38:35Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37601961287",
+      "lastWorkflowDate": "2026-10-07T09:41:35Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602298240",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -951,6 +1007,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/releases/tag/v1.0.0",
       "updatedAt": "2026-10-07T08:13:29Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1004,6 +1061,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/Repo2C4/releases/tag/v1.2.0",
       "updatedAt": "2026-10-06T12:22:37Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1058,6 +1116,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev/releases/tag/v1.0.9",
       "updatedAt": "2026-10-06T11:58:09Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1105,6 +1169,7 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/releases/tag/1.5.7",
       "updatedAt": "2026-10-06T12:45:03Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1152,6 +1217,12 @@
       "latestReleaseUrl": "https://github.com/rodri-oliveira-dev/terraform-gcp-dotnet-blueprint/releases/tag/1.0.0",
       "updatedAt": "2026-10-06T17:19:31Z",
       "health": "warning",
+      "healthReasons": [
+        {
+          "code": "CI_UNKNOWN",
+          "severity": "warning"
+        }
+      ],
       "collection": {
         "status": "complete",
         "confidence": "high",
@@ -1210,6 +1281,7 @@
       "latestReleaseUrl": null,
       "updatedAt": "2026-10-07T00:02:46Z",
       "health": "healthy",
+      "healthReasons": [],
       "collection": {
         "status": "complete",
         "confidence": "high",

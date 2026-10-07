@@ -70,6 +70,25 @@ export interface RepositoryCollection {
   readonly warnings: readonly string[];
 }
 
+export type HealthReasonCode =
+  | 'REPOSITORY_ARCHIVED'
+  | 'CI_FAILING'
+  | 'DELIVERY_FAILING'
+  | 'ACTIVITY_STALE'
+  | 'CI_RUNNING'
+  | 'CI_QUEUED'
+  | 'CI_CANCELLED'
+  | 'CI_UNKNOWN'
+  | 'DELIVERY_IN_PROGRESS'
+  | 'NO_DELIVERY_EVIDENCE'
+  | 'COLLECTION_PARTIAL'
+  | 'COLLECTION_UNAVAILABLE';
+
+export interface HealthReason {
+  readonly code: HealthReasonCode;
+  readonly severity: 'critical' | 'warning' | 'info';
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -103,6 +122,7 @@ export interface RepositoryStatus {
   readonly latestReleaseUrl: string | null;
   readonly updatedAt: string;
   readonly health: HealthStatus;
+  readonly healthReasons: readonly HealthReason[];
   readonly collection: RepositoryCollection;
 }
 

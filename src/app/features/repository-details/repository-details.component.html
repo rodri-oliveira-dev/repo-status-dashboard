@@ -29,6 +29,16 @@
           >Updated {{ repository.lastCommitDate || repository.updatedAt | relativeDate }}</span
         >
       </div>
+      @if (repository.healthReasons.length) {
+        <section class="health-reasons" aria-labelledby="health-reasons-title">
+          <h3 id="health-reasons-title">Why this status?</h3>
+          <ul>
+            @for (reason of repository.healthReasons; track reason.code) {
+              <li [attr.data-severity]="reason.severity">{{ reasonLabel(reason.code) }}</li>
+            }
+          </ul>
+        </section>
+      }
       <dl>
         <div>
           <dt>Repository</dt>

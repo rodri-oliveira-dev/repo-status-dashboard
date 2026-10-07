@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 import {
   calculateCollection,
   calculateHealth,
+  calculateHealthAssessment,
   classifyWorkflowRole,
   classifyProjectType,
   correlateReleaseVersion,
@@ -254,6 +255,45 @@ describe('health classification', () => {
       ),
       'unknown',
     ));
+
+  it('returns deterministic reasons for precedence and multiple failures', () => {
+    assert.deepEqual(
+      calculateHealthAssessment(
+        {
+          archived: false,
+          buildStatus: 'failing',
+          deliveryStatus: 'failure',
+          lastActivityDate: '2026-01-01T00:00:00Z',
+          collectionStatus: 'partial',
+        },
+        now,
+      ),
+      {
+        health: 'failed',
+        reasons: [
+          { code: 'CI_FAILING', severity: 'critical' },
+          { code: 'DELIVERY_FAILING', severity: 'critical' },
+          { code: 'ACTIVITY_STALE', severity: 'warning' },
+          { code: 'COLLECTION_PARTIAL', severity: 'info' },
+        ],
+      },
+    );
+  });
+
+  it('keeps collection degradation separate from repository health', () => {
+    const result = calculateHealthAssessment(
+      {
+        archived: false,
+        buildStatus: 'passing',
+        deliveryStatus: 'success',
+        lastActivityDate: recent,
+        collectionStatus: 'partial',
+      },
+      now,
+    );
+    assert.equal(result.health, 'healthy');
+    assert.deepEqual(result.reasons, [{ code: 'COLLECTION_PARTIAL', severity: 'info' }]);
+  });
 });
 
 describe('project type classification', () => {

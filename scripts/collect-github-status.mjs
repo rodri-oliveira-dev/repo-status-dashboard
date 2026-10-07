@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   calculateCollection,
-  calculateHealth,
+  calculateHealthAssessment,
   classifyProjectType,
   classifyWorkflowRole,
   correlateReleaseVersion,
@@ -204,12 +204,6 @@ async function enrich(repository) {
   const lastCommitDate =
     commit?.committer?.date ?? commit?.author?.date ?? repository.pushed_at ?? null;
   const buildStatus = mapWorkflowStatus(build);
-  const health = calculateHealth({
-    archived: repository.archived,
-    buildStatus,
-    deliveryStatus: delivery.status,
-    lastActivityDate: latestDate(lastCommitDate, build?.updated_at, delivery.date),
-  });
   const signalResults = {
     metadata: 'available',
     commits: commitResult.available ? 'available' : 'unavailable',
@@ -225,6 +219,14 @@ async function enrich(repository) {
     releaseResult.warning,
     configResult.warning,
   ].filter(Boolean);
+  const collection = calculateCollection(signalResults, repositoryWarnings);
+  const assessment = calculateHealthAssessment({
+    archived: repository.archived,
+    buildStatus,
+    deliveryStatus: delivery.status,
+    lastActivityDate: latestDate(lastCommitDate, build?.updated_at, delivery.date),
+    collectionStatus: collection.status,
+  });
 
   return {
     name,
@@ -258,8 +260,9 @@ async function enrich(repository) {
     latestReleaseDate: release?.published_at ?? release?.created_at ?? null,
     latestReleaseUrl: release?.html_url ?? null,
     updatedAt: repository.updated_at,
-    health,
-    collection: calculateCollection(signalResults, repositoryWarnings),
+    health: assessment.health,
+    healthReasons: assessment.reasons,
+    collection,
   };
 }
 
@@ -287,6 +290,23 @@ async function mapWithConcurrency(items, limit, mapper) {
 }
 
 function fallbackRepository(repository) {
+  const collection = calculateCollection(
+    {
+      metadata: 'available',
+      commits: 'unavailable',
+      actions: 'unavailable',
+      deployments: 'unavailable',
+      releases: 'unavailable',
+    },
+    ['Repository enrichment failed; optional signals are unavailable.'],
+  );
+  const assessment = calculateHealthAssessment({
+    archived: repository.archived,
+    buildStatus: 'unknown',
+    deliveryStatus: 'unknown',
+    lastActivityDate: repository.pushed_at,
+    collectionStatus: collection.status,
+  });
   return {
     name: repository.name,
     fullName: repository.full_name,
@@ -319,22 +339,9 @@ function fallbackRepository(repository) {
     latestReleaseDate: null,
     latestReleaseUrl: null,
     updatedAt: repository.updated_at,
-    health: calculateHealth({
-      archived: repository.archived,
-      buildStatus: 'unknown',
-      deliveryStatus: 'unknown',
-      lastActivityDate: repository.pushed_at,
-    }),
-    collection: calculateCollection(
-      {
-        metadata: 'available',
-        commits: 'unavailable',
-        actions: 'unavailable',
-        deployments: 'unavailable',
-        releases: 'unavailable',
-      },
-      ['Repository enrichment failed; optional signals are unavailable.'],
-    ),
+    health: assessment.health,
+    healthReasons: assessment.reasons,
+    collection,
   };
 }
 

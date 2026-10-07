@@ -4,6 +4,22 @@ import { RepositoryStatusService } from '../../core/services/repository-status.s
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { FullDatePipe } from '../../shared/pipes/full-date.pipe';
 import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
+import type { HealthReasonCode } from '../../shared/models/repository-status.model';
+
+const REASON_LABELS: Record<HealthReasonCode, string> = {
+  REPOSITORY_ARCHIVED: 'Repository is archived.',
+  CI_FAILING: 'Primary CI is failing.',
+  DELIVERY_FAILING: 'Latest delivery failed.',
+  ACTIVITY_STALE: 'No significant activity in the last 90 days.',
+  CI_RUNNING: 'Primary CI is currently running.',
+  CI_QUEUED: 'Primary CI is queued.',
+  CI_CANCELLED: 'Latest primary CI run was cancelled.',
+  CI_UNKNOWN: 'No primary CI result could be determined.',
+  DELIVERY_IN_PROGRESS: 'Delivery is pending or in progress.',
+  NO_DELIVERY_EVIDENCE: 'No delivery evidence was found.',
+  COLLECTION_PARTIAL: 'Some optional signals could not be collected.',
+  COLLECTION_UNAVAILABLE: 'Repository signals are unavailable.',
+};
 
 @Component({
   selector: 'app-repository-details',
@@ -21,5 +37,9 @@ export class RepositoryDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     void this.store.load();
+  }
+
+  protected reasonLabel(code: HealthReasonCode): string {
+    return REASON_LABELS[code];
   }
 }
