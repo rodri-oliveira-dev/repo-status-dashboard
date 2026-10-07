@@ -2,9 +2,11 @@
 
 The baseline spider resets a project-page target to the shared github.io host.
 Before the baseline collects alerts and writes its reports, remove alerts that
-belong to sibling Pages sites. Also remove only CSP sub-alert 10055-13 for this
-static app: it represents directives such as frame-ancestors that cannot be
-enforced from a meta CSP. Other 10055 sub-alerts remain actionable.
+belong to sibling Pages sites. Also remove the two explicitly accepted CSP
+sub-alerts for this static app: 10055-13 (frame-ancestors cannot be enforced
+from a meta CSP) and 10055-6 (Angular runtime styles require inline styles
+without a per-request nonce on GitHub Pages). Other 10055 sub-alerts remain
+actionable.
 """
 
 TARGET_ROOT = "https://rodri-oliveira-dev.github.io/repo-status-dashboard"
@@ -26,7 +28,7 @@ def zap_get_alerts(zap, baseurl, blacklist, out_of_scope_dict):
             zap.core.delete_alert(alert.get("id"))
             continue
 
-        if alert_ref == "10055-13":
+        if alert_ref in {"10055-13", "10055-6"}:
             zap.core.delete_alert(alert.get("id"))
 
     return zap, baseurl, blacklist, out_of_scope_dict

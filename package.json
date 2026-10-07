@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "build:pages": "ng build --base-href /repo-status-dashboard/",
+    "build": "ng build && node scripts/harden-csp.mjs",
+    "build:pages": "ng build --base-href /repo-status-dashboard/ && node scripts/harden-csp.mjs",
     "collect": "node scripts/collect-github-status.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

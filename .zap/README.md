@@ -22,4 +22,12 @@ Application-controlled findings are intentionally not suppressed. New ZAP alerts
 
 The workflow also loads [`hooks.py`](hooks.py). It removes alerts for sibling sites from the ZAP session before the JSON/Markdown/HTML reports are generated, so the GitHub issue cannot be repopulated with findings from the shared host.
 
-The hook also removes only alert ref `10055-13` for the dashboard. That sub-alert represents CSP directives with no fallback, notably `frame-ancestors`; those directives cannot be enforced from a CSP delivered through an HTML `<meta>` element on GitHub Pages. Other `10055` variants such as wildcard sources, `unsafe-eval`, malformed policies and unsafe script policies remain in the report.
+The hook removes `10055-13` for the dashboard because `frame-ancestors` cannot be enforced from a CSP delivered through an HTML `<meta>` element on GitHub Pages. It also removes `10055-6` because Angular runtime component styles require inline styles and GitHub Pages cannot provide a fresh per-request nonce. Other `10055` variants such as wildcard sources, `unsafe-eval`, malformed policies and unsafe script policies remain actionable.
+
+## Actionable issue lifecycle
+
+The pinned ZAP GitHub Action still builds its issue from the raw JSON report, which can reintroduce sibling-site and informational alerts even after the packaged scanner has classified them correctly. The workflow therefore disables the action's issue writer and runs `scripts/process-zap-report.mjs` after the scan. That post-processor keeps only Repo Control Center application findings, updates the existing `OWASP ZAP Baseline Report` issue when findings remain, and closes it automatically when the actionable set is empty.
+
+## CSP hardening
+
+Angular `security.autoCsp` focuses on script execution and emits a strict hash-based `script-src`. The production build then runs `scripts/harden-csp.mjs` to add explicit resource directives such as `default-src`, `connect-src`, `img-src`, `font-src`, `frame-src`, and `worker-src`. This removes the broad/missing-directive `10055-4` finding without weakening Angular's generated script policy.
