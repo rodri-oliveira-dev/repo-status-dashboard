@@ -7,9 +7,20 @@ export default tseslint.config(
   { ignores: ['dist/**', 'coverage/**', 'node_modules/**'] },
   eslint.configs.recommended,
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['scripts/**/*.mjs', '.github/scripts/**/*.mjs'],
     languageOptions: {
-      globals: { console: 'readonly', fetch: 'readonly', process: 'readonly' },
+      globals: {
+        console: 'readonly',
+        fetch: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+      },
+    },
+  },
+  {
+    files: ['lighthouserc.cjs'],
+    languageOptions: {
+      globals: { module: 'readonly' },
     },
   },
   ...tseslint.configs.recommended,
