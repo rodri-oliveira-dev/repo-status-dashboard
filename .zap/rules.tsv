@@ -1,4 +1,4 @@
-10015	INFO	(Cache-Control directives are controlled by GitHub Pages for static responses)
+*\tOUTOFSCOPE\t^(?!https://rodri-oliveira-dev\\.github\\.io/repo-status-dashboard(?:/|$)).*\n10015	INFO	(Cache-Control directives are controlled by GitHub Pages for static responses)
 10020	INFO	(Anti-clickjacking response headers are controlled by GitHub Pages)
 10021	INFO	(X-Content-Type-Options response header is controlled by GitHub Pages)
 10035	INFO	(HSTS response header is controlled by GitHub Pages)
