@@ -4,9 +4,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
   calculateCollection,
   calculateHealthAssessment,
+  analyzeOpenWorkItems,
   classifyProjectType,
   classifyWorkflowRole,
-  countOpenWorkItems,
   correlateReleaseVersion,
   extractVersion,
   inferDeliveryType,
@@ -116,12 +116,13 @@ async function collectOpenWorkItems(base, repository) {
       return {
         openIssues: null,
         openPullRequests: null,
+        staleWorkItems: null,
         available: false,
         warning: result.warning,
       };
     items.push(...result.data);
   }
-  return { ...countOpenWorkItems(items), available: true };
+  return { ...analyzeOpenWorkItems(items), available: true };
 }
 
 function latestDate(...values) {
@@ -270,6 +271,7 @@ async function enrich(repository) {
     stars: repository.stargazers_count,
     openIssues: workItemsResult.openIssues,
     openPullRequests: workItemsResult.openPullRequests,
+    staleWorkItems: workItemsResult.staleWorkItems,
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -351,6 +353,7 @@ function fallbackRepository(repository) {
     stars: repository.stargazers_count,
     openIssues: null,
     openPullRequests: null,
+    staleWorkItems: null,
     projectType: classifyProjectType(repository),
     lastCommitSha: null,
     lastCommitDate: repository.pushed_at ?? null,

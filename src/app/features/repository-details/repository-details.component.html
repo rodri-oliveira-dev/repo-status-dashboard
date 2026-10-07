@@ -93,12 +93,43 @@
           <dd>{{ repository.openPullRequests ?? 'Unavailable' }}</dd>
         </div>
         <div>
+          <dt>Stale issues</dt>
+          <dd>{{ repository.staleWorkItems?.issuesCount ?? 'Unavailable' }}</dd>
+        </div>
+        <div>
+          <dt>Stale pull requests</dt>
+          <dd>{{ repository.staleWorkItems?.pullRequestsCount ?? 'Unavailable' }}</dd>
+        </div>
+        <div>
           <dt>Last commit</dt>
           <dd [title]="repository.lastCommitDate | fullDate">
             {{ repository.lastCommitDate | relativeDate }}
           </dd>
         </div>
       </dl>
+      @if (repository.staleWorkItems; as stale) {
+        @if (stale.oldestIssues.length || stale.oldestPullRequests.length) {
+          <section class="stale-work" aria-labelledby="stale-work-title">
+            <h3 id="stale-work-title">Oldest stale work</h3>
+            <ul>
+              @for (item of stale.oldestPullRequests; track item.url) {
+                <li>
+                  <a [href]="item.url" target="_blank" rel="noopener noreferrer"
+                    >PR #{{ item.number }} — {{ item.title }}</a
+                  >
+                </li>
+              }
+              @for (item of stale.oldestIssues; track item.url) {
+                <li>
+                  <a [href]="item.url" target="_blank" rel="noopener noreferrer"
+                    >Issue #{{ item.number }} — {{ item.title }}</a
+                  >
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      }
     </section>
 
     <aside>

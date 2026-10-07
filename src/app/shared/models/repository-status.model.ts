@@ -89,6 +89,21 @@ export interface HealthReason {
   readonly severity: 'critical' | 'warning' | 'info';
 }
 
+export interface StaleWorkItem {
+  readonly number: number;
+  readonly title: string;
+  readonly url: string;
+  readonly updatedAt: string;
+}
+
+export interface StaleWorkItems {
+  readonly thresholdDays: number;
+  readonly issuesCount: number;
+  readonly pullRequestsCount: number;
+  readonly oldestIssues: readonly StaleWorkItem[];
+  readonly oldestPullRequests: readonly StaleWorkItem[];
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -104,6 +119,7 @@ export interface RepositoryStatus {
   readonly stars: number;
   readonly openIssues: number | null;
   readonly openPullRequests: number | null;
+  readonly staleWorkItems: StaleWorkItems | null;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:37:05.856Z",
+  "generatedAt": "2026-10-07T09:39:42.242Z",
   "repositories": [
     {
       "name": ".github",
@@ -27,6 +27,13 @@
       "stars": 5,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
       "lastCommitDate": "2026-10-06T17:25:33Z",
@@ -87,6 +94,13 @@
       "stars": 5,
       "openIssues": 2,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
       "lastCommitDate": "2026-10-06T16:53:37Z",
@@ -143,6 +157,13 @@
       "stars": 3,
       "openIssues": 1,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
       "lastCommitDate": "2026-10-06T13:44:17Z",
@@ -197,6 +218,13 @@
       "stars": 5,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
       "lastCommitDate": "2026-10-06T11:47:28Z",
@@ -262,6 +290,13 @@
       "stars": 2,
       "openIssues": 9,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
       "lastCommitDate": "2026-10-06T11:45:34Z",
@@ -323,6 +358,32 @@
       "stars": 4,
       "openIssues": 6,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 6,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 56,
+            "title": "chore: preparar o repositório para adoção como projeto OSS",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/56",
+            "updatedAt": "2026-09-05T01:52:50Z"
+          },
+          {
+            "number": 57,
+            "title": "build: definir e validar a compatibilidade mínima de Roslyn e .NET",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/57",
+            "updatedAt": "2026-09-05T01:53:12Z"
+          },
+          {
+            "number": 58,
+            "title": "ci: publicar os pacotes no NuGet.org com Trusted Publishing",
+            "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/issues/58",
+            "updatedAt": "2026-09-05T01:53:31Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
       "lastCommitDate": "2026-10-06T18:07:49Z",
@@ -382,6 +443,13 @@
       "stars": 453,
       "openIssues": 37,
       "openPullRequests": 2,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
       "lastCommitDate": "2026-10-06T12:31:55Z",
@@ -432,6 +500,13 @@
       "stars": 3,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
       "lastCommitDate": "2026-10-07T08:57:51Z",
@@ -492,6 +567,13 @@
       "stars": 2,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
       "lastCommitDate": "2026-10-06T17:14:29Z",
@@ -552,6 +634,13 @@
       "stars": 2,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
       "lastCommitDate": "2026-10-06T11:53:45Z",
@@ -606,6 +695,13 @@
       "stars": 1,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Library",
       "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
       "lastCommitDate": "2026-09-24T19:22:08Z",
@@ -665,6 +761,13 @@
       "stars": 4,
       "openIssues": 2,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
       "lastCommitDate": "2026-10-06T12:08:11Z",
@@ -722,6 +825,13 @@
       "stars": 3,
       "openIssues": 13,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
       "lastCommitDate": "2026-10-06T18:09:39Z",
@@ -783,6 +893,13 @@
       "stars": 3,
       "openIssues": 15,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
       "lastCommitDate": "2026-10-06T17:09:43Z",
@@ -847,6 +964,13 @@
       "stars": 1,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
       "lastCommitDate": "2026-09-18T13:31:57Z",
@@ -912,6 +1036,20 @@
       "stars": 6,
       "openIssues": 1,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 1,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 88,
+            "title": "Avaliar recuperação operacional para commit ambíguo no cadastro do IdentityService",
+            "url": "https://github.com/rodri-oliveira-dev/poc-arquitetura/issues/88",
+            "updatedAt": "2026-07-16T20:20:14Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
       "lastCommitDate": "2026-10-06T18:55:32Z",
@@ -967,6 +1105,13 @@
       "stars": 4,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
       "lastCommitDate": "2026-10-06T11:58:57Z",
@@ -1023,6 +1168,13 @@
       "stars": 1,
       "openIssues": 13,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Angular",
       "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
       "lastCommitDate": "2026-10-07T08:13:24Z",
@@ -1030,8 +1182,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T09:43:49Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602563313",
+      "lastWorkflowDate": "2026-10-07T09:46:29Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602854152",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -1079,6 +1231,13 @@
       "stars": 3,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
@@ -1136,6 +1295,13 @@
       "stars": 1,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
       "lastCommitDate": "2026-10-06T11:58:04Z",
@@ -1191,6 +1357,13 @@
       "stars": 1,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
       "lastCommitDate": "2026-10-06T12:44:59Z",
@@ -1241,6 +1414,13 @@
       "stars": 2,
       "openIssues": 0,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 0,
+        "pullRequestsCount": 0,
+        "oldestIssues": [],
+        "oldestPullRequests": []
+      },
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
       "lastCommitDate": "2026-10-06T17:19:26Z",
@@ -1307,6 +1487,32 @@
       "stars": 28,
       "openIssues": 5,
       "openPullRequests": 0,
+      "staleWorkItems": {
+        "thresholdDays": 30,
+        "issuesCount": 5,
+        "pullRequestsCount": 0,
+        "oldestIssues": [
+          {
+            "number": 1,
+            "title": "[Question] How to run the API, tests, migrations, and seed data",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/1",
+            "updatedAt": "2026-08-24T19:03:15Z"
+          },
+          {
+            "number": 21,
+            "title": "[19 · Phase 5] Rewrite onboarding and architecture documentation",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/21",
+            "updatedAt": "2026-08-24T19:03:37Z"
+          },
+          {
+            "number": 22,
+            "title": "[20 · Phase 5] Package the project as a dotnet new template",
+            "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/issues/22",
+            "updatedAt": "2026-08-24T19:03:38Z"
+          }
+        ],
+        "oldestPullRequests": []
+      },
       "projectType": "Application",
       "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
       "lastCommitDate": "2026-10-07T00:02:41Z",

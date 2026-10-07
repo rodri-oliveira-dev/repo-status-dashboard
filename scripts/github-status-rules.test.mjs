@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 import {
+  analyzeOpenWorkItems,
   calculateCollection,
   calculateHealth,
   calculateHealthAssessment,
@@ -88,6 +89,57 @@ describe('open work item counts', () => {
 
   it('returns explicit zero counts for an empty repository', () => {
     assert.deepEqual(countOpenWorkItems([]), { openIssues: 0, openPullRequests: 0 });
+  });
+
+  it('detects stale open work strictly beyond the threshold', () => {
+    const now = Date.parse('2026-10-01T00:00:00Z');
+    const result = analyzeOpenWorkItems(
+      [
+        {
+          number: 1,
+          title: 'stale issue',
+          state: 'open',
+          updated_at: '2026-08-31T23:59:59Z',
+          html_url: 'issue',
+        },
+        {
+          number: 2,
+          title: 'boundary',
+          state: 'open',
+          updated_at: '2026-09-01T00:00:00Z',
+          html_url: 'boundary',
+        },
+        {
+          number: 3,
+          title: 'stale PR',
+          state: 'open',
+          updated_at: '2026-08-01T00:00:00Z',
+          html_url: 'pr',
+          pull_request: {},
+        },
+        {
+          number: 4,
+          title: 'closed',
+          state: 'closed',
+          updated_at: '2026-01-01T00:00:00Z',
+          html_url: 'closed',
+        },
+        {
+          number: 5,
+          title: 'merged',
+          state: 'open',
+          merged_at: '2026-02-01T00:00:00Z',
+          updated_at: '2026-01-01T00:00:00Z',
+          html_url: 'merged',
+          pull_request: {},
+        },
+      ],
+      now,
+    );
+    assert.equal(result.staleWorkItems.issuesCount, 1);
+    assert.equal(result.staleWorkItems.pullRequestsCount, 1);
+    assert.equal(result.staleWorkItems.oldestPullRequests[0].number, 3);
+    assert.equal(result.staleWorkItems.oldestIssues[0].number, 1);
   });
 });
 

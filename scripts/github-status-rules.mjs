@@ -55,6 +55,44 @@ export function countOpenWorkItems(items) {
   );
 }
 
+export const STALE_WORK_ITEM_DAYS = 30;
+
+export function analyzeOpenWorkItems(
+  items,
+  now = Date.now(),
+  thresholdDays = STALE_WORK_ITEM_DAYS,
+) {
+  const counts = countOpenWorkItems(items);
+  const cutoff = now - thresholdDays * 24 * 60 * 60 * 1000;
+  const stale = items
+    .filter(
+      (item) =>
+        item?.state === 'open' &&
+        !item.merged_at &&
+        Number.isFinite(Date.parse(item.updated_at ?? '')) &&
+        Date.parse(item.updated_at) < cutoff,
+    )
+    .sort((left, right) => Date.parse(left.updated_at) - Date.parse(right.updated_at));
+  const compact = (item) => ({
+    number: item.number,
+    title: item.title,
+    url: item.html_url,
+    updatedAt: item.updated_at,
+  });
+  const staleIssues = stale.filter((item) => !item.pull_request);
+  const stalePullRequests = stale.filter((item) => item.pull_request);
+  return {
+    ...counts,
+    staleWorkItems: {
+      thresholdDays,
+      issuesCount: staleIssues.length,
+      pullRequestsCount: stalePullRequests.length,
+      oldestIssues: staleIssues.slice(0, 3).map(compact),
+      oldestPullRequests: stalePullRequests.slice(0, 3).map(compact),
+    },
+  };
+}
+
 function workflowText(run) {
   return [run?.name, run?.display_title, run?.path, run?.actor?.login, run?.triggering_actor?.login]
     .filter(Boolean)
