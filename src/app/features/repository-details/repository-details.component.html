@@ -180,6 +180,20 @@
               }}</code>
             </dd>
           </div>
+          <div>
+            <dt
+              title="Coverage of collected source groups; it does not guarantee classification correctness."
+            >
+              Collection coverage
+            </dt>
+            <dd>
+              {{ repository.collection.collectedSignals.length }}/{{
+                repository.collection.collectedSignals.length +
+                  repository.collection.unavailableSignals.length
+              }}
+              signal groups collected
+            </dd>
+          </div>
         </dl>
         @if (repository.topics.length) {
           <div class="topics">

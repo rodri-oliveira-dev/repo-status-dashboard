@@ -12,6 +12,7 @@ import {
   correlateReleaseVersion,
   inferDeliveryType,
   mapDeliveryStatus,
+  mapWorkflowStatus,
   normalizeSecurityAlerts,
   paginateWindow,
   securityWorkflowEvidence,
@@ -217,6 +218,8 @@ describe('bounded activity metrics', () => {
           workflowRuns: [
             run('CI', '2026-09-20T00:00:00Z'),
             run('CI', '2026-09-21T00:00:00Z', { conclusion: 'failure' }),
+            run('Lighthouse CI', '2026-09-22T00:00:00Z', { conclusion: 'failure' }),
+            run('CodeQL', '2026-09-23T00:00:00Z', { conclusion: 'failure' }),
           ],
           deployments: [{ created_at: '2026-09-10T00:00:00Z' }],
           releases: [{ published_at: '2026-09-11T00:00:00Z', draft: false }],
@@ -228,7 +231,7 @@ describe('bounded activity metrics', () => {
         windowDays: 30,
         since: '2026-09-01T00:00:00.000Z',
         commits: 1,
-        workflowRuns: 2,
+        workflowRuns: 4,
         successfulCiRuns: 1,
         failedCiRuns: 1,
         releases: 1,
@@ -279,7 +282,13 @@ describe('release and deployment frequency', () => {
     const result = calculateDeliveryFrequency(
       {
         workflowRuns: [run('Deploy', '2026-09-20T10:05:00Z')],
-        deployments: [{ id: 1, created_at: '2026-09-20T10:00:00Z' }],
+        deployments: [
+          {
+            id: 1,
+            created_at: '2026-09-20T10:00:00Z',
+            latestStatus: { state: 'success', updated_at: '2026-09-20T10:00:00Z' },
+          },
+        ],
         releases: [{ id: 2, published_at: '2026-09-20T10:10:00Z', draft: false }],
         availability: { actions: true, deployments: true, releases: true },
       },
@@ -312,7 +321,13 @@ describe('release and deployment frequency', () => {
           run('Deploy', '2026-09-20T10:05:00Z', { id: 1 }),
           run('Deploy', '2026-09-20T10:10:00Z', { id: 2 }),
         ],
-        deployments: [{ id: 3, created_at: '2026-09-20T10:00:00Z' }],
+        deployments: [
+          {
+            id: 3,
+            created_at: '2026-09-20T10:00:00Z',
+            latestStatus: { state: 'success', updated_at: '2026-09-20T10:00:00Z' },
+          },
+        ],
         releases: [],
         availability: { actions: true, deployments: true, releases: true },
       },
@@ -335,6 +350,19 @@ describe('release and deployment frequency', () => {
     assert.equal(result.deliveryEvents, null);
   });
 
+  it('renders failed deployment-status collection as unavailable', () => {
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [],
+        deployments: [{ id: 1, created_at: '2026-09-20T10:00:00Z' }],
+        releases: [],
+        availability: { actions: true, deployments: false, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, null);
+  });
+
   it('does not count successful Dependabot package updates as delivery events', () => {
     const result = calculateDeliveryFrequency(
       {
@@ -353,6 +381,24 @@ describe('release and deployment frequency', () => {
       now,
     );
     assert.equal(result.deliveryEvents, 0);
+  });
+
+  it('counts only deployments with a successful final status', () => {
+    const deployments = ['success', 'failure', 'cancelled', 'in_progress'].map((state, index) => ({
+      id: index,
+      created_at: `2026-09-${20 + index}T10:00:00Z`,
+      latestStatus: { state, updated_at: `2026-09-${20 + index}T10:05:00Z` },
+    }));
+    const result = calculateDeliveryFrequency(
+      {
+        workflowRuns: [],
+        deployments,
+        releases: [],
+        availability: { actions: true, deployments: true, releases: true },
+      },
+      now,
+    );
+    assert.equal(result.deliveryEvents, 1);
   });
 });
 
@@ -396,16 +442,100 @@ describe('build workflow selection', () => {
   });
 
   it('does not let auxiliary mutation or quality workflows override CI', () => {
-    const result = selectBuildWorkflow([
-      run('CI', '2026-10-01T10:00:00Z'),
-      run('mutation-tests', '2026-10-03T10:00:00Z', { conclusion: 'cancelled' }),
-      run('Sonar quality', '2026-10-04T10:00:00Z'),
-    ]);
+    const result = selectBuildWorkflow(
+      [
+        run('CI', '2026-10-01T10:00:00Z', { head_branch: 'main' }),
+        run('mutation-tests', '2026-10-03T10:00:00Z', {
+          head_branch: 'main',
+          conclusion: 'cancelled',
+        }),
+        run('Sonar quality', '2026-10-04T10:00:00Z', { head_branch: 'main' }),
+      ],
+      {},
+      'main',
+    );
+    assert.equal(result.name, 'CI');
+  });
+
+  it('does not let auxiliary validation workflows override primary CI', () => {
+    const result = selectBuildWorkflow(
+      [
+        run('CI', '2026-10-01T10:00:00Z', { head_branch: 'main' }),
+        run('Validação de versionamento', '2026-10-04T10:00:00Z', {
+          path: '.github/workflows/versioning-validation.yml',
+          head_branch: 'main',
+        }),
+        run('Template package validation', '2026-10-05T10:00:00Z', {
+          path: '.github/workflows/template-package-validation.yml',
+          head_branch: 'main',
+        }),
+      ],
+      {},
+      'main',
+    );
     assert.equal(result.name, 'CI');
   });
 
   it('returns no primary CI for ambiguous test names', () => {
     assert.equal(selectBuildWorkflow([run('Tests', '2026-10-01T10:00:00Z')]), null);
+  });
+
+  it('uses only CI runs from the repository default branch', () => {
+    const passingMain = run('CI', '2026-10-01T10:00:00Z', {
+      head_branch: 'trunk',
+      conclusion: 'success',
+    });
+    const failingPullRequest = run('CI', '2026-10-02T10:00:00Z', {
+      head_branch: 'feature/change',
+      event: 'pull_request',
+      conclusion: 'failure',
+    });
+    assert.equal(selectBuildWorkflow([passingMain, failingPullRequest], {}, 'trunk'), passingMain);
+    assert.equal(
+      calculateHealth({
+        archived: false,
+        buildStatus: mapWorkflowStatus(
+          selectBuildWorkflow([passingMain, failingPullRequest], {}, 'trunk'),
+        ),
+        deliveryStatus: 'none',
+        lastActivityDate: passingMain.updated_at,
+      }),
+      'healthy',
+    );
+
+    const failingMain = { ...passingMain, conclusion: 'failure' };
+    const passingPullRequest = { ...failingPullRequest, conclusion: 'success' };
+    assert.equal(selectBuildWorkflow([failingMain, passingPullRequest], {}, 'trunk'), failingMain);
+    assert.equal(
+      calculateHealth({
+        archived: false,
+        buildStatus: mapWorkflowStatus(
+          selectBuildWorkflow([failingMain, passingPullRequest], {}, 'trunk'),
+        ),
+        deliveryStatus: 'none',
+        lastActivityDate: failingMain.updated_at,
+      }),
+      'failed',
+    );
+  });
+
+  it('returns no Build when CI has no run on the default branch', () => {
+    const build = selectBuildWorkflow(
+      [run('CI', '2026-10-02T10:00:00Z', { head_branch: 'feature/change' })],
+      {},
+      'trunk',
+    );
+    assert.equal(build, null);
+    assert.equal(mapWorkflowStatus(build), 'unknown');
+    assert.equal(
+      calculateHealth({
+        archived: false,
+        buildStatus: mapWorkflowStatus(build),
+        deliveryStatus: 'none',
+        lastActivityDate: '2026-10-02T10:00:00Z',
+      }),
+      'unknown',
+    );
   });
 });
 
@@ -427,7 +557,7 @@ describe('workflow semantic roles', () => {
     );
     assert.equal(
       classifyWorkflowRole(run('Sync Docker images', '2026-10-01T10:00:00Z')),
-      'delivery',
+      'maintenance',
     );
     assert.equal(
       classifyWorkflowRole(
@@ -441,6 +571,31 @@ describe('workflow semantic roles', () => {
       'maintenance',
     );
     assert.equal(classifyWorkflowRole(run('Tests', '2026-10-01T10:00:00Z')), 'unknown');
+  });
+
+  it('uses semantic precedence for ambiguous workflow vocabulary', () => {
+    const cases = [
+      ['Terraform CI', 'ci'],
+      ['Lighthouse CI', 'quality'],
+      ['Validate', 'ci'],
+      ['Validate .NET', 'ci'],
+      ['Validate profile', 'ci'],
+      ['Ingestion integration', 'ci'],
+      ['OWASP ZAP', 'security'],
+      ['Coverage', 'quality'],
+      ['Lint', 'quality'],
+      ['Quality gate', 'quality'],
+      ['Terraform apply', 'delivery'],
+      ['Publish package', 'delivery'],
+      ['Create Release', 'release'],
+      ['Deploy Pages', 'pages'],
+      ['Package validation', 'quality'],
+      ['Release publishing validation', 'quality'],
+      ['Agent governance validation', 'quality'],
+    ];
+    for (const [name, expected] of cases) {
+      assert.equal(classifyWorkflowRole(run(name, '2026-10-01T10:00:00Z')), expected, name);
+    }
   });
 
   it('preserves a specific workflow role when the run title looks like CI', () => {
@@ -487,10 +642,10 @@ describe('delivery workflow selection and type', () => {
     );
   });
 
-  it('keeps generic sync workflows eligible for delivery when they contain delivery signals', () => {
+  it('keeps explicit image publication workflows eligible for delivery', () => {
     assert.equal(
-      selectDeliveryWorkflow([run('Sync Docker images', '2026-10-04T10:00:00Z')]).name,
-      'Sync Docker images',
+      selectDeliveryWorkflow([run('Push Docker image', '2026-10-04T10:00:00Z')]).name,
+      'Push Docker image',
     );
   });
 
@@ -647,32 +802,139 @@ describe('health classification', () => {
 });
 
 describe('project type classification', () => {
-  it('classifies common repository profiles', () => {
+  const project = (path, content) => ({ paths: [path], projectFiles: [{ path, content }] });
+
+  it('prefers structural evidence over descriptions and topics', () => {
     assert.equal(
-      classifyProjectType({ name: 'angular-template', language: 'TypeScript', topics: [] }),
+      classifyProjectType(
+        { name: 'web', language: 'TypeScript', topics: [] },
+        { paths: ['angular.json', 'src/main.ts'] },
+      ),
       'Angular',
     );
     assert.equal(
-      classifyProjectType({ name: 'CSF.Analyzers', language: 'C#', topics: ['roslyn-analyzer'] }),
+      classifyProjectType(
+        { name: 'CSF', language: 'C#', topics: [] },
+        project('src/CSF.Analyzers/CSF.Analyzers.csproj', '<Project />'),
+      ),
       'Analyzer',
     );
     assert.equal(
-      classifyProjectType({
-        name: 'Repo2C4',
-        description: 'A CLI tool',
-        language: 'C#',
-        topics: [],
-      }),
+      classifyProjectType(
+        { name: 'Repo2C4', description: 'A library SDK', language: 'C#', topics: [] },
+        project(
+          'src/Repo2C4/Repo2C4.csproj',
+          '<Project><PropertyGroup><PackAsTool>true</PackAsTool><ToolCommandName>repo2c4</ToolCommandName></PropertyGroup></Project>',
+        ),
+      ),
       'CLI',
     );
     assert.equal(
-      classifyProjectType({
-        name: 'Dapper-FluentMap',
-        description: 'Fluent mapping for Dapper with analyzers',
-        language: 'C#',
-        topics: ['dapper', 'source-generator'],
-      }),
+      classifyProjectType(
+        { name: 'Dapper-FluentMap', description: 'Application', language: 'C#', topics: [] },
+        project(
+          'src/Dapper-FluentMap/Dapper-FluentMap.csproj',
+          '<Project><PropertyGroup><PackageId>Dapper-FluentMap</PackageId><IsPackable>true</IsPackable></PropertyGroup></Project>',
+        ),
+      ),
       'Library',
+    );
+    assert.equal(
+      classifyProjectType(
+        { name: 'terraform-platform', language: 'HCL', topics: [] },
+        { paths: ['main.tf', 'variables.tf', 'README.md'] },
+      ),
+      'Infrastructure',
+    );
+  });
+
+  it('does not infer Library or CLI from promotional metadata alone', () => {
+    for (const word of ['SDK', 'package', 'NuGet', 'library']) {
+      assert.equal(
+        classifyProjectType({ name: 'service', description: word, language: 'C#', topics: [] }),
+        'Application',
+      );
+    }
+  });
+
+  it('keeps repository intent ahead of incidental package and analyzer projects', () => {
+    const packageProject =
+      '<Project><PropertyGroup><PackageId>Package</PackageId></PropertyGroup></Project>';
+    assert.equal(
+      classifyProjectType(
+        { name: 'dotnet-library-template', language: 'C#', topics: [] },
+        project('src/Library/Library.csproj', packageProject),
+      ),
+      'Template',
+    );
+    assert.equal(
+      classifyProjectType(
+        { name: 'architecture-poc', language: 'C#', topics: [] },
+        project('src/Library/Library.csproj', packageProject),
+      ),
+      'Sample',
+    );
+    assert.equal(
+      classifyProjectType(
+        { name: 'mapping-library', language: 'C#', topics: [] },
+        {
+          paths: ['src/Library/Library.csproj', 'src/Library.Analyzers/Library.Analyzers.csproj'],
+          projectFiles: [
+            { path: 'src/Library/Library.csproj', content: packageProject },
+            { path: 'src/Library.Analyzers/Library.Analyzers.csproj', content: packageProject },
+          ],
+        },
+      ),
+      'Library',
+    );
+  });
+
+  it('classifies the representative portfolio structures', () => {
+    const library = (name) =>
+      classifyProjectType(
+        { name, full_name: `rodri-oliveira-dev/${name}`, language: 'C#', topics: [] },
+        project(
+          `src/${name}/${name}.csproj`,
+          `<Project><PropertyGroup><PackageId>${name}</PackageId></PropertyGroup></Project>`,
+        ),
+      );
+    assert.equal(library('Dapper.TypedParameters'), 'Library');
+    assert.equal(library('ReliableWebhooks'), 'Library');
+    assert.equal(library('brazilian-primitives'), 'Library');
+    assert.equal(
+      classifyProjectType(
+        { name: 'DotNetRepoInspector', language: 'C#', topics: [] },
+        project(
+          'src/DotNetRepoInspector.Cli/DotNetRepoInspector.Cli.csproj',
+          '<Project><PropertyGroup><PackAsTool>true</PackAsTool><ToolCommandName>dotnet-repo-inspect</ToolCommandName><PackageId>DotNetRepoInspector</PackageId></PropertyGroup></Project>',
+        ),
+      ),
+      'CLI',
+    );
+    assert.equal(
+      classifyProjectType(
+        { name: 'dotfiles', language: 'Shell', topics: [] },
+        { paths: ['bin/dotfiles-doctor', 'install.sh', 'README.md'] },
+      ),
+      'Tool',
+    );
+    assert.equal(
+      classifyProjectType(
+        { name: 'dotnet-copilot-code-review-skills', language: null, topics: [] },
+        {
+          paths: ['README.md', '.github/copilot-instructions.md', '.github/skills/review/SKILL.md'],
+        },
+      ),
+      'Documentation',
+    );
+    assert.equal(
+      classifyProjectType({
+        name: 'rodri-oliveira-dev',
+        full_name: 'rodri-oliveira-dev/rodri-oliveira-dev',
+        language: 'Python',
+        topics: [],
+      }),
+      'Documentation',
     );
   });
 });

@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { nextGithubPath, shouldIncludeRepository } from './collect-github-status.mjs';
+import {
+  collectRepositoryStructure,
+  nextGithubPath,
+  shouldIncludeRepository,
+} from './collect-github-status.mjs';
 
 describe('GitHub pagination', () => {
   it('follows next links for cursor and numbered pagination', () => {
@@ -44,11 +48,35 @@ describe('repository inclusion', () => {
     assert.equal(shouldIncludeRepository(repository({ archived: true }), owner), false);
   });
 
+  it('excludes private repositories', () => {
+    assert.equal(shouldIncludeRepository(repository({ private: true }), owner), false);
+    assert.equal(shouldIncludeRepository(repository({ visibility: 'private' }), owner), false);
+  });
+
   it('excludes forks and repositories owned by another account', () => {
     assert.equal(shouldIncludeRepository(repository({ fork: true }), owner), false);
     assert.equal(
       shouldIncludeRepository(repository({ owner: { login: 'someone-else' } }), owner),
       false,
     );
+  });
+});
+
+describe('repository structure collection', () => {
+  it('treats a 409 tree response for an empty repository as collected empty evidence', async (t) => {
+    const originalFetch = globalThis.fetch;
+    t.after(() => {
+      globalThis.fetch = originalFetch;
+    });
+    globalThis.fetch = async () => ({ status: 409 });
+
+    const result = await collectRepositoryStructure(
+      { name: 'empty', default_branch: 'main' },
+      '/repos/owner/empty',
+    );
+
+    assert.equal(result.available, true);
+    assert.deepEqual(result.tree, []);
+    assert.deepEqual(result.evidence, { paths: [], projectFiles: [] });
   });
 });
