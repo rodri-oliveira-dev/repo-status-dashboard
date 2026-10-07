@@ -1,167 +1,144 @@
 # Repo Control Center
 
-O **Repo Control Center** é um dashboard operacional, somente leitura, para acompanhar em um único lugar o estado dos repositórios GitHub pertencentes a [`rodri-oliveira-dev`](https://github.com/rodri-oliveira-dev).
+[![CI](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/ci.yml/badge.svg)](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/deploy-pages.yml)
+[![Release](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/release.yml/badge.svg)](https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/workflows/release.yml)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Angular 22](https://img.shields.io/badge/Angular-22-DD0031?logo=angular&logoColor=white)](https://angular.dev/)
+[![TypeScript 6](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js 24](https://img.shields.io/badge/Node.js-24-5FA04E?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
-Ele consolida sinais que normalmente ficam espalhados entre repositórios, workflows, deployments e releases — como status de build, entrega, versão publicada, atividade recente e saúde geral — e transforma esses dados em uma visão centralizada para manutenção e tomada de decisão.
+English | [Português (Brasil)](README.pt-BR.md)
 
-A aplicação não mantém backend permanente nem envia credenciais ao navegador. A coleta acontece no GitHub Actions, gera um snapshot JSON estático e publica a SPA no GitHub Pages.
+Repo Control Center is a read-only operational dashboard for the public repositories owned by
+[rodri-oliveira-dev](https://github.com/rodri-oliveira-dev). It consolidates build, delivery,
+release, activity, security, package, and health signals into a single portfolio view.
 
-## O que ele faz
+**[Live dashboard](https://rodri-oliveira-dev.github.io/repo-status-dashboard/)**
 
-O dashboard coleta e organiza automaticamente informações dos repositórios próprios da conta, ignorando forks, e apresenta:
+The application has no permanent backend. GitHub Actions runs a Node.js collector, produces a
+static JSON snapshot, and publishes an Angular SPA to GitHub Pages. Credentials remain in the
+Actions environment and are never sent to the browser.
 
-- status do CI/build mais recente;
-- status e tipo da última entrega;
-- versão publicada, quando pode ser determinada com segurança;
-- data do último commit e atividade recente;
-- última GitHub Release;
-- linguagem e tipo do projeto;
-- quantidade de estrelas e total combinado de issues e pull requests abertos;
-- classificação de saúde do repositório;
-- filtros por saúde, tipo de projeto, tecnologia e tipo de entrega;
-- busca por repositório;
-- ordenação por nome, atualização ou saúde;
-- visão detalhada de cada repositório;
-- identificação separada de projetos arquivados.
+## Features
 
-O objetivo não é substituir o GitHub, mas funcionar como uma camada de observabilidade do portfólio de repositórios.
+- Monitors only public, owner-managed, non-fork, non-archived repositories.
+- Shows the latest primary CI result from each repository's default branch.
+- Separates CI, quality, security, mutation, delivery, release, Pages, and maintenance workflows.
+- Classifies project type from repository structure and project metadata.
+- Tracks commits, workflow runs, releases, deployments, issues, and pull requests.
+- Reports release and delivery frequency with explicit source coverage.
+- Presents security signals without a misleading composite score.
+- Resolves verified npm and NuGet identities and public registry metrics.
+- Explains Health through deterministic reason codes and a prioritized Needs Attention view.
+- Supports search, filters, sorting, portfolio insights, and repository detail pages.
 
-## Ganhos
-
-Centralizar esses sinais reduz a necessidade de abrir repositório por repositório para entender o estado do ecossistema.
-
-Na prática, o dashboard ajuda a:
-
-- **reduzir carga operacional**, concentrando informações dispersas em uma única tela;
-- **identificar falhas rapidamente**, destacando builds ou entregas com problema;
-- **encontrar projetos esquecidos**, classificando repositórios sem atividade recente como `Stale`;
-- **acompanhar releases e deploys**, facilitando a identificação da última versão efetivamente entregue;
-- **priorizar manutenção**, usando uma classificação de saúde uniforme entre projetos;
-- **detectar inconsistências de automação**, como projetos sem workflow reconhecido ou sem evidência de delivery;
-- **manter visão de portfólio**, útil quando a quantidade de repositórios cresce;
-- **evitar infraestrutura adicional**, já que o resultado publicado é totalmente estático;
-- **reduzir exposição de credenciais**, porque tokens existem apenas no contexto do GitHub Actions e nunca são enviados para a SPA.
-
-## Arquitetura
+## Architecture
 
 ```mermaid
 flowchart LR
-    API[GitHub API] --> COL[Collector Node.js]
-    COL --> JSON[repositories.json]
+    API[GitHub REST API] --> COL[Node.js collector]
+    REG[Public package registries] --> COL
+    SCORE[OpenSSF Scorecard API] --> COL
+    COL --> JSON[Static repositories.json snapshot]
     JSON --> SPA[Angular SPA]
     SPA --> PAGES[GitHub Pages]
 ```
 
-O workflow agendado executa o collector durante o próprio job de publicação. O snapshot gerado entra no artifact do Pages e não exige commits automáticos.
+The scheduled Pages workflow runs the collector before building the application. The generated
+snapshot is included in the Pages artifact; it is not committed automatically. This keeps data
+collection out of the browser and avoids a continuously running service.
 
-Esse desenho mantém a solução simples: o GitHub Actions atua como processo de coleta, o JSON como snapshot de leitura e o GitHub Pages como camada de publicação.
+## Technology
 
-## Stack
+- Angular 22 with standalone components, Signals, strict templates, and hash-based routing
+- TypeScript 6 in strict mode
+- SCSS with responsive light and dark themes
+- Node.js 24 for development, collection, testing, and builds
+- Vitest and Node's built-in test runner
+- ESLint and Prettier
+- GitHub Actions and GitHub Pages
+- Angular automatic CSP generation plus build-time CSP hardening
+- Lighthouse CI, SEO validation, IndexNow, and OWASP ZAP Baseline
 
-- Angular 22 com standalone components, Signals e templates estritos
-- TypeScript 6 em modo strict
-- SCSS responsivo com light/dark mode
-- ESLint, Prettier, Vitest e `node:test`
-- GitHub Actions e GitHub Pages
-- Lighthouse CI para performance, acessibilidade, boas práticas e SEO
-- IndexNow para notificar mecanismos de busca após publicação
-- OWASP ZAP Baseline para validação passiva da Pages publicada
-- Node.js 24 apenas para desenvolvimento, build e coleta
+## How collection works
 
-## SEO, qualidade e segurança da Pages
+[scripts/collect-github-status.mjs](scripts/collect-github-status.mjs) lists repositories for the
+configured owner and explicitly excludes private repositories, forks, archived repositories, and
+repositories owned by another account. The default concurrency is four repositories and can be set
+from 1 to 8 with <code>COLLECTOR_CONCURRENCY</code>.
 
-A página publicada é tratada também como uma vitrine técnica do portfólio. O HTML base inclui canonical URL, Open Graph, Twitter Cards, autoria e structured data com `WebSite`, `WebApplication` e `Person`. Um sitemap dedicado expõe a URL canônica do dashboard.
+For each included repository, the collector reuses paginated GitHub data to gather:
 
-O workflow [`seo-validation.yml`](.github/workflows/seo-validation.yml) valida esses metadados, structured data, sitemap e o backlink para o site pessoal. O [`lighthouse.yml`](.github/workflows/lighthouse.yml), adaptado do site principal, executa três medições e aplica quality gates para SEO, boas práticas e acessibilidade, mantendo performance como warning.
+- default-branch commits and repository metadata;
+- workflow runs from GitHub Actions;
+- deployments and each deployment's latest status;
+- published GitHub Releases;
+- open issues and pull requests;
+- Dependabot and code-scanning alert counts;
+- public OpenSSF Scorecard evidence;
+- repository structure and package metadata.
 
-O [`indexnow.yml`](.github/workflows/indexnow.yml) reutiliza a chave de propriedade já publicada pelo site pessoal no host `rodri-oliveira-dev.github.io` e envia a URL canônica do dashboard ao IndexNow após um deploy bem-sucedido, manualmente ou no fallback diário. Isso reduz a dependência de descoberta apenas por crawling e ajuda mudanças públicas a chegarem mais rapidamente aos mecanismos de busca compatíveis.
+Expected absence is not treated as an error. Optional API <code>404</code> responses and
+<code>409</code> responses for empty repositories produce empty evidence. Permission errors,
+unexpected client errors, network failures, and server errors make the affected signal group
+unavailable. Transient network and server failures receive one retry. Warnings are sanitized before
+they are logged or added to the snapshot.
 
-O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. A ruleset [`rules.tsv`](.zap/rules.tsv) reclassifica como `INFO` findings de headers/cache controlados pelo GitHub Pages, enquanto [`hooks.py`](.zap/hooks.py) remove alerts de outros sites no mesmo host e somente exceções CSP documentadas (`10055-13` e `10055-6`). O Angular usa `security.autoCsp` para a política de scripts; o build complementa essa política com diretivas explícitas de recursos por meio de `scripts/harden-csp.mjs`. A issue do ZAP é gerenciada por um pós-processador próprio, evitando que o wrapper republique findings informativos ou de outros sites.
+### Collection coverage
 
-O logo do Repo Control Center aponta para [o site pessoal](https://rodri-oliveira-dev.github.io/), transformando o dashboard também em um ponto de entrada para o restante do portfólio.
+Coverage is calculated for eight signal groups: metadata, commits, Actions, deployments, releases,
+work items, security, and packages. Its states are <code>complete</code>, <code>partial</code>, and
+<code>unavailable</code>. The internal <code>collection.confidence</code> field remains for schema
+compatibility, but it represents source coverage—not confidence that every semantic classification
+is correct. The UI therefore uses wording such as <code>8/8 signal groups collected</code>.
 
-## Executar localmente
+Missing observability never becomes a repository failure by itself. Partial collection adds context
+to Health, while unavailable operational signals remain distinguishable from real CI or delivery
+failures.
 
-Requisitos: Node.js 24 e npm.
+### Work items
 
-```bash
-npm ci
-npm start
-```
+Issues and pull requests are counted separately. An open item is stale after more than 30 days
+without an update; an item exactly at the boundary is not stale. Closed issues and merged pull
+requests are excluded. The snapshot retains counts and the three oldest stale items of each type.
 
-Acesse `http://localhost:4200`. O snapshot versionado em `public/data/repositories.json` permite desenvolver a UI sem executar a coleta.
+## Workflow classification and Build
 
-Comandos úteis:
+Pure classification rules live in
+[scripts/github-status-rules.mjs](scripts/github-status-rules.mjs). Workflows are assigned one of
+these roles:
 
-```bash
-npm run collect       # atualiza o snapshot pela API do GitHub
-npm run lint          # ESLint para TypeScript, templates e scripts
-npm test              # testes Angular e das regras do collector
-npm run build         # build local de produção
-npm run build:pages   # build com base href /repo-status-dashboard/
-npm run format:check  # valida Prettier
-```
+- <code>ci</code>: primary integration, build, and code-validation pipelines;
+- <code>quality</code>: Sonar, Codecov, coverage, isolated lint, Lighthouse, quality gates, and
+  auxiliary validation;
+- <code>security</code>: CodeQL, dependency review, secret scanning, OWASP ZAP, Trivy, Snyk, and
+  equivalent scans;
+- <code>mutation</code>: mutation-testing pipelines;
+- <code>delivery</code>: explicit deployment or package/image publication;
+- <code>release</code>: release or tag creation and publication;
+- <code>pages</code>: GitHub Pages build or deployment;
+- <code>maintenance</code>: Dependabot, Renovate, stale, cleanup, and synchronization automation;
+- <code>unknown</code>: insufficient evidence.
 
-## Collector
+Specific signals take precedence over generic words. For example, <code>Terraform CI</code> is CI,
+<code>Lighthouse CI</code> is quality, and a package or release reference alone does not imply
+delivery. <code>Validate</code>, <code>Validate .NET</code>, <code>Validate profile</code>,
+supported primary validation workflows, and ingestion integration pipelines are CI. Version,
+release, template, governance, package, metadata, and configuration validation remain auxiliary
+quality checks.
 
-[`scripts/collect-github-status.mjs`](scripts/collect-github-status.mjs) lista apenas repositórios cujo owner é `rodri-oliveira-dev`, remove forks, pagina resultados e enriquece cada item com commits, workflow runs, deployments e release mais recente. A concorrência padrão é quatro; altere com `COLLECTOR_CONCURRENCY` entre 1 e 8.
+Build uses only runs classified as <code>ci</code> whose <code>head_branch</code> equals the
+repository's <code>default_branch</code>. A newer pull-request or feature-branch run cannot replace
+the operational state of the default branch. If no default-branch CI run exists, Build is
+<code>unknown</code>. Runs from other branches remain available to activity and historical metrics.
+CI success rate includes only workflows classified as CI; quality, security, mutation, delivery,
+and maintenance runs are excluded.
 
-Issues e pull requests abertos são contados separadamente pelo endpoint REST de issues, usando o campo `pull_request` de cada item. O custo normal é uma requisição por repositório com até 100 itens abertos, com páginas adicionais somente quando necessário. Se essa consulta falhar, ambos os valores ficam indisponíveis e o grupo `workItems` reduz a confiança da coleta, em vez de reutilizar o contador combinado `open_issues_count`.
+### Repository overrides
 
-Um item aberto é considerado stale quando `updated_at` está há mais de 30 dias sem mudança; o limite é a constante `STALE_WORK_ITEM_DAYS` do collector. O instante exatamente no limite ainda não é stale. Itens fechados ou PRs mesclados são excluídos. O snapshot mantém as contagens e, para limitar o tamanho, somente os três itens mais antigos de cada tipo com seus links.
-
-### Atividade
-
-Cada snapshot recalcula uma janela móvel de 30 dias (`ACTIVITY_WINDOW_DAYS`) para commits, workflow runs, CI primário aprovado/reprovado, releases publicadas e deployments. As mesmas consultas usadas pelos sinais atuais são paginadas em blocos de 100 até ultrapassar o início da janela, evitando chamadas duplicadas. Zero significa fonte consultada sem eventos; `null` significa fonte indisponível. A janela é um retrato recomputável, não uma série histórica, e não exige backend permanente.
-
-Release frequency é a contagem de GitHub Releases publicadas e não draft na janela. Delivery frequency combina somente deployments cujo status final é positivo, workflows de delivery/release/Pages concluídos com sucesso e releases publicadas; sinais de fontes diferentes separados por até 30 minutos são tratados como evidência do mesmo evento. Deployments falhos, cancelados ou ainda em andamento não entram na frequência. Eventos distintos da mesma fonte não são colapsados. A contagem de delivery fica indisponível se qualquer fonte necessária falhar, evitando exibir subcontagem como zero. Essas métricas são contagens observadas no período, não uma medição ou certificação DORA; automações externas ao GitHub podem não aparecer.
-
-### Insights do portfólio
-
-A visão agregada usa somente o snapshot atual e a mesma janela de 30 dias; não simula tendência temporal sem snapshots anteriores. Repositórios ativos têm pelo menos um commit, workflow, release ou deployment observado. A taxa de sucesso de CI é `execuções de CI aprovadas / (aprovadas + reprovadas)` e exibe o denominador. Totais de release e delivery somam apenas repositórios com a fonte disponível e mostram a cobertura. O watch de staleness lista repositórios ativos entre 60 e 90 dias sem commit e os que já cruzaram 90 dias. Dados ausentes são excluídos com cobertura explícita, nunca convertidos silenciosamente em zero.
-
-### Pacotes NuGet e npm
-
-O collector considera uma identidade npm somente quando um `package.json` público, não privado, declara `name` e `repository` apontando exatamente para o repositório coletado. Para NuGet, cada `.csproj` descoberto deve declarar `PackageId` e `RepositoryUrl` correspondente; vários projetos verificados geram vários pacotes. IDs não são inferidos do nome do repositório. Manifestos ausentes resultam em `none`; metadados insuficientes ou divergentes resultam em `ambiguous`.
-
-Versão e publicação npm vêm do registro público `registry.npmjs.org`; downloads usam a API pública `api.npmjs.org` e representam `last-month`, com datas no contrato. NuGet usa a busca pública oficial e expõe a versão atual e `totalDownloads` de toda a vida do pacote. Falhas externas geram `partial`/`unavailable` e reduzem a confiança do grupo `packages`. Métricas de download têm caches e critérios dos próprios registros e não são comparáveis diretamente entre ecossistemas.
-
-O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
-
-Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e mantém `collection.confidence` (`high`, `medium` ou `low`) por compatibilidade do contrato. Esse valor mede somente a cobertura determinística de oito grupos: metadados, commits, Actions, deployments, releases, `workItems`, `security` e `packages`; não é uma garantia de correção semântica. Por isso, a UI apresenta essa informação como **Collection coverage**, por exemplo `8/8 signal groups collected`. A cobertura nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
-
-Ausência esperada (`404` em APIs opcionais e `409` ao consultar commits de repositório vazio) conta como consulta concluída. `403`, demais `4xx`, falhas de rede e `5xx` tornam o grupo indisponível; falhas transitórias de rede e `5xx` recebem uma tentativa adicional. Rate limiting é preservado como aviso sem expor credenciais.
-
-### Variáveis de ambiente
-
-| Variável                | Uso                                            |
-| ----------------------- | ---------------------------------------------- |
-| `GH_DASHBOARD_TOKEN`    | Token preferencial do collector                |
-| `GITHUB_TOKEN`          | Fallback, inclusive o token efêmero do Actions |
-| `GITHUB_OWNER`          | Owner opcional; padrão `rodri-oliveira-dev`    |
-| `COLLECTOR_CONCURRENCY` | Número de repositórios processados em paralelo |
-
-Sem token, a coleta funciona com dados públicos e o limite anônimo da API. Para limites maiores ou eventual acesso a repositórios privados, configure o secret `GH_DASHBOARD_TOKEN` com um fine-grained PAT somente leitura, limitado aos repositórios necessários e às permissões de Contents, Actions e Deployments. O token nunca é serializado, enviado à SPA ou escrito nos logs.
-
-## Regras de classificação
-
-As regras puras e testáveis ficam em [`scripts/github-status-rules.mjs`](scripts/github-status-rules.mjs).
-
-### Workflows e build
-
-O collector classifica workflows semanticamente como `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages`, `maintenance` ou `unknown`. A ordem das regras resolve termos sobrepostos (por exemplo, Pages antes de delivery), e nomes ambíguos permanecem `unknown`.
-
-Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente cuja `head_branch` seja a `default_branch` informada pelo GitHub, e Dependabot continua excluído. Na ausência de CI nessa branch, o Build fica `unknown`. Runs de PR e outras branches continuam nas métricas de atividade, mas não substituem o estado operacional principal. Lighthouse, Sonar, Codecov, coverage, lint isolado, security, mutation tests e manutenção também ficam fora de Build e da taxa de sucesso de CI. A configuração opcional por repositório pode substituir a descoberta semântica quando uma convenção de nomes não for suficiente.
-
-A classificação dá precedência a sinais específicos: CodeQL/OWASP ZAP e equivalentes são `security`; Sonar, Codecov, coverage, lint, Lighthouse e quality gates são `quality`; Pages permanece distinto; publicação/deploy explícitos são `delivery`; criação/publicação de release é `release`; e validações de build, inclusive `Validate`, `Validate .NET`, `Validate profile`, `Terraform CI` e integrações de ingestion, são `ci`. Palavras genéricas como `terraform`, `package`, `release` ou `CI` não bastam quando há um sinal semântico mais específico.
-
-### Tipo de projeto
-
-O tipo prioriza evidências estruturais coletadas da árvore do repositório. `angular.json`, arquivos Terraform predominantes, projetos Roslyn/analyzer, `PackAsTool`/`ToolCommandName` e metadados explícitos de pacote em `.csproj` determinam Angular, Infrastructure, Analyzer, CLI e Library, respectivamente. Profile repositories `<owner>/<owner>`, repositórios documentais, templates, samples e ferramentas com comandos em `bin/` ou `scripts/` também têm sinais próprios. Descrição e tópicos não transformam um projeto em Library apenas por mencionarem SDK, package, NuGet ou library; `Application` é o fallback quando nenhuma evidência estrutural mais forte existe.
-
-### Configuração por repositório
-
-Um repositório pode declarar arquivos de workflow em `.repo-dashboard.yml` na raiz:
+A repository can make workflow roles explicit with a root-level
+<code>.repo-dashboard.yml</code>:
 
 ```yaml
 workflows:
@@ -170,110 +147,234 @@ workflows:
     - build.yml
   quality: [sonar.yml, mutation-tests.yml]
   security: [codeql.yml]
-  delivery: [release.yml, deploy-pages.yml]
+  delivery: [publish.yml]
+  release: [release.yml]
+  pages: [deploy-pages.yml]
 ```
 
-Papéis suportados: `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages` e `maintenance`. Cada entrada deve ser somente o nome de um arquivo `.yml` ou `.yaml`. Um papel declarado é autoritativo: arquivos não listados não são classificados heuristicamente naquele papel; papéis ausentes continuam usando heurísticas. Arquivo ausente mantém o comportamento padrão, enquanto conteúdo inválido gera um aviso restrito ao repositório e não interrompe a coleta. O conteúdo da configuração não é publicado no snapshot.
+Supported roles are <code>ci</code>, <code>quality</code>, <code>security</code>,
+<code>mutation</code>, <code>delivery</code>, <code>release</code>, <code>pages</code>, and
+<code>maintenance</code>. Entries must be workflow file names ending in <code>.yml</code> or
+<code>.yaml</code>. A configured role is authoritative: files omitted from that role are not
+heuristically classified into it. Roles absent from the configuration continue to use semantic
+discovery. Invalid configuration produces a repository-scoped warning and does not stop collection.
 
-### Postura de segurança
+## Project types
 
-A postura apresenta evidências separadas: contagens agregadas de alertas Dependabot e code scanning, status do workflow de segurança e resultado público do OpenSSF Scorecard. Não existe score composto nem alegação de que um repositório está seguro. Estados `clean`, `findings_present`, `disabled`, `not_configured` e `unavailable` distinguem resultado, configuração e falta de acesso.
+Project Type favors structural evidence over descriptions and topics:
 
-Os endpoints de alertas exigem leitura de Dependabot alerts e code scanning alerts (`security_events` em tokens clássicos ou as permissões equivalentes somente leitura em fine-grained tokens). O Scorecard vem da API pública `api.securityscorecards.dev`. O snapshot publica apenas estados, score público e contagens; nomes de dependências, CVEs, caminhos, trechos e outros detalhes sensíveis não são serializados. Falhas de permissão ou da API externa reduzem a confiança do grupo `security` sem interromper a coleta. Somente contagens high/critical entram em `Needs Attention`.
+- <code>Angular</code>: a root <code>angular.json</code>;
+- <code>Infrastructure</code>: Terraform files predominate over implementation files;
+- <code>Documentation</code>: the universal profile pattern <code>&lt;owner&gt;/&lt;owner&gt;</code>
+  or a documentation-only structure;
+- <code>Template</code>: GitHub template metadata, <code>.template.config/template.json</code>, or a
+  clear template/starter/boilerplate/seed identity;
+- <code>Sample</code>: clear sample, example, demo, or proof-of-concept identity;
+- <code>Analyzer</code>: Roslyn/analyzer project evidence;
+- <code>CLI</code>: <code>PackAsTool</code> or <code>ToolCommandName</code> in a production
+  <code>.csproj</code>;
+- <code>Library</code>: a packable, non-executable production <code>.csproj</code> with an explicit
+  <code>PackageId</code>;
+- <code>Tool</code>: command files under <code>bin/</code> or a root GitHub Action manifest;
+- <code>Application</code>: fallback when a language exists but no stronger structure is present;
+- <code>Unknown</code>: no sufficient evidence.
 
-### Delivery
+Descriptions containing terms such as SDK, package, NuGet, or library do not classify a repository
+as a Library by themselves. Test, sample, benchmark, evaluation, and fixture projects are excluded
+when production <code>.csproj</code> evidence is evaluated.
 
-A descoberta segue esta precedência:
+## Delivery, activity, and portfolio insights
 
-1. deployment registrado no GitHub e seu status mais recente;
-2. workflow de deploy/publicação/package;
-3. GitHub Release mais recente;
-4. `None` quando não há evidência.
+The current delivery signal uses this precedence:
 
-O tipo é inferido como NuGet, npm, GitHub Pages, GitHub Release, Container, Deployment, Terraform, None ou Unknown. Uma versão só é exibida quando uma tag, referência ou título contém um valor confiável, ou quando uma release ocorreu em uma janela de 30 minutos da delivery; do contrário permanece `null` e a UI mostra `—`.
+1. a GitHub deployment and its latest status;
+2. the latest workflow classified as delivery, release, or Pages;
+3. the latest published, non-draft GitHub Release;
+4. <code>None</code> when no evidence exists.
 
-### Health
+Delivery type can be NuGet, npm, GitHub Pages, GitHub Release, Container, Deployment, Terraform,
+None, or Unknown. A version is shown only when a tag, reference, or title contains a reliable
+semantic version, or when a release is published within 30 minutes of the delivery signal.
 
-Precedência atual:
+The 30-day activity window is recomputed for every snapshot. Zero means the source was queried and
+contained no matching events; <code>null</code> means the source was unavailable. Workflow runs
+from pull requests and non-default branches count toward general activity and may contribute to
+historical CI metrics, but they never replace Build.
 
-1. `Archived` para repositórios arquivados;
-2. `Failed` quando CI ou delivery falhou;
-3. `Stale` sem atividade significativa há mais de 90 dias;
-4. `Healthy` para CI aprovado e atividade recente;
-5. `Warning` para estados intermediários ou dados parcialmente conhecidos;
-6. `Unknown` quando CI e delivery não podem ser determinados.
+Release frequency counts published, non-draft GitHub Releases. Delivery frequency counts only:
 
-A classificação cria uma linguagem comum para interpretar rapidamente o estado dos projetos, sem depender de convenções visuais diferentes em cada repositório.
+- deployments whose final status is <code>success</code> or an equivalent positive state;
+- successful workflows classified as delivery, release, or Pages;
+- published, non-draft GitHub Releases.
 
-Cada status também possui `healthReasons`, uma lista ordenada e independente de apresentação. O catálogo fechado inclui `REPOSITORY_ARCHIVED`, `CI_FAILING`, `DELIVERY_FAILING`, `ACTIVITY_STALE`, `CI_RUNNING`, `CI_QUEUED`, `CI_CANCELLED`, `CI_UNKNOWN`, `DELIVERY_IN_PROGRESS`, `NO_DELIVERY_EVIDENCE`, `COLLECTION_PARTIAL` e `COLLECTION_UNAVAILABLE`. Severidades `critical` e `warning` explicam problemas ou estados operacionais; `info` acrescenta contexto. Motivos de coleta aparecem sem transformar falha de observabilidade em falha do repositório.
+Failed, cancelled, queued, or in-progress deployments are excluded. Evidence from different sources
+within 30 minutes is correlated into one delivery event; distinct events from the same source are
+not collapsed. If any required source is unavailable, delivery frequency is unavailable instead of
+publishing a numeric undercount.
 
-`Needs Attention` ordena primeiro falhas críticas, depois warnings e trabalho stale; empates usam a evidência mais antiga e o nome do repositório. Repositórios arquivados e degradação exclusivamente informacional da coleta ficam fora da fila, enquanto o aviso de observabilidade permanece separado. Cada entrada leva aos detalhes e, quando disponível, à evidência correspondente no GitHub.
+Portfolio Insights uses the same snapshot and window. Active repositories have at least one
+observed commit, workflow, release, or deployment. CI success rate is successful CI runs divided by
+successful plus failed CI runs. Release and delivery totals include only repositories with
+available sources and display their coverage. The staleness watch distinguishes repositories
+between 60 and 90 days without a commit from those already beyond the 90-day Health threshold.
+These metrics are observed counts, not a DORA certification or a historical trend series.
 
-## GitHub Pages
+## Health
 
-O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, deriva o `base href` do nome real do repositório e publica o artifact oficial do Pages.
+Health is deterministic and uses available operational evidence in this order:
 
-No repositório GitHub, escolha **Settings → Pages → Source → GitHub Actions**. A URL esperada é:
+1. <code>Failed</code> when default-branch CI or the current delivery failed;
+2. <code>Stale</code> when significant activity is older than 90 days;
+3. <code>Healthy</code> when default-branch CI passed and activity is recent;
+4. <code>Warning</code> for running, queued, cancelled, or partially known operational states;
+5. <code>Unknown</code> when CI and delivery cannot be determined.
+
+The collector does not include archived repositories, so Archived is not part of the displayed
+portfolio. Health reason codes preserve the distinction between operational failures and
+observability gaps. Needs Attention prioritizes critical failures, warnings, and stale work; an
+informational collection warning alone does not place a repository in that queue.
+
+The stale repository threshold is 90 days. The stale work-item threshold is 30 days.
+
+## Security posture
+
+Security posture presents separate evidence rather than a composite security score:
+
+- Dependabot and code-scanning states and aggregate open-alert counts;
+- high/critical code-scanning counts;
+- the latest recognized security workflow status;
+- the public OpenSSF Scorecard result.
+
+The snapshot never serializes dependency names, CVEs, source paths, code excerpts, or credentials.
+States such as <code>clean</code>, <code>findings_present</code>, <code>disabled</code>,
+<code>not_configured</code>, and <code>unavailable</code> distinguish findings, setup, and
+observability. Only high/critical counts enter Needs Attention.
+
+The published site is also checked by
+[owasp-zap.yml](.github/workflows/owasp-zap.yml). Its passive baseline scan is restricted to the
+dashboard path. [rules.tsv](.zap/rules.tsv) downgrades hosting-controlled header/cache findings to
+informational, and [hooks.py](.zap/hooks.py) removes findings from sibling sites on the shared Pages
+host while retaining documented CSP exceptions.
+
+## Package metrics
+
+An npm identity is accepted only when a public, non-private <code>package.json</code> declares both
+a name and repository metadata that exactly matches the collected GitHub repository. A NuGet
+identity is accepted only when a production <code>.csproj</code> declares both
+<code>PackageId</code> and a matching <code>RepositoryUrl</code>. Package IDs are never inferred
+from repository names.
+
+Verified packages are resolved through the public npm and NuGet registries. npm exposes the latest
+version and last-month downloads with period dates. NuGet exposes the current version and lifetime
+<code>totalDownloads</code>. Missing manifests produce <code>none</code>; incomplete or mismatched
+metadata produces <code>ambiguous</code>; external failures produce <code>partial</code> or
+<code>unavailable</code>. Registry download metrics have different scopes and should not be
+compared directly across ecosystems.
+
+## Local development
+
+Requirements: Node.js 24 and npm.
+
+```bash
+npm ci
+npm start
+```
+
+Open <http://localhost:4200>. The committed
+[public/data/repositories.json](public/data/repositories.json) snapshot supports UI development
+without running the collector.
+
+Useful commands:
+
+```bash
+npm run collect       # Refresh the snapshot from public GitHub data
+npm run format:check  # Check Prettier formatting
+npm run lint          # Lint TypeScript, templates, and scripts
+npm test              # Run Angular and collector tests
+npm run build         # Build the production application
+npm run build:pages   # Build with the repository Pages base href
+```
+
+## GitHub Pages and automation
+
+[deploy-pages.yml](.github/workflows/deploy-pages.yml) runs on pushes to <code>main</code>, on manual
+dispatch, and hourly at minute 17. It collects data, checks formatting, lints, tests, builds with the
+repository base href, and deploys the official Pages artifact.
+
+Repository routes use hashes, for example <code>#/repository/repo-status-dashboard</code>, so direct
+refresh does not require server rewrites. The canonical indexable URL is:
+
+<https://rodri-oliveira-dev.github.io/repo-status-dashboard/>
+
+Additional automation includes:
+
+- [ci.yml](.github/workflows/ci.yml): format, lint, tests, build, and security configuration checks;
+- [seo-validation.yml](.github/workflows/seo-validation.yml): canonical metadata, structured data,
+  sitemap, and personal-site backlink validation;
+- [lighthouse.yml](.github/workflows/lighthouse.yml): three local Lighthouse runs with enforced
+  accessibility, best-practices, and SEO budgets; performance remains advisory;
+- [indexnow.yml](.github/workflows/indexnow.yml): submits the canonical URL after successful
+  deployment, on demand, and through a daily fallback;
+- [owasp-zap.yml](.github/workflows/owasp-zap.yml): passive scan after eligible deployments, on
+  demand, and weekly;
+- [release.yml](.github/workflows/release.yml): manual validated releases from <code>main</code>.
+
+## Configuration
+
+| Variable                           | Purpose                                                       |
+| ---------------------------------- | ------------------------------------------------------------- |
+| <code>GH_DASHBOARD_TOKEN</code>    | Preferred server-side token for higher public API coverage    |
+| <code>GITHUB_TOKEN</code>          | Fallback token, including the ephemeral Actions token         |
+| <code>GITHUB_OWNER</code>          | Owner to collect; defaults to <code>rodri-oliveira-dev</code> |
+| <code>COLLECTOR_CONCURRENCY</code> | Parallel repository limit from 1 to 8; defaults to 4          |
+
+Collection can run without a token under GitHub's anonymous public rate limit. A read-only
+fine-grained token can improve rate limits and access to public Actions, deployments, and security
+signals across the owner's repositories. Authentication does not enable private-repository support:
+private repositories are always filtered out. Tokens are never serialized, logged, or sent to the
+SPA.
+
+## Current limitations
+
+- GitHub does not always expose an unambiguous relationship between a workflow and a published
+  version; the version remains empty when correlation is not reliable.
+- Unrecognized workflow naming can result in <code>unknown</code>; repository overrides are
+  available for intentional exceptions.
+- The repository's ephemeral <code>GITHUB_TOKEN</code> may not read Actions, deployments, or
+  security data from other public repositories. A read-only token may be required for full signal
+  coverage.
+- Anonymous GitHub API limits are low for owners with many repositories.
+- Package and OpenSSF metrics depend on external public APIs and their cache/update policies.
+- GitHub Pages controls some response headers; the ZAP policy keeps those hosting-level findings
+  informational.
+- Repository detail pages use hash routes; search engines index the dashboard root rather than one
+  server-rendered page per repository.
+
+Private repositories, forks, and archived repositories are intentionally out of scope.
+
+## Project structure
 
 ```text
-https://rodri-oliveira-dev.github.io/repo-status-dashboard/
+src/app/core/                 snapshot loading and theme services
+src/app/features/             dashboard and repository detail features
+src/app/shared/               models, components, pipes, filters, and insights
+public/data/repositories.json committed snapshot consumed by the SPA
+scripts/                      collector, semantic rules, and build utilities
+.github/workflows/            CI, Pages, release, quality, SEO, and security automation
 ```
-
-As rotas usam hash (`#/repository/...`), evitando 404 em refresh sem exigir um servidor ou cópia de `404.html`.
-
-## Atualização automática
-
-O cron `17 * * * *` dispara aproximadamente uma vez por hora (o GitHub pode atrasar schedules em períodos de carga). Também é possível usar **Run workflow**. O JSON publicado reflete o instante do último workflow bem-sucedido.
-
-Essa atualização periódica mantém o dashboard próximo do estado real dos repositórios sem exigir polling contínuo no navegador nem chamadas autenticadas feitas pelo usuário.
-
-## Limitações atuais
-
-- A API pode não expor uma associação inequívoca entre um workflow e a versão publicada; nesses casos a versão fica vazia.
-- Workflows com nomes fora das palavras-chave podem resultar em `unknown`.
-- O `GITHUB_TOKEN` do próprio repositório pode não ler Actions/Deployments de outros repositórios; use o PAT somente leitura para cobertura completa.
-- O limite anônimo da API é baixo para contas com muitos repositórios.
-- Os detalhes de repositório usam hash routes; para mecanismos de busca, a URL indexável principal é a raiz do dashboard.
-- Alguns headers de segurança são controlados pela infraestrutura do GitHub Pages; esses casos são explicitamente reclassificados como `INFO` na ruleset do ZAP para não poluir o relatório acionável do dashboard.
-
-## Roadmap
-
-- Codecov
-- SonarCloud
-- Dependabot alerts
-- GitHub security alerts
-- OpenSSF Scorecard
-- NuGet package statistics
-- npm statistics
-- stale issues
-- stale PRs
-- repository activity trends
-- release frequency
-- deployment frequency
-
-## Estrutura principal
-
-```text
-src/app/core/                 carregamento do snapshot e tema
-src/app/features/             dashboard e detalhes do repositório
-src/app/shared/               contrato, componentes, pipes e busca
-public/data/repositories.json fixture/snapshot consumido pela SPA
-scripts/                      collector e regras de classificação
-.github/workflows/            CI, SEO, Lighthouse, segurança e deploy
-```
-
-## Segurança
-
-A aplicação publicada consome somente o JSON estático. Não há token, chamada autenticada ao GitHub, OAuth, armazenamento de credenciais ou mutação de repositórios no frontend.
-
-A autenticação necessária para enriquecer os dados fica restrita ao ambiente controlado do GitHub Actions. Isso permite publicar o dashboard como site estático sem transformar o navegador em cliente privilegiado da API do GitHub.
-
-Além da segurança por desenho, a Pages publicada recebe validação dinâmica periódica com OWASP ZAP Baseline. O scan é restrito ao subdiretório do dashboard e diferencia findings controláveis pela aplicação daqueles pertencentes à camada de hospedagem do GitHub Pages. Para scripts, o build Angular usa `security.autoCsp`, evitando uma política estática com nonce reutilizável. Alertas CSP permanecem acionáveis no ZAP justamente para detectar regressões na política gerada.
 
 ## Releases
 
-O workflow manual [`release.yml`](.github/workflows/release.yml) valida formato, lint, testes e build antes de criar uma tag e uma GitHub Release. Execute **Actions → Create Release → Run workflow** a partir de `main` e informe uma versão no formato `vX.Y.Z`. A release inclui o build estático compactado e seu checksum SHA-256.
+[release.yml](.github/workflows/release.yml) is manually dispatched from <code>main</code> with a
+<code>vX.Y.Z</code> version. It validates the version, checks for an existing tag or release,
+installs dependencies, runs formatting, lint, tests, and the Pages build, then creates:
 
-## Licença
+- a Git tag and GitHub Release;
+- a compressed static build artifact;
+- a SHA-256 checksum.
 
-Copyright © 2026 Rodrigo de Oliveira. Todos os direitos reservados. Este projeto é proprietário e não concede permissão para usar, copiar, modificar ou redistribuir o código sem autorização prévia por escrito. Consulte [`LICENSE`](LICENSE).
+The workflow can generate release notes and mark the release as a prerelease.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
