@@ -60,9 +60,36 @@ jobs:
           rules_file_name: .zap/rules.tsv
           cmd_options: '-c .zap/rules.tsv --hook=/zap/wrk/.zap/hooks.py -m 1 -l WARN'
           fail_action: false
-          allow_issue_writing: true
+          allow_issue_writing: false
           issue_title: OWASP ZAP Baseline Report
           artifact_name: owasp-zap-baseline
+
+      - name: Build actionable ZAP report
+        id: zap_report
+        if: always()
+        run: node scripts/process-zap-report.mjs --report report_json.json --output zap-actionable.md
+        env:
+          ZAP_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Manage actionable ZAP issue
+        if: always() && steps.zap_report.outcome == 'success'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HAS_FINDINGS: ${{ steps.zap_report.outputs.has_findings }}
+        run: |
+          title="OWASP ZAP Baseline Report"
+          issue_number="$(gh issue list --state open --limit 100 --json number,title --jq '.[] | select(.title == "OWASP ZAP Baseline Report") | .number' | head -n 1)"
+
+          if [[ "$HAS_FINDINGS" == "true" ]]; then
+            if [[ -n "$issue_number" ]]; then
+              gh issue edit "$issue_number" --body-file zap-actionable.md --add-assignee rodri-oliveira-dev
+            else
+              gh issue create --title "$title" --body-file zap-actionable.md --assignee rodri-oliveira-dev
+            fi
+          elif [[ -n "$issue_number" ]]; then
+            gh issue close "$issue_number" --comment "No actionable OWASP ZAP findings remain for Repo Control Center."
+          fi
 
       - name: Write security summary
         if: always()
@@ -76,5 +103,5 @@ jobs:
             echo "- **Deployment gate:** report-only"
             echo "- **GitHub Pages managed headers/cache:** classified as INFO"
             echo "- **CSP:** application-controlled findings remain actionable"
-            echo "- **Actionable findings:** maintained in the OWASP ZAP Baseline Report issue and workflow artifact"
+            echo "- **Actionable findings:** post-processed from the raw ZAP JSON and maintained in the OWASP ZAP Baseline Report issue"
           } >> "$GITHUB_STEP_SUMMARY"
