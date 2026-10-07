@@ -114,7 +114,7 @@ Um item aberto é considerado stale quando `updated_at` está há mais de 30 dia
 
 Cada snapshot recalcula uma janela móvel de 30 dias (`ACTIVITY_WINDOW_DAYS`) para commits, workflow runs, CI primário aprovado/reprovado, releases publicadas e deployments. As mesmas consultas usadas pelos sinais atuais são paginadas em blocos de 100 até ultrapassar o início da janela, evitando chamadas duplicadas. Zero significa fonte consultada sem eventos; `null` significa fonte indisponível. A janela é um retrato recomputável, não uma série histórica, e não exige backend permanente.
 
-Release frequency é a contagem de GitHub Releases publicadas na janela. Delivery frequency combina deployments, workflows de delivery/release/Pages concluídos com sucesso e releases; sinais de fontes diferentes separados por até 30 minutos são tratados como evidência do mesmo evento. Eventos distintos da mesma fonte não são colapsados. A contagem de delivery fica indisponível se qualquer fonte necessária falhar, evitando exibir subcontagem como zero. Essas métricas são contagens observadas no período, não uma medição ou certificação DORA; automações externas ao GitHub podem não aparecer.
+Release frequency é a contagem de GitHub Releases publicadas e não draft na janela. Delivery frequency combina somente deployments cujo status final é positivo, workflows de delivery/release/Pages concluídos com sucesso e releases publicadas; sinais de fontes diferentes separados por até 30 minutos são tratados como evidência do mesmo evento. Deployments falhos, cancelados ou ainda em andamento não entram na frequência. Eventos distintos da mesma fonte não são colapsados. A contagem de delivery fica indisponível se qualquer fonte necessária falhar, evitando exibir subcontagem como zero. Essas métricas são contagens observadas no período, não uma medição ou certificação DORA; automações externas ao GitHub podem não aparecer.
 
 ### Insights do portfólio
 
@@ -128,7 +128,7 @@ Versão e publicação npm vêm do registro público `registry.npmjs.org`; downl
 
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
-Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de oito grupos: metadados, commits, Actions, deployments, releases, `workItems`, `security` e `packages`; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
+Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e mantém `collection.confidence` (`high`, `medium` ou `low`) por compatibilidade do contrato. Esse valor mede somente a cobertura determinística de oito grupos: metadados, commits, Actions, deployments, releases, `workItems`, `security` e `packages`; não é uma garantia de correção semântica. Por isso, a UI apresenta essa informação como **Collection coverage**, por exemplo `8/8 signal groups collected`. A cobertura nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.
 
 Ausência esperada (`404` em APIs opcionais e `409` ao consultar commits de repositório vazio) conta como consulta concluída. `403`, demais `4xx`, falhas de rede e `5xx` tornam o grupo indisponível; falhas transitórias de rede e `5xx` recebem uma tentativa adicional. Rate limiting é preservado como aviso sem expor credenciais.
 
@@ -151,7 +151,13 @@ As regras puras e testáveis ficam em [`scripts/github-status-rules.mjs`](script
 
 O collector classifica workflows semanticamente como `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages`, `maintenance` ou `unknown`. A ordem das regras resolve termos sobrepostos (por exemplo, Pages antes de delivery), e nomes ambíguos permanecem `unknown`.
 
-Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente, e Dependabot continua excluído. Assim, cancelamentos de mutation tests, quality gates e outras automações auxiliares não degradam a saúde. A configuração opcional por repositório pode substituir essa descoberta quando uma convenção de nomes não for suficiente.
+Somente workflows classificados como `ci` concorrem a build primário; vence a execução mais recente cuja `head_branch` seja a `default_branch` informada pelo GitHub, e Dependabot continua excluído. Na ausência de CI nessa branch, o Build fica `unknown`. Runs de PR e outras branches continuam nas métricas de atividade, mas não substituem o estado operacional principal. Lighthouse, Sonar, Codecov, coverage, lint isolado, security, mutation tests e manutenção também ficam fora de Build e da taxa de sucesso de CI. A configuração opcional por repositório pode substituir a descoberta semântica quando uma convenção de nomes não for suficiente.
+
+A classificação dá precedência a sinais específicos: CodeQL/OWASP ZAP e equivalentes são `security`; Sonar, Codecov, coverage, lint, Lighthouse e quality gates são `quality`; Pages permanece distinto; publicação/deploy explícitos são `delivery`; criação/publicação de release é `release`; e validações de build, inclusive `Validate`, `Validate .NET`, `Validate profile`, `Terraform CI` e integrações de ingestion, são `ci`. Palavras genéricas como `terraform`, `package`, `release` ou `CI` não bastam quando há um sinal semântico mais específico.
+
+### Tipo de projeto
+
+O tipo prioriza evidências estruturais coletadas da árvore do repositório. `angular.json`, arquivos Terraform predominantes, projetos Roslyn/analyzer, `PackAsTool`/`ToolCommandName` e metadados explícitos de pacote em `.csproj` determinam Angular, Infrastructure, Analyzer, CLI e Library, respectivamente. Profile repositories `<owner>/<owner>`, repositórios documentais, templates, samples e ferramentas com comandos em `bin/` ou `scripts/` também têm sinais próprios. Descrição e tópicos não transformam um projeto em Library apenas por mencionarem SDK, package, NuGet ou library; `Application` é o fallback quando nenhuma evidência estrutural mais forte existe.
 
 ### Configuração por repositório
 

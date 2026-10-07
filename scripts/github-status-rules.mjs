@@ -185,11 +185,19 @@ export function calculateDeliveryFrequency(
       date: release.published_at ?? release.created_at,
     }));
   const deploymentEvents = deployments
-    .filter((deployment) => withinWindow(deployment.updated_at ?? deployment.created_at))
+    .filter(
+      (deployment) =>
+        mapDeliveryStatus(
+          deployment.latestStatus?.state ?? deployment.status?.state ?? deployment.state,
+        ) === 'success' &&
+        withinWindow(
+          deployment.latestStatus?.updated_at ?? deployment.updated_at ?? deployment.created_at,
+        ),
+    )
     .map((deployment) => ({
       source: 'deployment',
       id: deployment.id,
-      date: deployment.updated_at ?? deployment.created_at,
+      date: deployment.latestStatus?.updated_at ?? deployment.updated_at ?? deployment.created_at,
     }));
   const workflowEvents = workflowRuns
     .filter(
@@ -271,20 +279,30 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   const text = [run?.name, run?.path].filter(Boolean).join(' ').toLowerCase();
   if (!text) return 'unknown';
   let role = 'unknown';
-  if (/mutation|stryker|pitest/.test(text)) role = 'mutation';
-  else if (/security|codeql|dependency review|secret scan|owasp|zap/.test(text)) role = 'security';
-  else if (/github[- ]pages|pages build|pages deploy|gh-pages/.test(text)) role = 'pages';
-  else if (/release|create tag|changelog/.test(text)) role = 'release';
-  else if (/dependabot|renovate/.test(text)) role = 'maintenance';
-  else if (
-    /deploy|deployment|publish|nuget|(^|\W)npm(\W|$)|package|docker|container|terraform/.test(text)
-  )
-    role = 'delivery';
-  else if (/stale|sync|maintenance|cleanup/.test(text)) role = 'maintenance';
-  else if (/sonar|codecov|coverage|lint|quality|validation|static analysis/.test(text))
+  if (/dependabot|renovate|stale|maintenance|cleanup/.test(text)) role = 'maintenance';
+  else if (/security|codeql|dependency review|secret scan|owasp|zap|trivy|snyk/.test(text))
+    role = 'security';
+  else if (/github[- ]pages|pages build|pages deploy|deploy[-_ ]pages|gh-pages/.test(text))
+    role = 'pages';
+  else if (/mutation|stryker|pitest/.test(text)) role = 'mutation';
+  else if (/sonar|codecov|coverage|lint|lighthouse|quality(?:\s+gate)?|static analysis/.test(text))
     role = 'quality';
   else if (
-    /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build and test|build & test|compile and test/.test(
+    /create[-_ ]release|publish[-_ ]release|release[-_ ]publish|create[-_ ]tag|changelog/.test(
+      text,
+    ) ||
+    /(^|[\s/_.-])release(?:\.ya?ml)?$/.test(text)
+  )
+    role = 'release';
+  else if (
+    /deploy|deployment|terraform\s+(?:apply|deploy)|(?:publish|push)[-_ ]+(?:nuget|npm|package|artifact|container|docker|image)|(?:nuget|npm|package|artifact|container|docker|image)[-_ ]+(?:publish|push)/.test(
+      text,
+    )
+  )
+    role = 'delivery';
+  else if (/\bsync\b/.test(text)) role = 'maintenance';
+  else if (
+    /(^|[\s._/-])ci([\s._/-]|$)|continuous integration|build(?:\s+and|\s*&)?\s+test|compile(?:\s+and|\s*&)?\s+test|(^|[\s._/-])validate(?:[\s._/-]|$)|(^|[\s._/-])validation(?:[\s._/-]|$)|ingestion integration/.test(
       text,
     )
   )
@@ -292,11 +310,14 @@ export function classifyWorkflowRole(run, configuredWorkflows = {}) {
   return Object.hasOwn(configuredWorkflows, role) ? 'unknown' : role;
 }
 
-export function selectBuildWorkflow(runs, configuredWorkflows = {}) {
+export function selectBuildWorkflow(runs, configuredWorkflows = {}, defaultBranch) {
   return (
     [...runs]
       .filter(
-        (run) => !isDependabotRun(run) && classifyWorkflowRole(run, configuredWorkflows) === 'ci',
+        (run) =>
+          !isDependabotRun(run) &&
+          classifyWorkflowRole(run, configuredWorkflows) === 'ci' &&
+          (!defaultBranch || run.head_branch === defaultBranch),
       )
       .sort(
         (left, right) =>
@@ -402,35 +423,72 @@ export function correlateReleaseVersion(release, deliveryDate, windowMinutes = 3
     : null;
 }
 
-export function classifyProjectType(repository) {
+export function classifyProjectType(repository, evidence = {}) {
   const name = String(repository.name ?? '').toLowerCase();
-  const description = String(repository.description ?? '').toLowerCase();
   const topics = (repository.topics ?? []).map((topic) => String(topic).toLowerCase());
-  const text = [repository.name, repository.description, repository.language, ...topics]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
+  const paths = (evidence.paths ?? []).map((path) => String(path).toLowerCase());
+  const projectFiles = (evidence.projectFiles ?? []).map((project) => ({
+    path: String(project.path ?? '').toLowerCase(),
+    content: String(project.content ?? ''),
+  }));
+  const productionProjects = projectFiles.filter(
+    (project) =>
+      !/(^|\/)(tests?|samples?|examples?|benchmarks?|evals?|fixtures?)(\/|$)/.test(project.path),
+  );
+  const owner = String(repository.owner?.login ?? repository.full_name?.split('/')[0] ?? '')
+    .toLowerCase()
+    .trim();
+  const isProfileRepository = Boolean(owner) && name === owner;
+  const hasPath = (pattern) => paths.some((path) => pattern.test(path));
+  const hasProjectContent = (pattern) =>
+    productionProjects.some((project) => pattern.test(project.content));
+  const analyzerProjects = productionProjects.filter(
+    (project) =>
+      /(^|[./_-])analy[sz]ers?([./_-]|$)/.test(project.path) ||
+      /<Project[^>]+Sdk=["'][^"']*(?:Roslyn|Analyzer)/i.test(project.content),
+  );
+
+  if (hasPath(/^angular\.json$/)) return 'Angular';
+
+  const terraformFiles = paths.filter((path) => path.endsWith('.tf')).length;
+  const implementationFiles = paths.filter((path) =>
+    /\.(?:cs|ts|js|py|go|java|kt|rs|rb|php|sh)$/.test(path),
+  ).length;
+  if (terraformFiles >= 2 && terraformFiles >= implementationFiles) return 'Infrastructure';
+  if (isProfileRepository) return 'Documentation';
+  if (
+    repository.is_template ||
+    hasPath(/(^|\/)\.template\.config\/template\.json$/) ||
+    /(^|[._-])(template|starter|boilerplate|seed)([._-]|$)/.test(name) ||
+    topics.some((topic) => ['template', 'starter', 'boilerplate', 'seed'].includes(topic))
+  )
+    return 'Template';
+  if (
+    /(^|[._-])(sample|example|demo|poc)([._-]|$)/.test(name) ||
+    topics.some((topic) => ['sample', 'example', 'demo', 'poc'].includes(topic))
+  )
+    return 'Sample';
   if (
     /analy[sz]er/.test(name) ||
-    topics.some((topic) => ['roslyn-analyzer', 'code-analysis'].includes(topic))
+    topics.includes('roslyn-analyzer') ||
+    (analyzerProjects.length > 0 && analyzerProjects.length === productionProjects.length)
   )
     return 'Analyzer';
-  if (/angular/.test(text)) return 'Angular';
-  if (/template|starter|boilerplate/.test(text)) return 'Template';
-  if (/terraform|infrastructure|devops|iac/.test(text)) return 'Infrastructure';
+  if (hasProjectContent(/<PackAsTool>\s*true\s*<\/PackAsTool>|<ToolCommandName>/i)) return 'CLI';
   if (
-    /(^|\W)(cli|command-line|console|dotnet-tool)(\W|$)/.test(text) ||
-    /\.net tool/.test(description)
-  )
-    return 'CLI';
-  if (
-    /library|nuget|package|sdk/.test(text) ||
-    topics.some((topic) => ['dapper', 'source-generator'].includes(topic))
+    productionProjects.some(
+      (project) =>
+        /<PackageId>\s*[^<]+\s*<\/PackageId>/i.test(project.content) &&
+        !/<IsPackable>\s*false\s*<\/IsPackable>/i.test(project.content) &&
+        !/<OutputType>\s*Exe\s*<\/OutputType>/i.test(project.content),
+    )
   )
     return 'Library';
-  if (/documentation|(^|\W)docs?(\W|$)|github\.io/.test(text)) return 'Documentation';
-  if (/sample|example|demo|(^|\W)poc(\W|$)/.test(text)) return 'Sample';
-  if (/tool|utility/.test(text)) return 'Tool';
+
+  const documentationFiles = paths.filter((path) => /\.(?:md|mdx|rst|adoc)$/.test(path)).length;
+  if (documentationFiles >= 3 && implementationFiles === 0 && !hasPath(/(^|\/)package\.json$/))
+    return 'Documentation';
+  if (hasPath(/^bin\/[^/]+$/) || hasPath(/^action\.ya?ml$/)) return 'Tool';
   if (repository.language) return 'Application';
   return 'Unknown';
 }

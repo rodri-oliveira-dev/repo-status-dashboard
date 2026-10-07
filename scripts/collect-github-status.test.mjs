@@ -44,6 +44,11 @@ describe('repository inclusion', () => {
     assert.equal(shouldIncludeRepository(repository({ archived: true }), owner), false);
   });
 
+  it('excludes private repositories', () => {
+    assert.equal(shouldIncludeRepository(repository({ private: true }), owner), false);
+    assert.equal(shouldIncludeRepository(repository({ visibility: 'private' }), owner), false);
+  });
+
   it('excludes forks and repositories owned by another account', () => {
     assert.equal(shouldIncludeRepository(repository({ fork: true }), owner), false);
     assert.equal(

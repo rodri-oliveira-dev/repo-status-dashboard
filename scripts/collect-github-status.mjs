@@ -96,6 +96,8 @@ export function shouldIncludeRepository(repository, owner = OWNER) {
   return (
     !repository.fork &&
     !repository.archived &&
+    repository.private !== true &&
+    repository.visibility !== 'private' &&
     repository.owner?.login?.toLowerCase() === owner.toLowerCase()
   );
 }
@@ -258,6 +260,63 @@ function decodeGitHubContent(content) {
   return Buffer.from(content.content, 'base64').toString('utf8');
 }
 
+function isProductionProjectPath(path) {
+  return (
+    path.toLowerCase().endsWith('.csproj') &&
+    !/(^|\/)(tests?|samples?|examples?|benchmarks?|evals?|fixtures?)(\/|$)/i.test(path)
+  );
+}
+
+async function collectRepositoryStructure(repository, base) {
+  const treeResult = await collectSignal(
+    `${base}/git/trees/${encodeURIComponent(repository.default_branch)}?recursive=1`,
+    null,
+    repository.name,
+  );
+  const tree = treeResult.data?.tree ?? [];
+  const sourceEntries = tree.filter(
+    (entry) => entry.type === 'blob' && isProductionProjectPath(entry.path),
+  );
+  const sourceResults = await mapWithConcurrency(sourceEntries, CONCURRENCY, async (entry) => ({
+    entry,
+    result: await collectSignal(String(entry.url).replace(API, ''), null, repository.name),
+  }));
+  const available = treeResult.available && sourceResults.every(({ result }) => result.available);
+  return {
+    available,
+    warning: [treeResult.warning, ...sourceResults.map(({ result }) => result.warning)]
+      .filter(Boolean)
+      .join('; '),
+    tree,
+    truncated: Boolean(treeResult.data?.truncated),
+    evidence: {
+      paths: tree.map((entry) => entry.path),
+      projectFiles: sourceResults
+        .filter(({ entry }) => entry.path.toLowerCase().endsWith('.csproj'))
+        .map(({ entry, result }) => ({
+          path: entry.path,
+          content: decodeGitHubContent(result.data) ?? '',
+        })),
+    },
+  };
+}
+
+async function collectDeploymentStatuses(base, deployments, repositoryName) {
+  const results = await mapWithConcurrency(deployments, CONCURRENCY, async (deployment) => {
+    const result = await collectSignal(
+      `${base}/deployments/${deployment.id}/statuses?per_page=1`,
+      [],
+      repositoryName,
+    );
+    return { deployment: { ...deployment, latestStatus: result.data[0] ?? null }, result };
+  });
+  return {
+    data: results.map(({ deployment }) => deployment),
+    available: results.every(({ result }) => result.available),
+    warnings: results.map(({ result }) => result.warning).filter(Boolean),
+  };
+}
+
 async function publicJson(url, source, repositoryName, attempt = 0) {
   try {
     const response = await fetch(url, { signal: globalThis.AbortSignal.timeout(8000) });
@@ -340,7 +399,7 @@ async function enrichPackageCandidate(candidate, repositoryName) {
   };
 }
 
-async function collectPackageMetrics(repository, base, deliveryType) {
+async function collectPackageMetrics(repository, base, deliveryType, structure) {
   const candidates = [];
   const packageWarnings = [];
   let sourceAvailable = true;
@@ -367,31 +426,17 @@ async function collectPackageMetrics(repository, base, deliveryType) {
 
   const nugetCandidate = deliveryType === 'NuGet' || repository.language === 'C#';
   if (nugetCandidate) {
-    const treeResult = await collectSignal(
-      `${base}/git/trees/${encodeURIComponent(repository.default_branch)}?recursive=1`,
-      null,
-      repository.name,
-    );
-    sourceAvailable &&= treeResult.available;
-    if (treeResult.warning) packageWarnings.push(treeResult.warning);
-    if (treeResult.data?.truncated) {
+    sourceAvailable &&= structure.available;
+    if (structure.warning) packageWarnings.push(structure.warning);
+    if (structure.truncated) {
       ambiguous = true;
       const message = 'repository tree was truncated while discovering NuGet package metadata';
       warnings.push(`${repository.name}: ${message}`);
       packageWarnings.push(message);
     }
-    const projects = (treeResult.data?.tree ?? []).filter(
-      (entry) => entry.type === 'blob' && entry.path?.toLowerCase().endsWith('.csproj'),
-    );
-    for (const project of projects) {
-      const blobPath = String(project.url).replace(API, '');
-      const blobResult = await collectSignal(blobPath, null, repository.name);
-      sourceAvailable &&= blobResult.available;
-      if (blobResult.warning) packageWarnings.push(blobResult.warning);
-      if (!blobResult.data) continue;
-      const source = decodeGitHubContent(blobResult.data);
-      const candidate = source
-        ? parseNuGetProject(source, repository.full_name)
+    for (const project of structure.evidence.projectFiles) {
+      const candidate = project.content
+        ? parseNuGetProject(project.content, repository.full_name)
         : { status: 'ambiguous', reason: `${project.path} could not be decoded` };
       candidates.push(candidate);
       ambiguous ||= candidate.status === 'ambiguous';
@@ -542,21 +587,21 @@ async function enrich(repository, generatedAt) {
     collectOpenSsf(name),
   ]);
   const commits = commitResult.data;
-  const deployments = deploymentResult.data;
+  const [structure, deploymentStatuses] = await Promise.all([
+    collectRepositoryStructure(repository, base),
+    collectDeploymentStatuses(base, deploymentResult.data, name),
+  ]);
+  const deployments = deploymentStatuses.data;
   const releases = releaseResult.data;
   const release = releases.find((candidate) => !candidate.draft && !candidate.prerelease) ?? null;
   const runs = actionsResult.data;
-  const build = selectBuildWorkflow(runs, configuredWorkflows);
+  const build = selectBuildWorkflow(runs, configuredWorkflows, repository.default_branch);
   const deliveryWorkflow = selectDeliveryWorkflow(runs, configuredWorkflows);
   const securityWorkflow = actionsResult.available
     ? securityWorkflowEvidence(runs, configuredWorkflows)
     : { status: 'unavailable', name: null, url: null, date: null };
   const deployment = deployments[0] ?? null;
-  const statusResult = deployment
-    ? await collectSignal(`${base}/deployments/${deployment.id}/statuses?per_page=1`, [], name)
-    : { data: [], available: true };
-  const statuses = statusResult.data;
-  const deploymentStatus = statuses[0] ?? null;
+  const deploymentStatus = deployment?.latestStatus ?? null;
   const commit = commits[0]?.commit ?? null;
   const delivery = deliveryFrom({
     deployment,
@@ -565,15 +610,16 @@ async function enrich(repository, generatedAt) {
     release,
     repository,
   });
-  const packages = await collectPackageMetrics(repository, base, delivery.type);
+  const packages = await collectPackageMetrics(repository, base, delivery.type, structure);
   const lastCommitDate =
     commit?.committer?.date ?? commit?.author?.date ?? repository.pushed_at ?? null;
   const buildStatus = mapWorkflowStatus(build);
   const signalResults = {
-    metadata: 'available',
+    metadata: structure.available ? 'available' : 'unavailable',
     commits: commitResult.available ? 'available' : 'unavailable',
     actions: actionsResult.available ? 'available' : 'unavailable',
-    deployments: deploymentResult.available && statusResult.available ? 'available' : 'unavailable',
+    deployments:
+      deploymentResult.available && deploymentStatuses.available ? 'available' : 'unavailable',
     releases: releaseResult.available ? 'available' : 'unavailable',
     workItems: workItemsResult.available ? 'available' : 'unavailable',
     security:
@@ -586,10 +632,11 @@ async function enrich(repository, generatedAt) {
     packages: packages.available ? 'available' : 'unavailable',
   };
   const repositoryWarnings = [
+    structure.warning,
     commitResult.warning,
     actionsResult.warning,
     deploymentResult.warning,
-    statusResult.warning,
+    ...deploymentStatuses.warnings,
     releaseResult.warning,
     configResult.warning,
     workItemsResult.warning,
@@ -597,7 +644,7 @@ async function enrich(repository, generatedAt) {
     codeScanningResult.warning,
     openSsfResult.warning,
     ...packages.warnings,
-  ].filter(Boolean);
+  ].filter((warning, index, all) => warning && all.indexOf(warning) === index);
   const collection = calculateCollection(signalResults, repositoryWarnings);
   const assessment = calculateHealthAssessment({
     archived: repository.archived,
@@ -678,7 +725,7 @@ async function enrich(repository, generatedAt) {
       status: packages.status,
       items: packages.items,
     },
-    projectType: classifyProjectType(repository),
+    projectType: classifyProjectType(repository, structure.evidence),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
     lastWorkflowName: build?.name ?? null,
