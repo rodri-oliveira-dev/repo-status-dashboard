@@ -145,13 +145,15 @@ aside {
 .links,
 .metadata,
 .security,
-.activity {
+.activity,
+.packages {
   padding: 1.2rem;
 }
 .links h2,
 .metadata h2,
 .security h2,
-.activity h2 {
+.activity h2,
+.packages h2 {
   margin-bottom: 1rem;
 }
 .links a {
@@ -206,6 +208,37 @@ aside {
   margin-top: 0.65rem;
   color: var(--accent);
   font-size: 0.72rem;
+}
+.packages ul {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.packages li {
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border);
+}
+.packages li > a,
+.packages li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.packages a {
+  color: var(--text-subtle);
+  font-size: 0.76rem;
+  text-decoration: none;
+}
+.packages li > div,
+.package-state {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.package-state {
+  text-transform: capitalize;
 }
 .metadata dt {
   margin: 0;

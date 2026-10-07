@@ -151,6 +151,25 @@ export interface DeliveryFrequency {
   readonly correlationMinutes: number;
 }
 
+export interface PackageMetric {
+  readonly ecosystem: 'nuget' | 'npm';
+  readonly id: string;
+  readonly status: 'published' | 'unpublished' | 'unavailable';
+  readonly version: string | null;
+  readonly url: string;
+  readonly downloads: {
+    readonly count: number;
+    readonly period: 'lifetime' | 'last-month';
+    readonly start: string | null;
+    readonly end: string | null;
+  } | null;
+}
+
+export interface RepositoryPackages {
+  readonly status: 'available' | 'partial' | 'none' | 'ambiguous' | 'unavailable';
+  readonly items: readonly PackageMetric[];
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -170,6 +189,7 @@ export interface RepositoryStatus {
   readonly security: SecurityPosture;
   readonly activity: RepositoryActivity;
   readonly deliveryFrequency: DeliveryFrequency;
+  readonly packages: RepositoryPackages;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;

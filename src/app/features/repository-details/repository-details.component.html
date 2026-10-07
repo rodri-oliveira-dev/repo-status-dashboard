@@ -277,6 +277,33 @@
           </div>
         </dl>
       </section>
+      <section class="panel packages">
+        <p class="eyebrow">Public registries</p>
+        <h2>Packages</h2>
+        @if (repository.packages.items.length) {
+          <ul>
+            @for (pkg of repository.packages.items; track pkg.ecosystem + pkg.id) {
+              <li>
+                <a [href]="pkg.url" target="_blank" rel="noopener noreferrer">
+                  <strong>{{ pkg.id }}</strong
+                  ><span>{{ pkg.ecosystem }}</span>
+                </a>
+                <div>
+                  <span>{{ pkg.version || signalLabel(pkg.status) }}</span>
+                  @if (pkg.downloads) {
+                    <span>
+                      {{ pkg.downloads.count }} downloads ·
+                      {{ pkg.downloads.period === 'lifetime' ? 'lifetime' : 'last month' }}
+                    </span>
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="package-state">{{ signalLabel(repository.packages.status) }}</p>
+        }
+      </section>
     </aside>
   </div>
 } @else {

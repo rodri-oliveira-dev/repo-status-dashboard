@@ -69,6 +69,7 @@ const repository = (overrides: Partial<RepositoryStatus>): RepositoryStatus =>
       evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
       correlationMinutes: 30,
     },
+    packages: { status: 'none', items: [] },
     ...overrides,
   }) as RepositoryStatus;
 

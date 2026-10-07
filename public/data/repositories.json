@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:53:40.300Z",
+  "generatedAt": "2026-10-07T10:01:13.938Z",
   "repositories": [
     {
       "name": ".github",
@@ -60,7 +60,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 35,
         "workflowRuns": 561,
         "successfulCiRuns": 0,
@@ -78,6 +78,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
@@ -114,7 +118,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -173,7 +178,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 19,
         "workflowRuns": 804,
         "successfulCiRuns": 102,
@@ -191,6 +196,24 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "RodriOliveira.AdrGuard",
+            "status": "published",
+            "version": "1.1.7",
+            "url": "https://www.nuget.org/packages/RodriOliveira.AdrGuard",
+            "downloads": {
+              "count": 2147,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
@@ -222,7 +245,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -282,7 +306,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 369,
         "workflowRuns": 307,
         "successfulCiRuns": 53,
@@ -300,6 +324,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
@@ -331,7 +359,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -389,7 +418,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 72,
         "workflowRuns": 173,
         "successfulCiRuns": 16,
@@ -407,6 +436,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
@@ -438,7 +471,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -507,7 +541,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 9,
         "workflowRuns": 234,
         "successfulCiRuns": 54,
@@ -525,6 +559,24 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "ComplexityAnalysis.Analyzers",
+            "status": "published",
+            "version": "1.5.0",
+            "url": "https://www.nuget.org/packages/ComplexityAnalysis.Analyzers",
+            "downloads": {
+              "count": 640,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "Analyzer",
       "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
@@ -556,7 +608,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -640,7 +693,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 28,
         "workflowRuns": 103,
         "successfulCiRuns": 4,
@@ -658,6 +711,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
       },
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
@@ -689,7 +746,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -752,7 +810,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 224,
         "workflowRuns": 355,
         "successfulCiRuns": 63,
@@ -770,6 +828,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
       },
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
@@ -801,7 +863,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -855,7 +918,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 5,
         "workflowRuns": 17,
         "successfulCiRuns": 5,
@@ -873,6 +936,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
@@ -909,7 +976,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -968,7 +1036,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 19,
         "workflowRuns": 98,
         "successfulCiRuns": 0,
@@ -986,6 +1054,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
@@ -1022,7 +1094,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1081,7 +1154,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 69,
         "workflowRuns": 122,
         "successfulCiRuns": 31,
@@ -1099,6 +1172,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
@@ -1130,7 +1207,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1188,7 +1266,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 2,
         "workflowRuns": 0,
         "successfulCiRuns": 0,
@@ -1206,6 +1284,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Library",
       "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
@@ -1246,7 +1328,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1300,7 +1383,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 68,
         "workflowRuns": 532,
         "successfulCiRuns": 20,
@@ -1318,6 +1401,24 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "RodriOliveira.DotNet.Library.Template",
+            "status": "published",
+            "version": "1.4.2",
+            "url": "https://www.nuget.org/packages/RodriOliveira.DotNet.Library.Template",
+            "downloads": {
+              "count": 513,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
@@ -1349,7 +1450,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1410,7 +1512,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 252,
         "workflowRuns": 522,
         "successfulCiRuns": 3,
@@ -1428,6 +1530,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
@@ -1459,7 +1565,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1519,7 +1626,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 33,
         "workflowRuns": 842,
         "successfulCiRuns": 1,
@@ -1537,6 +1644,37 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "DotNetRepoInspector",
+            "status": "published",
+            "version": "1.6.5",
+            "url": "https://www.nuget.org/packages/DotNetRepoInspector",
+            "downloads": {
+              "count": 1007,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "DotNetRepoInspector.Mcp",
+            "status": "published",
+            "version": "1.6.5",
+            "url": "https://www.nuget.org/packages/DotNetRepoInspector.Mcp",
+            "downloads": {
+              "count": 168,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
@@ -1568,7 +1706,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1631,7 +1770,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 2,
         "workflowRuns": 0,
         "successfulCiRuns": 0,
@@ -1649,6 +1788,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
@@ -1688,7 +1831,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "packages"
         ],
         "unavailableSignals": [
           "security"
@@ -1764,7 +1908,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 19,
         "workflowRuns": 978,
         "successfulCiRuns": 18,
@@ -1782,6 +1926,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "ambiguous",
+        "items": []
       },
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
@@ -1813,7 +1961,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1872,7 +2021,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 29,
         "workflowRuns": 854,
         "successfulCiRuns": 74,
@@ -1890,6 +2039,24 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "ReliableWebhooks",
+            "status": "published",
+            "version": "1.0.3",
+            "url": "https://www.nuget.org/packages/ReliableWebhooks",
+            "downloads": {
+              "count": 375,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "Application",
       "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
@@ -1921,7 +2088,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1981,10 +2149,10 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 12,
-        "workflowRuns": 150,
-        "successfulCiRuns": 63,
+        "workflowRuns": 152,
+        "successfulCiRuns": 65,
         "failedCiRuns": 12,
         "releases": 1,
         "deployments": 9
@@ -2000,6 +2168,10 @@
         ],
         "correlationMinutes": 30
       },
+      "packages": {
+        "status": "none",
+        "items": []
+      },
       "projectType": "Angular",
       "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
       "lastCommitDate": "2026-10-07T08:13:24Z",
@@ -2007,8 +2179,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T10:00:25Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37604414125",
+      "lastWorkflowDate": "2026-10-07T10:06:10Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37605086712",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -2030,7 +2202,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -2090,7 +2263,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 719,
         "workflowRuns": 1518,
         "successfulCiRuns": 120,
@@ -2108,6 +2281,50 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "available",
+        "items": [
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Agent",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Agent",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Cli",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Cli",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          },
+          {
+            "ecosystem": "nuget",
+            "id": "Repo2C4.Mcp",
+            "status": "published",
+            "version": "1.2.0",
+            "url": "https://www.nuget.org/packages/Repo2C4.Mcp",
+            "downloads": {
+              "count": 0,
+              "period": "lifetime",
+              "start": null,
+              "end": null
+            }
+          }
+        ]
       },
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
@@ -2139,7 +2356,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -2200,7 +2418,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 120,
         "workflowRuns": 309,
         "successfulCiRuns": 0,
@@ -2218,6 +2436,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
@@ -2254,7 +2476,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -2308,7 +2531,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 166,
         "workflowRuns": 1081,
         "successfulCiRuns": 86,
@@ -2326,6 +2549,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
@@ -2357,7 +2584,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -2411,7 +2639,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 295,
         "workflowRuns": 109,
         "successfulCiRuns": 0,
@@ -2429,6 +2657,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
@@ -2465,7 +2697,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -2549,7 +2782,7 @@
       },
       "activity": {
         "windowDays": 30,
-        "since": "2026-09-07T09:53:40.300Z",
+        "since": "2026-09-07T10:01:13.938Z",
         "commits": 30,
         "workflowRuns": 71,
         "successfulCiRuns": 6,
@@ -2567,6 +2800,10 @@
           "github_releases"
         ],
         "correlationMinutes": 30
+      },
+      "packages": {
+        "status": "none",
+        "items": []
       },
       "projectType": "Application",
       "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
@@ -2598,7 +2835,8 @@
           "deployments",
           "releases",
           "workItems",
-          "security"
+          "security",
+          "packages"
         ],
         "unavailableSignals": [],
         "warnings": []

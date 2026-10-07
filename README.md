@@ -120,6 +120,12 @@ Release frequency é a contagem de GitHub Releases publicadas na janela. Deliver
 
 A visão agregada usa somente o snapshot atual e a mesma janela de 30 dias; não simula tendência temporal sem snapshots anteriores. Repositórios ativos têm pelo menos um commit, workflow, release ou deployment observado. A taxa de sucesso de CI é `execuções de CI aprovadas / (aprovadas + reprovadas)` e exibe o denominador. Totais de release e delivery somam apenas repositórios com a fonte disponível e mostram a cobertura. O watch de staleness lista repositórios ativos entre 60 e 90 dias sem commit e os que já cruzaram 90 dias. Dados ausentes são excluídos com cobertura explícita, nunca convertidos silenciosamente em zero.
 
+### Pacotes NuGet e npm
+
+O collector considera uma identidade npm somente quando um `package.json` público, não privado, declara `name` e `repository` apontando exatamente para o repositório coletado. Para NuGet, cada `.csproj` descoberto deve declarar `PackageId` e `RepositoryUrl` correspondente; vários projetos verificados geram vários pacotes. IDs não são inferidos do nome do repositório. Manifestos ausentes resultam em `none`; metadados insuficientes ou divergentes resultam em `ambiguous`.
+
+Versão e publicação npm vêm do registro público `registry.npmjs.org`; downloads usam a API pública `api.npmjs.org` e representam `last-month`, com datas no contrato. NuGet usa a busca pública oficial e expõe a versão atual e `totalDownloads` de toda a vida do pacote. Falhas externas geram `partial`/`unavailable` e reduzem a confiança do grupo `packages`. Métricas de download têm caches e critérios dos próprios registros e não são comparáveis diretamente entre ecossistemas.
+
 O script usa `fetch` nativo e continua quando uma consulta opcional ou um único repositório falha. Avisos sanitizados ficam no log, no repositório afetado e no campo opcional `warnings` do snapshot. O arquivo é ordenado por nome e formatado antes de ser salvo.
 
 Cada repositório informa `collection.status` (`complete`, `partial` ou `unavailable`) e `collection.confidence` (`high`, `medium` ou `low`). A confiança é a cobertura determinística de cinco grupos: metadados, commits, Actions, deployments e releases; ela nunca altera a saúde do repositório. O resumo no nível do dataset contabiliza os três estados para a UI sinalizar dados degradados.

@@ -32,6 +32,7 @@ describe('collection confidence', () => {
         releases: 'available',
         workItems: 'available',
         security: 'available',
+        packages: 'available',
       }),
       {
         status: 'complete',
@@ -44,6 +45,7 @@ describe('collection confidence', () => {
           'releases',
           'workItems',
           'security',
+          'packages',
         ],
         unavailableSignals: [],
         warnings: [],
@@ -60,6 +62,7 @@ describe('collection confidence', () => {
       releases: 'available',
       workItems: 'unavailable',
       security: 'available',
+      packages: 'unavailable',
     });
     const unavailable = calculateCollection({
       metadata: 'unavailable',
@@ -69,6 +72,7 @@ describe('collection confidence', () => {
       releases: 'unavailable',
       workItems: 'unavailable',
       security: 'unavailable',
+      packages: 'unavailable',
     });
     assert.equal(partial.status, 'partial');
     assert.equal(partial.confidence, 'medium');

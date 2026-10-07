@@ -9,6 +9,7 @@ export const COLLECTION_SIGNAL_GROUPS = [
   'releases',
   'workItems',
   'security',
+  'packages',
 ];
 
 export function calculateCollection(signalResults, warningMessages = []) {

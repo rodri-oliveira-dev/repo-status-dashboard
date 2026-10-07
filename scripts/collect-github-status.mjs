@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -23,6 +24,11 @@ import {
   summarizeActivity,
 } from './github-status-rules.mjs';
 import { decodeRepositoryConfig } from './repository-config.mjs';
+import {
+  deduplicatePackageCandidates,
+  parseNpmManifest,
+  parseNuGetProject,
+} from './package-metrics.mjs';
 
 const OWNER = process.env.GITHUB_OWNER || 'rodri-oliveira-dev';
 const TOKEN = process.env.GH_DASHBOARD_TOKEN || process.env.GITHUB_TOKEN;
@@ -217,6 +223,169 @@ async function collectOpenSsf(repositoryName, attempt = 0) {
   }
 }
 
+function decodeGitHubContent(content) {
+  if (content?.encoding !== 'base64' || typeof content.content !== 'string') return null;
+  return Buffer.from(content.content, 'base64').toString('utf8');
+}
+
+async function publicJson(url, source, repositoryName, attempt = 0) {
+  try {
+    const response = await fetch(url, { signal: globalThis.AbortSignal.timeout(8000) });
+    if (response.status === 404) return { data: null, available: true };
+    if (!response.ok) {
+      if (response.status >= 500 && attempt === 0)
+        return publicJson(url, source, repositoryName, 1);
+      throw new Error(`${source} API ${response.status}: ${response.statusText}`);
+    }
+    return { data: await response.json(), available: true };
+  } catch (error) {
+    if (attempt === 0) return publicJson(url, source, repositoryName, 1);
+    const message = safeWarning(error);
+    warnings.push(`${repositoryName}: ${message}`);
+    console.warn(`[collector] ${repositoryName}: ${source} data unavailable (${message})`);
+    return { data: null, available: false, warning: message };
+  }
+}
+
+async function enrichPackageCandidate(candidate, repositoryName) {
+  if (candidate.ecosystem === 'npm') {
+    const encoded = encodeURIComponent(candidate.id);
+    const [registry, downloads] = await Promise.all([
+      publicJson(`https://registry.npmjs.org/${encoded}/latest`, 'npm registry', repositoryName),
+      publicJson(
+        `https://api.npmjs.org/downloads/point/last-month/${encoded}`,
+        'npm downloads',
+        repositoryName,
+      ),
+    ]);
+    return {
+      item: {
+        ecosystem: 'npm',
+        id: candidate.id,
+        status: registry.available ? (registry.data ? 'published' : 'unpublished') : 'unavailable',
+        version: registry.data?.version ?? null,
+        url: `https://www.npmjs.com/package/${encoded}`,
+        downloads:
+          downloads.available && downloads.data
+            ? {
+                count: downloads.data.downloads,
+                period: 'last-month',
+                start: downloads.data.start,
+                end: downloads.data.end,
+              }
+            : null,
+      },
+      available: registry.available && downloads.available,
+      warnings: [registry.warning, downloads.warning].filter(Boolean),
+    };
+  }
+  const query = await publicJson(
+    `https://azuresearch-usnc.nuget.org/query?q=${encodeURIComponent(`packageid:${candidate.id}`)}&prerelease=false&semVerLevel=2.0.0`,
+    'NuGet',
+    repositoryName,
+  );
+  const match = query.data?.data?.find(
+    (item) => item.id?.toLowerCase() === candidate.id.toLowerCase(),
+  );
+  return {
+    item: {
+      ecosystem: 'nuget',
+      id: candidate.id,
+      status: query.available ? (match ? 'published' : 'unpublished') : 'unavailable',
+      version: match?.version ?? null,
+      url: `https://www.nuget.org/packages/${encodeURIComponent(candidate.id)}`,
+      downloads: match
+        ? { count: match.totalDownloads, period: 'lifetime', start: null, end: null }
+        : null,
+    },
+    available: query.available,
+    warnings: [query.warning].filter(Boolean),
+  };
+}
+
+async function collectPackageMetrics(repository, base, deliveryType) {
+  const candidates = [];
+  const packageWarnings = [];
+  let sourceAvailable = true;
+  let ambiguous = false;
+  const npmCandidate =
+    deliveryType === 'npm' || ['JavaScript', 'TypeScript'].includes(repository.language);
+  if (npmCandidate) {
+    const manifestResult = await collectSignal(
+      `${base}/contents/package.json`,
+      null,
+      repository.name,
+    );
+    sourceAvailable &&= manifestResult.available;
+    if (manifestResult.warning) packageWarnings.push(manifestResult.warning);
+    if (manifestResult.data) {
+      const source = decodeGitHubContent(manifestResult.data);
+      const candidate = source
+        ? parseNpmManifest(source, repository.full_name)
+        : { status: 'ambiguous', reason: 'package.json content could not be decoded' };
+      candidates.push(candidate);
+      ambiguous ||= candidate.status === 'ambiguous';
+    }
+  }
+
+  const nugetCandidate = deliveryType === 'NuGet' || repository.language === 'C#';
+  if (nugetCandidate) {
+    const treeResult = await collectSignal(
+      `${base}/git/trees/${encodeURIComponent(repository.default_branch)}?recursive=1`,
+      null,
+      repository.name,
+    );
+    sourceAvailable &&= treeResult.available;
+    if (treeResult.warning) packageWarnings.push(treeResult.warning);
+    if (treeResult.data?.truncated) {
+      ambiguous = true;
+      const message = 'repository tree was truncated while discovering NuGet package metadata';
+      warnings.push(`${repository.name}: ${message}`);
+      packageWarnings.push(message);
+    }
+    const projects = (treeResult.data?.tree ?? []).filter(
+      (entry) => entry.type === 'blob' && entry.path?.toLowerCase().endsWith('.csproj'),
+    );
+    for (const project of projects) {
+      const blobPath = String(project.url).replace(API, '');
+      const blobResult = await collectSignal(blobPath, null, repository.name);
+      sourceAvailable &&= blobResult.available;
+      if (blobResult.warning) packageWarnings.push(blobResult.warning);
+      if (!blobResult.data) continue;
+      const source = decodeGitHubContent(blobResult.data);
+      const candidate = source
+        ? parseNuGetProject(source, repository.full_name)
+        : { status: 'ambiguous', reason: `${project.path} could not be decoded` };
+      candidates.push(candidate);
+      ambiguous ||= candidate.status === 'ambiguous';
+    }
+  }
+
+  const verified = deduplicatePackageCandidates(candidates).filter(
+    (candidate) => candidate.status === 'verified',
+  );
+  if (!sourceAvailable)
+    return { status: 'unavailable', items: [], available: false, warnings: packageWarnings };
+  if (!verified.length)
+    return {
+      status: ambiguous ? 'ambiguous' : 'none',
+      items: [],
+      available: true,
+      warnings: packageWarnings,
+    };
+
+  const enriched = await Promise.all(
+    verified.map((candidate) => enrichPackageCandidate(candidate, repository.name)),
+  );
+  const complete = enriched.every((result) => result.available);
+  return {
+    status: complete ? 'available' : 'partial',
+    items: enriched.map((result) => result.item),
+    available: complete,
+    warnings: [...packageWarnings, ...enriched.flatMap((result) => result.warnings)],
+  };
+}
+
 function latestDate(...values) {
   return (
     values.filter(Boolean).sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? null
@@ -359,6 +528,7 @@ async function enrich(repository, generatedAt) {
     release,
     repository,
   });
+  const packages = await collectPackageMetrics(repository, base, delivery.type);
   const lastCommitDate =
     commit?.committer?.date ?? commit?.author?.date ?? repository.pushed_at ?? null;
   const buildStatus = mapWorkflowStatus(build);
@@ -376,6 +546,7 @@ async function enrich(repository, generatedAt) {
       actionsResult.available
         ? 'available'
         : 'unavailable',
+    packages: packages.available ? 'available' : 'unavailable',
   };
   const repositoryWarnings = [
     commitResult.warning,
@@ -388,6 +559,7 @@ async function enrich(repository, generatedAt) {
     dependabotResult.warning,
     codeScanningResult.warning,
     openSsfResult.warning,
+    ...packages.warnings,
   ].filter(Boolean);
   const collection = calculateCollection(signalResults, repositoryWarnings);
   const assessment = calculateHealthAssessment({
@@ -465,6 +637,10 @@ async function enrich(repository, generatedAt) {
     },
     activity,
     deliveryFrequency,
+    packages: {
+      status: packages.status,
+      items: packages.items,
+    },
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -522,6 +698,7 @@ function fallbackRepository(repository, generatedAt = Date.now()) {
       releases: 'unavailable',
       workItems: 'unavailable',
       security: 'unavailable',
+      packages: 'unavailable',
     },
     ['Repository enrichment failed; optional signals are unavailable.'],
   );
@@ -571,6 +748,7 @@ function fallbackRepository(repository, generatedAt = Date.now()) {
       evidence: ['github_deployments', 'delivery_workflows', 'github_releases'],
       correlationMinutes: 30,
     },
+    packages: { status: 'unavailable', items: [] },
     projectType: classifyProjectType(repository),
     lastCommitSha: null,
     lastCommitDate: repository.pushed_at ?? null,
