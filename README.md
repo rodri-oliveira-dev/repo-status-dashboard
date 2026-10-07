@@ -1,8 +1,46 @@
 # Repo Control Center
 
-Painel operacional, somente leitura, para acompanhar build, entrega, versão, atividade e saúde dos repositórios GitHub pertencentes a [`rodri-oliveira-dev`](https://github.com/rodri-oliveira-dev). A aplicação não mantém backend nem envia credenciais ao navegador.
+O **Repo Control Center** é um dashboard operacional, somente leitura, para acompanhar em um único lugar o estado dos repositórios GitHub pertencentes a [`rodri-oliveira-dev`](https://github.com/rodri-oliveira-dev).
 
-> **Screenshot:** adicione aqui uma captura do dashboard publicado após o primeiro deploy.
+Ele consolida sinais que normalmente ficam espalhados entre repositórios, workflows, deployments e releases — como status de build, entrega, versão publicada, atividade recente e saúde geral — e transforma esses dados em uma visão centralizada para manutenção e tomada de decisão.
+
+A aplicação não mantém backend permanente nem envia credenciais ao navegador. A coleta acontece no GitHub Actions, gera um snapshot JSON estático e publica a SPA no GitHub Pages.
+
+## O que ele faz
+
+O dashboard coleta e organiza automaticamente informações dos repositórios próprios da conta, ignorando forks, e apresenta:
+
+- status do CI/build mais recente;
+- status e tipo da última entrega;
+- versão publicada, quando pode ser determinada com segurança;
+- data do último commit e atividade recente;
+- última GitHub Release;
+- linguagem e tipo do projeto;
+- quantidade de estrelas e total combinado de issues e pull requests abertos;
+- classificação de saúde do repositório;
+- filtros por saúde, tipo de projeto, tecnologia e tipo de entrega;
+- busca por repositório;
+- ordenação por nome, atualização ou saúde;
+- visão detalhada de cada repositório;
+- identificação separada de projetos arquivados.
+
+O objetivo não é substituir o GitHub, mas funcionar como uma camada de observabilidade do portfólio de repositórios.
+
+## Ganhos
+
+Centralizar esses sinais reduz a necessidade de abrir repositório por repositório para entender o estado do ecossistema.
+
+Na prática, o dashboard ajuda a:
+
+- **reduzir carga operacional**, concentrando informações dispersas em uma única tela;
+- **identificar falhas rapidamente**, destacando builds ou entregas com problema;
+- **encontrar projetos esquecidos**, classificando repositórios sem atividade recente como `Stale`;
+- **acompanhar releases e deploys**, facilitando a identificação da última versão efetivamente entregue;
+- **priorizar manutenção**, usando uma classificação de saúde uniforme entre projetos;
+- **detectar inconsistências de automação**, como projetos sem workflow reconhecido ou sem evidência de delivery;
+- **manter visão de portfólio**, útil quando a quantidade de repositórios cresce;
+- **evitar infraestrutura adicional**, já que o resultado publicado é totalmente estático;
+- **reduzir exposição de credenciais**, porque tokens existem apenas no contexto do GitHub Actions e nunca são enviados para a SPA.
 
 ## Arquitetura
 
@@ -16,6 +54,8 @@ flowchart LR
 
 O workflow agendado executa o collector durante o próprio job de publicação. O snapshot gerado entra no artifact do Pages e não exige commits automáticos.
 
+Esse desenho mantém a solução simples: o GitHub Actions atua como processo de coleta, o JSON como snapshot de leitura e o GitHub Pages como camada de publicação.
+
 ## Stack
 
 - Angular 22 com standalone components, Signals e templates estritos
@@ -23,7 +63,22 @@ O workflow agendado executa o collector durante o próprio job de publicação. 
 - SCSS responsivo com light/dark mode
 - ESLint, Prettier, Vitest e `node:test`
 - GitHub Actions e GitHub Pages
+- Lighthouse CI para performance, acessibilidade, boas práticas e SEO
+- IndexNow para notificar mecanismos de busca após publicação
+- OWASP ZAP Baseline para validação passiva da Pages publicada
 - Node.js 24 apenas para desenvolvimento, build e coleta
+
+## SEO, qualidade e segurança da Pages
+
+A página publicada é tratada também como uma vitrine técnica do portfólio. O HTML base inclui canonical URL, Open Graph, Twitter Cards, autoria e structured data com `WebSite`, `WebApplication` e `Person`. Um sitemap dedicado expõe a URL canônica do dashboard.
+
+O workflow [`seo-validation.yml`](.github/workflows/seo-validation.yml) valida esses metadados, structured data, sitemap e o backlink para o site pessoal. O [`lighthouse.yml`](.github/workflows/lighthouse.yml), adaptado do site principal, executa três medições e aplica quality gates para SEO, boas práticas e acessibilidade, mantendo performance como warning.
+
+O [`indexnow.yml`](.github/workflows/indexnow.yml) reutiliza a chave de propriedade já publicada pelo site pessoal no host `rodri-oliveira-dev.github.io` e envia a URL canônica do dashboard ao IndexNow após um deploy bem-sucedido, manualmente ou no fallback diário. Isso reduz a dependência de descoberta apenas por crawling e ajuda mudanças públicas a chegarem mais rapidamente aos mecanismos de busca compatíveis.
+
+O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. Os achados são mantidos em issue e artifact. O scan começa como report-only para evitar que headers gerenciados pela própria infraestrutura do GitHub Pages gerem falsos bloqueios de deploy; depois do baseline inicial, regras controláveis pela aplicação podem ser promovidas a gate.
+
+O logo do Repo Control Center aponta para [o site pessoal](https://rodri-oliveira-dev.github.io/), transformando o dashboard também em um ponto de entrada para o restante do portfólio.
 
 ## Executar localmente
 
@@ -94,6 +149,8 @@ Precedência atual:
 5. `Warning` para estados intermediários ou dados parcialmente conhecidos;
 6. `Unknown` quando CI e delivery não podem ser determinados.
 
+A classificação cria uma linguagem comum para interpretar rapidamente o estado dos projetos, sem depender de convenções visuais diferentes em cada repositório.
+
 ## GitHub Pages
 
 O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, deriva o `base href` do nome real do repositório e publica o artifact oficial do Pages.
@@ -110,13 +167,16 @@ As rotas usam hash (`#/repository/...`), evitando 404 em refresh sem exigir um s
 
 O cron `17 * * * *` dispara aproximadamente uma vez por hora (o GitHub pode atrasar schedules em períodos de carga). Também é possível usar **Run workflow**. O JSON publicado reflete o instante do último workflow bem-sucedido.
 
+Essa atualização periódica mantém o dashboard próximo do estado real dos repositórios sem exigir polling contínuo no navegador nem chamadas autenticadas feitas pelo usuário.
+
 ## Limitações atuais
 
 - A API pode não expor uma associação inequívoca entre um workflow e a versão publicada; nesses casos a versão fica vazia.
 - Workflows com nomes fora das palavras-chave podem resultar em `unknown`.
 - O `GITHUB_TOKEN` do próprio repositório pode não ler Actions/Deployments de outros repositórios; use o PAT somente leitura para cobertura completa.
 - O limite anônimo da API é baixo para contas com muitos repositórios.
-- Estatísticas externas e sinais de segurança não fazem parte desta primeira versão.
+- Os detalhes de repositório usam hash routes; para mecanismos de busca, a URL indexável principal é a raiz do dashboard.
+- Alguns headers de segurança são controlados pela infraestrutura do GitHub Pages e podem aparecer como findings informativos no ZAP.
 
 ## Roadmap
 
@@ -141,12 +201,16 @@ src/app/features/             dashboard e detalhes do repositório
 src/app/shared/               contrato, componentes, pipes e busca
 public/data/repositories.json fixture/snapshot consumido pela SPA
 scripts/                      collector e regras de classificação
-.github/workflows/            CI e deploy agendado no Pages
+.github/workflows/            CI, SEO, Lighthouse, segurança e deploy
 ```
 
 ## Segurança
 
 A aplicação publicada consome somente o JSON estático. Não há token, chamada autenticada ao GitHub, OAuth, armazenamento de credenciais ou mutação de repositórios no frontend.
+
+A autenticação necessária para enriquecer os dados fica restrita ao ambiente controlado do GitHub Actions. Isso permite publicar o dashboard como site estático sem transformar o navegador em cliente privilegiado da API do GitHub.
+
+Além da segurança por desenho, a Pages publicada recebe validação dinâmica periódica com OWASP ZAP Baseline. O objetivo é detectar regressões e sinais de configuração insegura sem realizar ataques ativos contra o serviço hospedado.
 
 ## Releases
 

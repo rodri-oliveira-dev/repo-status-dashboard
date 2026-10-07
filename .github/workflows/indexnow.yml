@@ -1,0 +1,92 @@
+name: Notify IndexNow
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 12 * * *'
+  workflow_run:
+    workflows: ['Deploy GitHub Pages']
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow-dashboard
+  cancel-in-progress: true
+
+jobs:
+  notify:
+    name: Submit dashboard URL
+    if: >-
+      ${{
+        github.event_name != 'workflow_run' ||
+        github.event.workflow_run.conclusion == 'success'
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SITE_HOST: rodri-oliveira-dev.github.io
+      SITE_URL: https://rodri-oliveira-dev.github.io/repo-status-dashboard/
+      INDEXNOW_KEY: 1e7dfc65bd806e29edef5985f15cdb79
+      INDEXNOW_KEY_LOCATION: https://rodri-oliveira-dev.github.io/1e7dfc65bd806e29edef5985f15cdb79.txt
+
+    steps:
+      - name: Wait for published dashboard
+        shell: bash
+        run: |
+          for attempt in {1..18}; do
+            if curl --fail --silent --show-error --location --max-time 15 "$SITE_URL" > /dev/null; then
+              echo "Published dashboard is available."
+              exit 0
+            fi
+            echo "Dashboard not available yet (attempt ${attempt}/18)."
+            sleep 10
+          done
+
+          echo "Published dashboard did not become available in the expected window."
+          exit 1
+
+      - name: Verify IndexNow ownership key
+        shell: bash
+        run: |
+          body="$(curl --fail --silent --show-error --location --max-time 15 "$INDEXNOW_KEY_LOCATION")"
+          if [[ "$body" != "$INDEXNOW_KEY" && "$body" != "$INDEXNOW_KEY"$'\n' ]]; then
+            echo "IndexNow ownership key is not valid at $INDEXNOW_KEY_LOCATION."
+            exit 1
+          fi
+
+      - name: Submit dashboard URL to IndexNow
+        shell: bash
+        run: |
+          cat > /tmp/indexnow.json <<JSON
+          {
+            "host": "${SITE_HOST}",
+            "key": "${INDEXNOW_KEY}",
+            "keyLocation": "${INDEXNOW_KEY_LOCATION}",
+            "urlList": [
+              "${SITE_URL}"
+            ]
+          }
+          JSON
+
+          curl \
+            --fail-with-body \
+            --silent \
+            --show-error \
+            --request POST \
+            --header 'Content-Type: application/json; charset=utf-8' \
+            --data-binary @/tmp/indexnow.json \
+            https://api.indexnow.org/indexnow
+
+      - name: Write summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "# IndexNow"
+            echo
+            echo "- **URL:** ${SITE_URL}"
+            echo "- **Host ownership:** shared with the personal GitHub Pages site"
+            echo "- **Endpoint:** https://api.indexnow.org/indexnow"
+          } >> "$GITHUB_STEP_SUMMARY"

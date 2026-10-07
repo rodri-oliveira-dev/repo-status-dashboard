@@ -1,0 +1,70 @@
+name: OWASP ZAP Baseline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 7 * * 1'
+  workflow_run:
+    workflows: ['Deploy GitHub Pages']
+    types: [completed]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: owasp-zap-pages
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: Passive security scan
+    if: >-
+      ${{
+        github.event_name != 'workflow_run' ||
+        (
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event != 'schedule'
+        )
+      }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Wait for published site
+        shell: bash
+        run: |
+          target="https://rodri-oliveira-dev.github.io/repo-status-dashboard/"
+          for attempt in {1..18}; do
+            if curl --fail --silent --show-error --location --max-time 15 "$target" > /dev/null; then
+              echo "Published site is available."
+              exit 0
+            fi
+            echo "Site not available yet (attempt ${attempt}/18)."
+            sleep 10
+          done
+
+          echo "Published site did not become available in the expected window."
+          exit 1
+
+      - name: Run OWASP ZAP baseline
+        uses: zaproxy/action-baseline@de8ad967d3548d44ef623df22cf95c3b0baf8b25 # v0.15.0
+        with:
+          token: ${{ github.token }}
+          target: https://rodri-oliveira-dev.github.io/repo-status-dashboard/
+          fail_action: false
+          allow_issue_writing: true
+          issue_title: OWASP ZAP Baseline Report
+          artifact_name: owasp-zap-baseline
+
+      - name: Write security summary
+        if: always()
+        run: |
+          {
+            echo "# OWASP ZAP baseline"
+            echo
+            echo "- **Target:** https://rodri-oliveira-dev.github.io/repo-status-dashboard/"
+            echo "- **Mode:** passive baseline scan"
+            echo "- **Deployment gate:** report-only"
+            echo "- **Findings:** maintained in the OWASP ZAP Baseline Report issue and workflow artifact"
+          } >> "$GITHUB_STEP_SUMMARY"
