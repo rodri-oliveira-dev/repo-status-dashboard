@@ -295,8 +295,7 @@ export function selectBuildWorkflow(runs, configuredWorkflows = {}) {
   return (
     [...runs]
       .filter(
-        (run) =>
-          !isDependabotRun(run) && classifyWorkflowRole(run, configuredWorkflows) === 'ci',
+        (run) => !isDependabotRun(run) && classifyWorkflowRole(run, configuredWorkflows) === 'ci',
       )
       .sort(
         (left, right) =>
