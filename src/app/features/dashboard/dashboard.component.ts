@@ -59,24 +59,8 @@ export class DashboardComponent implements OnInit {
   protected readonly sortColumn = signal<SortColumn>('updated');
   protected readonly sortDirection = signal<SortDirection>('desc');
 
-  protected readonly activeRepositories = computed(() =>
-    this.store.repositories().filter((repository) => !repository.archived),
-  );
-
-  protected readonly collectionSummary = computed(() => {
-    const repositories = this.activeRepositories();
-    return {
-      partial: repositories.filter(
-        (repository) => repository.collection.status === 'partial',
-      ).length,
-      unavailable: repositories.filter(
-        (repository) => repository.collection.status === 'unavailable',
-      ).length,
-    };
-  });
-
   protected readonly stats = computed(() => {
-    const repositories = this.activeRepositories();
+    const repositories = this.store.repositories();
     const count = (health: HealthStatus) =>
       repositories.filter((repository) => repository.health === health).length;
     return {
@@ -87,12 +71,10 @@ export class DashboardComponent implements OnInit {
       stale: count('stale'),
     };
   });
-  protected readonly attentionItems = computed(() =>
-    rankNeedsAttention(this.activeRepositories()),
-  );
+  protected readonly attentionItems = computed(() => rankNeedsAttention(this.store.repositories()));
   protected readonly portfolioInsights = computed(() =>
     calculatePortfolioInsights(
-      this.activeRepositories(),
+      this.store.repositories(),
       this.store.dataset()?.generatedAt ?? '1970-01-01T00:00:00Z',
     ),
   );
@@ -100,7 +82,8 @@ export class DashboardComponent implements OnInit {
   protected readonly technologies = computed(() =>
     [
       ...new Set(
-        this.activeRepositories()
+        this.store
+          .repositories()
           .map((repository) => repository.language)
           .filter((value): value is string => Boolean(value)),
       ),
@@ -116,7 +99,7 @@ export class DashboardComponent implements OnInit {
       healthy: 4,
       archived: 5,
     };
-    const filtered = filterRepositories(this.activeRepositories(), {
+    const filtered = filterRepositories(this.store.repositories(), {
       query: this.query(),
       health: this.healthFilter(),
       type: this.typeFilter(),
