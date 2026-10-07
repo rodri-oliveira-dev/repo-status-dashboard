@@ -27,7 +27,6 @@ describe('GitHub pagination', () => {
   });
 });
 
-
 describe('repository inclusion', () => {
   const owner = 'rodri-oliveira-dev';
 
