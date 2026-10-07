@@ -1,8 +1,46 @@
 # Repo Control Center
 
-Painel operacional, somente leitura, para acompanhar build, entrega, versão, atividade e saúde dos repositórios GitHub pertencentes a [`rodri-oliveira-dev`](https://github.com/rodri-oliveira-dev). A aplicação não mantém backend nem envia credenciais ao navegador.
+O **Repo Control Center** é um dashboard operacional, somente leitura, para acompanhar em um único lugar o estado dos repositórios GitHub pertencentes a [`rodri-oliveira-dev`](https://github.com/rodri-oliveira-dev).
 
-> **Screenshot:** adicione aqui uma captura do dashboard publicado após o primeiro deploy.
+Ele consolida sinais que normalmente ficam espalhados entre repositórios, workflows, deployments e releases — como status de build, entrega, versão publicada, atividade recente e saúde geral — e transforma esses dados em uma visão centralizada para manutenção e tomada de decisão.
+
+A aplicação não mantém backend permanente nem envia credenciais ao navegador. A coleta acontece no GitHub Actions, gera um snapshot JSON estático e publica a SPA no GitHub Pages.
+
+## O que ele faz
+
+O dashboard coleta e organiza automaticamente informações dos repositórios próprios da conta, ignorando forks, e apresenta:
+
+- status do CI/build mais recente;
+- status e tipo da última entrega;
+- versão publicada, quando pode ser determinada com segurança;
+- data do último commit e atividade recente;
+- última GitHub Release;
+- linguagem e tipo do projeto;
+- quantidade de estrelas e issues abertas;
+- classificação de saúde do repositório;
+- filtros por saúde, tipo de projeto, tecnologia e tipo de entrega;
+- busca por repositório;
+- ordenação por nome, atualização ou saúde;
+- visão detalhada de cada repositório;
+- identificação separada de projetos arquivados.
+
+O objetivo não é substituir o GitHub, mas funcionar como uma camada de observabilidade do portfólio de repositórios.
+
+## Ganhos
+
+Centralizar esses sinais reduz a necessidade de abrir repositório por repositório para entender o estado do ecossistema.
+
+Na prática, o dashboard ajuda a:
+
+- **reduzir carga operacional**, concentrando informações dispersas em uma única tela;
+- **identificar falhas rapidamente**, destacando builds ou entregas com problema;
+- **encontrar projetos esquecidos**, classificando repositórios sem atividade recente como `Stale`;
+- **acompanhar releases e deploys**, facilitando a identificação da última versão efetivamente entregue;
+- **priorizar manutenção**, usando uma classificação de saúde uniforme entre projetos;
+- **detectar inconsistências de automação**, como projetos sem workflow reconhecido ou sem evidência de delivery;
+- **manter visão de portfólio**, útil quando a quantidade de repositórios cresce;
+- **evitar infraestrutura adicional**, já que o resultado publicado é totalmente estático;
+- **reduzir exposição de credenciais**, porque tokens existem apenas no contexto do GitHub Actions e nunca são enviados para a SPA.
 
 ## Arquitetura
 
@@ -15,6 +53,8 @@ flowchart LR
 ```
 
 O workflow agendado executa o collector durante o próprio job de publicação. O snapshot gerado entra no artifact do Pages e não exige commits automáticos.
+
+Esse desenho mantém a solução simples: o GitHub Actions atua como processo de coleta, o JSON como snapshot de leitura e o GitHub Pages como camada de publicação.
 
 ## Stack
 
@@ -94,6 +134,8 @@ Precedência atual:
 5. `Warning` para estados intermediários ou dados parcialmente conhecidos;
 6. `Unknown` quando CI e delivery não podem ser determinados.
 
+A classificação cria uma linguagem comum para interpretar rapidamente o estado dos projetos, sem depender de convenções visuais diferentes em cada repositório.
+
 ## GitHub Pages
 
 O workflow [`deploy-pages.yml`](.github/workflows/deploy-pages.yml) roda no push para `main`, manualmente e a cada hora. Ele coleta dados, valida formato/lint/testes, deriva o `base href` do nome real do repositório e publica o artifact oficial do Pages.
@@ -109,6 +151,8 @@ As rotas usam hash (`#/repository/...`), evitando 404 em refresh sem exigir um s
 ## Atualização automática
 
 O cron `17 * * * *` dispara aproximadamente uma vez por hora (o GitHub pode atrasar schedules em períodos de carga). Também é possível usar **Run workflow**. O JSON publicado reflete o instante do último workflow bem-sucedido.
+
+Essa atualização periódica mantém o dashboard próximo do estado real dos repositórios sem exigir polling contínuo no navegador nem chamadas autenticadas feitas pelo usuário.
 
 ## Limitações atuais
 
@@ -147,6 +191,8 @@ scripts/                      collector e regras de classificação
 ## Segurança
 
 A aplicação publicada consome somente o JSON estático. Não há token, chamada autenticada ao GitHub, OAuth, armazenamento de credenciais ou mutação de repositórios no frontend.
+
+A autenticação necessária para enriquecer os dados fica restrita ao ambiente controlado do GitHub Actions. Isso permite publicar o dashboard como site estático sem transformar o navegador em cliente privilegiado da API do GitHub.
 
 ## Releases
 
