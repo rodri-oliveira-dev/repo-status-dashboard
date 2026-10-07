@@ -32,5 +32,23 @@ jobs:
         run: npm run lint
       - name: Test
         run: npm test
+      - name: Validate ZAP configuration
+        shell: bash
+        run: |
+          python -m py_compile .zap/hooks.py
+          python - <<'PY'
+          from pathlib import Path
+
+          lines = Path(".zap/rules.tsv").read_text(encoding="utf-8").splitlines()
+          rules = {}
+          for line in lines:
+              if not line or line.startswith("#") or "\t" not in line:
+                  continue
+              key, level, *_ = line.split("\t")
+              rules[key] = level
+
+          assert rules.get("10038") == "WARN", "ZAP rule 10038 must remain WARN"
+          assert rules.get("10055") == "WARN", "ZAP rule 10055 must remain WARN"
+          PY
       - name: Build
         run: npm run build

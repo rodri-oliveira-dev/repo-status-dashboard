@@ -58,7 +58,7 @@ jobs:
           token: ${{ github.token }}
           target: https://rodri-oliveira-dev.github.io/repo-status-dashboard/
           rules_file_name: .zap/rules.tsv
-          cmd_options: '-m 1 -l WARN'
+          cmd_options: '-c .zap/rules.tsv --hook=/zap/wrk/.zap/hooks.py -m 1 -l WARN'
           fail_action: false
           allow_issue_writing: true
           issue_title: OWASP ZAP Baseline Report
