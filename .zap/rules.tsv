@@ -20,7 +20,7 @@
 10049	IGNORE	(Storable/cacheable content - managed by GitHub Pages)
 10050	IGNORE	(Retrieved from cache - managed by GitHub Pages)
 
-# CSP directives such as frame-ancestors cannot be enforced from a meta policy,
-# and Angular component styles on static hosting require inline style support.
-# Script CSP remains enforced by Angular security.autoCsp and is validated by CI.
-10055	IGNORE	(CSP header-only/static-host limitations; script CSP enforced by Angular autoCsp)
+# CSP rule 10055 is intentionally NOT suppressed. It groups both hosting-related
+# limitations and application-controlled regressions such as unsafe-eval,
+# wildcard sources or malformed directives. Keeping it visible ensures CSP
+# regressions remain actionable even when some sub-alerts are expected on Pages.
