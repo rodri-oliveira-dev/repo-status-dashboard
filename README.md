@@ -64,6 +64,7 @@ Esse desenho mantém a solução simples: o GitHub Actions atua como processo de
 - ESLint, Prettier, Vitest e `node:test`
 - GitHub Actions e GitHub Pages
 - Lighthouse CI para performance, acessibilidade, boas práticas e SEO
+- IndexNow para notificar mecanismos de busca após publicação
 - OWASP ZAP Baseline para validação passiva da Pages publicada
 - Node.js 24 apenas para desenvolvimento, build e coleta
 
@@ -72,6 +73,8 @@ Esse desenho mantém a solução simples: o GitHub Actions atua como processo de
 A página publicada é tratada também como uma vitrine técnica do portfólio. O HTML base inclui canonical URL, Open Graph, Twitter Cards, autoria e structured data com `WebSite`, `WebApplication` e `Person`. Um sitemap dedicado expõe a URL canônica do dashboard.
 
 O workflow [`seo-validation.yml`](.github/workflows/seo-validation.yml) valida esses metadados, structured data, sitemap e o backlink para o site pessoal. O [`lighthouse.yml`](.github/workflows/lighthouse.yml), adaptado do site principal, executa três medições e aplica quality gates para SEO, boas práticas e acessibilidade, mantendo performance como warning.
+
+O [`indexnow.yml`](.github/workflows/indexnow.yml) reutiliza a chave de propriedade já publicada pelo site pessoal no host `rodri-oliveira-dev.github.io` e envia a URL canônica do dashboard ao IndexNow após um deploy bem-sucedido, manualmente ou no fallback diário. Isso reduz a dependência de descoberta apenas por crawling e ajuda mudanças públicas a chegarem mais rapidamente aos mecanismos de busca compatíveis.
 
 O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. Os achados são mantidos em issue e artifact. O scan começa como report-only para evitar que headers gerenciados pela própria infraestrutura do GitHub Pages gerem falsos bloqueios de deploy; depois do baseline inicial, regras controláveis pela aplicação podem ser promovidas a gate.
 
