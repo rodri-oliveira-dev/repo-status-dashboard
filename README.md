@@ -76,7 +76,7 @@ O workflow [`seo-validation.yml`](.github/workflows/seo-validation.yml) valida e
 
 O [`indexnow.yml`](.github/workflows/indexnow.yml) reutiliza a chave de propriedade já publicada pelo site pessoal no host `rodri-oliveira-dev.github.io` e envia a URL canônica do dashboard ao IndexNow após um deploy bem-sucedido, manualmente ou no fallback diário. Isso reduz a dependência de descoberta apenas por crawling e ajuda mudanças públicas a chegarem mais rapidamente aos mecanismos de busca compatíveis.
 
-O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. Os achados são mantidos em issue e artifact. O scan começa como report-only para evitar que headers gerenciados pela própria infraestrutura do GitHub Pages gerem falsos bloqueios de deploy; depois do baseline inicial, regras controláveis pela aplicação podem ser promovidas a gate.
+O workflow [`owasp-zap.yml`](.github/workflows/owasp-zap.yml) executa um OWASP ZAP Baseline passivo contra a GitHub Pages publicada após deploys originados por mudanças de código, manualmente e uma vez por semana. A ruleset [`rules.tsv`](.zap/rules.tsv) elimina resultados fora de `/repo-status-dashboard/` e ignora apenas findings de headers/cache controlados pela infraestrutura do GitHub Pages. Achados controláveis pela aplicação continuam visíveis. O Angular também usa `security.autoCsp`, que gera uma CSP baseada em hashes adequada para hospedagem estática.
 
 O logo do Repo Control Center aponta para [o site pessoal](https://rodri-oliveira-dev.github.io/), transformando o dashboard também em um ponto de entrada para o restante do portfólio.
 
@@ -176,7 +176,7 @@ Essa atualização periódica mantém o dashboard próximo do estado real dos re
 - O `GITHUB_TOKEN` do próprio repositório pode não ler Actions/Deployments de outros repositórios; use o PAT somente leitura para cobertura completa.
 - O limite anônimo da API é baixo para contas com muitos repositórios.
 - Os detalhes de repositório usam hash routes; para mecanismos de busca, a URL indexável principal é a raiz do dashboard.
-- Alguns headers de segurança são controlados pela infraestrutura do GitHub Pages e podem aparecer como findings informativos no ZAP.
+- Alguns headers de segurança são controlados pela infraestrutura do GitHub Pages; esses casos são explicitamente classificados na ruleset do ZAP para não poluir o relatório do dashboard.
 
 ## Roadmap
 
@@ -210,7 +210,7 @@ A aplicação publicada consome somente o JSON estático. Não há token, chamad
 
 A autenticação necessária para enriquecer os dados fica restrita ao ambiente controlado do GitHub Actions. Isso permite publicar o dashboard como site estático sem transformar o navegador em cliente privilegiado da API do GitHub.
 
-Além da segurança por desenho, a Pages publicada recebe validação dinâmica periódica com OWASP ZAP Baseline. O objetivo é detectar regressões e sinais de configuração insegura sem realizar ataques ativos contra o serviço hospedado.
+Além da segurança por desenho, a Pages publicada recebe validação dinâmica periódica com OWASP ZAP Baseline. O scan é restrito ao subdiretório do dashboard e diferencia findings controláveis pela aplicação daqueles pertencentes à camada de hospedagem do GitHub Pages. Para scripts, o build Angular usa `security.autoCsp`, evitando uma política estática com nonce reutilizável.
 
 ## Releases
 
