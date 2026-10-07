@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "owner": "rodri-oliveira-dev",
-  "generatedAt": "2026-10-07T09:39:42.242Z",
+  "generatedAt": "2026-10-07T09:46:50.877Z",
   "repositories": [
     {
       "name": ".github",
@@ -33,6 +33,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "Control plane secret scan",
+          "url": "https://github.com/rodri-oliveira-dev/.github/actions/runs/37503452721",
+          "date": "2026-10-06T17:25:48Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Tool",
       "lastCommitSha": "713462f032606532b09308e19c07bc9b1061386b",
@@ -68,7 +92,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -101,6 +126,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "CLI",
       "lastCommitSha": "715b77617e85f7538feb95d1060d7e7e7204cedc",
       "lastCommitDate": "2026-10-06T16:53:37Z",
@@ -130,7 +179,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -164,6 +214,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/angular-template/actions/runs/37473178816",
+          "date": "2026-10-06T13:45:51Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Angular",
       "lastCommitSha": "929c13ca379d028f1380335b14ca58b9644ab8e5",
       "lastCommitDate": "2026-10-06T13:44:17Z",
@@ -193,7 +267,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -225,6 +300,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/brazilian-primitives/actions/runs/37458760876",
+          "date": "2026-10-06T11:50:20Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Application",
       "lastCommitSha": "3e7243e5b7115d3abd4449d4be469a0b5f291d4c",
       "lastCommitDate": "2026-10-06T11:47:28Z",
@@ -254,7 +353,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -297,6 +397,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/complexity-analyzers/actions/runs/37458545530",
+          "date": "2026-10-06T11:48:09Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "2ff41201614ffe18661e0aa0651f7e9c298c63a8",
       "lastCommitDate": "2026-10-06T11:45:34Z",
@@ -326,7 +450,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -384,6 +509,30 @@
         ],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "Security - CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/CSF.Analyzers/actions/runs/37508918683",
+          "date": "2026-10-06T18:11:02Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Analyzer",
       "lastCommitSha": "0c61797555a9e383f0404b1eedc7044e87bbf355",
       "lastCommitDate": "2026-10-06T18:07:49Z",
@@ -413,7 +562,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -450,6 +600,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/Dapper-FluentMap/actions/runs/37467341736",
+          "date": "2026-10-06T13:03:01Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Library",
       "lastCommitSha": "90600cbf88ff076b35d5296f6dd5e1b6f6daeb47",
       "lastCommitDate": "2026-10-06T12:31:55Z",
@@ -479,7 +653,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -506,6 +681,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Application",
       "lastCommitSha": "d5512f8fb191c4cb1657fdbb2d7f161c3ded86b0",
@@ -541,7 +740,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -573,6 +773,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "Validate",
+          "url": "https://github.com/rodri-oliveira-dev/dotfiles/actions/runs/35896778451",
+          "date": "2026-09-23T17:37:49Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Library",
       "lastCommitSha": "2c1c2d3c6367fada107db3db803e9ce5809e6098",
@@ -608,7 +832,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -641,6 +866,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-code-coverage/actions/runs/37459465458",
+          "date": "2026-10-06T11:55:53Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Application",
       "lastCommitSha": "8640fb55ee15e0e5dee2c3b5554e57645607d1b1",
       "lastCommitDate": "2026-10-06T11:53:45Z",
@@ -670,7 +919,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -701,6 +951,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Library",
       "lastCommitSha": "526ea000cc46d14886dac084c394122584d365cc",
@@ -740,7 +1014,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -767,6 +1042,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-library-template/actions/runs/37461124332",
+          "date": "2026-10-06T12:10:40Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Template",
       "lastCommitSha": "32d45957e31017b51c0aa2f17eed2769dfea5749",
@@ -797,7 +1096,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -831,6 +1131,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/dotnet-observability-lab/actions/runs/37472901913",
+          "date": "2026-10-06T13:45:44Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Application",
       "lastCommitSha": "0e0c3f9c60dc88c4f4fd2d40af5f1e8d8e42c94b",
@@ -866,7 +1190,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -899,6 +1224,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/DotNetRepoInspector/actions/runs/37501390997",
+          "date": "2026-10-06T17:14:12Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Application",
       "lastCommitSha": "9db779eab80630722c44669a3a274326118afd52",
@@ -934,7 +1283,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -971,6 +1321,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "unavailable",
+          "openAlerts": null,
+          "highCritical": null
+        },
+        "codeScanning": {
+          "status": "unavailable",
+          "openAlerts": null,
+          "highCritical": null
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Application",
       "lastCommitSha": "81fc2fed48a381b541a062a0157cda029656bbe6",
       "lastCommitDate": "2026-09-18T13:31:57Z",
@@ -994,11 +1368,15 @@
         {
           "code": "REPOSITORY_ARCHIVED",
           "severity": "info"
+        },
+        {
+          "code": "COLLECTION_PARTIAL",
+          "severity": "info"
         }
       ],
       "collection": {
-        "status": "complete",
-        "confidence": "high",
+        "status": "partial",
+        "confidence": "medium",
         "collectedSignals": [
           "metadata",
           "commits",
@@ -1007,8 +1385,13 @@
           "releases",
           "workItems"
         ],
-        "unavailableSignals": [],
-        "warnings": []
+        "unavailableSignals": [
+          "security"
+        ],
+        "warnings": [
+          "GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/dependabot/alerts?state=open&per_page=100: Forbidden",
+          "GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/code-scanning/alerts?state=open&per_page=100: Forbidden"
+        ]
       }
     },
     {
@@ -1050,6 +1433,30 @@
         ],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "owasp-zap-baseline",
+          "url": "https://github.com/rodri-oliveira-dev/poc-arquitetura/actions/runs/37516250954",
+          "date": "2026-10-06T19:13:45Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Sample",
       "lastCommitSha": "6be55cf2a247bca9c2b20e8842ca5bf96f8dc7c1",
       "lastCommitDate": "2026-10-06T18:55:32Z",
@@ -1079,7 +1486,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1112,6 +1520,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/ReliableWebhooks/actions/runs/37460045946",
+          "date": "2026-10-06T12:00:47Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Application",
       "lastCommitSha": "f03598c6b2e74889bd0ecfcb83fd4a30700a0a2c",
       "lastCommitDate": "2026-10-06T11:58:57Z",
@@ -1141,7 +1573,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1175,6 +1608,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "OWASP ZAP Baseline",
+          "url": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37592439730",
+          "date": "2026-10-07T08:15:29Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Angular",
       "lastCommitSha": "d51b36107f76cc404e08a00abe1d5fe18157f04b",
       "lastCommitDate": "2026-10-07T08:13:24Z",
@@ -1182,8 +1639,8 @@
       "lastWorkflowRole": "ci",
       "lastWorkflowStatus": "passing",
       "lastWorkflowConclusion": "success",
-      "lastWorkflowDate": "2026-10-07T09:46:29Z",
-      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37602854152",
+      "lastWorkflowDate": "2026-10-07T09:52:02Z",
+      "lastWorkflowUrl": "https://github.com/rodri-oliveira-dev/repo-status-dashboard/actions/runs/37603474859",
       "deliveryType": "GitHub Pages",
       "deliveryStatus": "success",
       "deliveryVersion": null,
@@ -1204,7 +1661,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1238,6 +1696,30 @@
         "oldestIssues": [],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "CodeQL",
+          "url": "https://github.com/rodri-oliveira-dev/Repo2C4/actions/runs/37462794125",
+          "date": "2026-10-06T12:25:21Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "CLI",
       "lastCommitSha": "4b61780c4557f640dc8564745dd709b3e5ba1237",
       "lastCommitDate": "2026-10-06T12:22:30Z",
@@ -1267,7 +1749,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1301,6 +1784,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Application",
       "lastCommitSha": "fc0f6ce4e9cb5547d5e9afeee2ae248d99fe0015",
@@ -1336,7 +1843,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1363,6 +1871,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "GitHub Actions security",
+          "url": "https://github.com/rodri-oliveira-dev/rodri-oliveira-dev.github.io/actions/runs/37465531079",
+          "date": "2026-10-06T12:45:37Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Documentation",
       "lastCommitSha": "ef796e5b6523989d48326d8ae076022e01e65e15",
@@ -1393,7 +1925,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1420,6 +1953,30 @@
         "pullRequestsCount": 0,
         "oldestIssues": [],
         "oldestPullRequests": []
+      },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "not_configured",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "workflow": {
+          "status": "not_configured",
+          "name": null,
+          "url": null,
+          "date": null
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
       },
       "projectType": "Infrastructure",
       "lastCommitSha": "d6e372d9e2ea5e7e15b616efb5a9075a962311d9",
@@ -1455,7 +2012,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1513,6 +2071,30 @@
         ],
         "oldestPullRequests": []
       },
+      "security": {
+        "dependabot": {
+          "status": "clean",
+          "openAlerts": 0,
+          "highCritical": 0
+        },
+        "codeScanning": {
+          "status": "findings_present",
+          "openAlerts": 5,
+          "highCritical": 5
+        },
+        "workflow": {
+          "status": "passing",
+          "name": "codeql",
+          "url": "https://github.com/rodri-oliveira-dev/web-api-core-seed/actions/runs/37548730039",
+          "date": "2026-10-06T23:54:50Z"
+        },
+        "openSsf": {
+          "status": "not_configured",
+          "score": null,
+          "date": null,
+          "url": null
+        }
+      },
       "projectType": "Application",
       "lastCommitSha": "e2a7fd9fa77217ae2d343ab202dcf953a5dedf19",
       "lastCommitDate": "2026-10-07T00:02:41Z",
@@ -1542,7 +2124,8 @@
           "actions",
           "deployments",
           "releases",
-          "workItems"
+          "workItems",
+          "security"
         ],
         "unavailableSignals": [],
         "warnings": []
@@ -1551,8 +2134,12 @@
   ],
   "collection": {
     "total": 23,
-    "complete": 23,
-    "partial": 0,
+    "complete": 22,
+    "partial": 1,
     "unavailable": 0
-  }
+  },
+  "warnings": [
+    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/code-scanning/alerts?state=open&per_page=100: Forbidden",
+    "gerador-de-camadas: GitHub API 403 for /repos/rodri-oliveira-dev/gerador-de-camadas/dependabot/alerts?state=open&per_page=100: Forbidden"
+  ]
 }

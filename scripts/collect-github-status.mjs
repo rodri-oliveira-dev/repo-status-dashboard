@@ -12,6 +12,8 @@ import {
   inferDeliveryType,
   mapDeliveryStatus,
   mapWorkflowStatus,
+  normalizeSecurityAlerts,
+  securityWorkflowEvidence,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
   summarizeCollection,
@@ -125,6 +127,61 @@ async function collectOpenWorkItems(base, repository) {
   return { ...analyzeOpenWorkItems(items), available: true };
 }
 
+async function collectSecurityAlerts(path, repositoryName, configuredStatus) {
+  try {
+    const alerts = await github(path, { absentStatuses: [404] });
+    return {
+      ...normalizeSecurityAlerts(alerts, configuredStatus),
+      available: true,
+    };
+  } catch (error) {
+    const message = safeWarning(error);
+    warnings.push(`${repositoryName}: ${message}`);
+    console.warn(`[collector] ${repositoryName}: security data unavailable (${message})`);
+    return {
+      status: 'unavailable',
+      openAlerts: null,
+      highCritical: null,
+      available: false,
+      warning: message,
+    };
+  }
+}
+
+async function collectOpenSsf(repositoryName, attempt = 0) {
+  const url = `https://api.securityscorecards.dev/projects/github.com/${encodeURIComponent(OWNER)}/${encodeURIComponent(repositoryName)}`;
+  try {
+    const response = await fetch(url, { signal: globalThis.AbortSignal.timeout(8000) });
+    if (response.status === 404)
+      return { status: 'not_configured', score: null, date: null, url: null, available: true };
+    if (!response.ok) {
+      if (response.status >= 500 && attempt === 0) return collectOpenSsf(repositoryName, 1);
+      throw new Error(`OpenSSF API ${response.status}: ${response.statusText}`);
+    }
+    const result = await response.json();
+    return {
+      status: 'available',
+      score: Number.isFinite(result.score) ? result.score : null,
+      date: result.date ?? null,
+      url: `https://securityscorecards.dev/viewer/?uri=github.com/${encodeURIComponent(OWNER)}/${encodeURIComponent(repositoryName)}`,
+      available: true,
+    };
+  } catch (error) {
+    if (attempt === 0) return collectOpenSsf(repositoryName, 1);
+    const message = safeWarning(error);
+    warnings.push(`${repositoryName}: ${message}`);
+    console.warn(`[collector] ${repositoryName}: OpenSSF data unavailable (${message})`);
+    return {
+      status: 'unavailable',
+      score: null,
+      date: null,
+      url: null,
+      available: false,
+      warning: message,
+    };
+  }
+}
+
 function latestDate(...values) {
   return (
     values.filter(Boolean).sort((left, right) => Date.parse(right) - Date.parse(left))[0] ?? null
@@ -193,19 +250,38 @@ async function enrich(repository) {
       console.warn(`[collector] ${name}: ${message}`);
     }
   }
-  const [commitResult, actionsResult, deploymentResult, releaseResult, workItemsResult] =
-    await Promise.all([
-      collectSignal(
-        `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
-        [],
-        name,
-        { absentStatuses: [404, 409] },
-      ),
-      collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
-      collectSignal(`${base}/deployments?per_page=1`, [], name),
-      collectSignal(`${base}/releases/latest`, null, name),
-      collectOpenWorkItems(base, repository),
-    ]);
+  const [
+    commitResult,
+    actionsResult,
+    deploymentResult,
+    releaseResult,
+    workItemsResult,
+    dependabotResult,
+    codeScanningResult,
+    openSsfResult,
+  ] = await Promise.all([
+    collectSignal(
+      `${base}/commits?sha=${encodeURIComponent(repository.default_branch)}&per_page=1`,
+      [],
+      name,
+      { absentStatuses: [404, 409] },
+    ),
+    collectSignal(`${base}/actions/runs?per_page=50`, { workflow_runs: [] }, name),
+    collectSignal(`${base}/deployments?per_page=1`, [], name),
+    collectSignal(`${base}/releases/latest`, null, name),
+    collectOpenWorkItems(base, repository),
+    collectSecurityAlerts(
+      `${base}/dependabot/alerts?state=open&per_page=100`,
+      name,
+      repository.security_and_analysis?.dependabot_security_updates?.status,
+    ),
+    collectSecurityAlerts(
+      `${base}/code-scanning/alerts?state=open&per_page=100`,
+      name,
+      repository.security_and_analysis?.advanced_security?.status,
+    ),
+    collectOpenSsf(name),
+  ]);
   const commits = commitResult.data;
   const workflowResponse = actionsResult.data;
   const deployments = deploymentResult.data;
@@ -213,6 +289,9 @@ async function enrich(repository) {
   const runs = workflowResponse.workflow_runs ?? [];
   const build = selectBuildWorkflow(runs, configuredWorkflows);
   const deliveryWorkflow = selectDeliveryWorkflow(runs, configuredWorkflows);
+  const securityWorkflow = actionsResult.available
+    ? securityWorkflowEvidence(runs, configuredWorkflows)
+    : { status: 'unavailable', name: null, url: null, date: null };
   const deployment = deployments[0] ?? null;
   const statusResult = deployment
     ? await collectSignal(`${base}/deployments/${deployment.id}/statuses?per_page=1`, [], name)
@@ -237,6 +316,13 @@ async function enrich(repository) {
     deployments: deploymentResult.available && statusResult.available ? 'available' : 'unavailable',
     releases: releaseResult.available ? 'available' : 'unavailable',
     workItems: workItemsResult.available ? 'available' : 'unavailable',
+    security:
+      dependabotResult.available &&
+      codeScanningResult.available &&
+      openSsfResult.available &&
+      actionsResult.available
+        ? 'available'
+        : 'unavailable',
   };
   const repositoryWarnings = [
     commitResult.warning,
@@ -246,6 +332,9 @@ async function enrich(repository) {
     releaseResult.warning,
     configResult.warning,
     workItemsResult.warning,
+    dependabotResult.warning,
+    codeScanningResult.warning,
+    openSsfResult.warning,
   ].filter(Boolean);
   const collection = calculateCollection(signalResults, repositoryWarnings);
   const assessment = calculateHealthAssessment({
@@ -272,6 +361,25 @@ async function enrich(repository) {
     openIssues: workItemsResult.openIssues,
     openPullRequests: workItemsResult.openPullRequests,
     staleWorkItems: workItemsResult.staleWorkItems,
+    security: {
+      dependabot: {
+        status: dependabotResult.status,
+        openAlerts: dependabotResult.openAlerts,
+        highCritical: dependabotResult.highCritical,
+      },
+      codeScanning: {
+        status: codeScanningResult.status,
+        openAlerts: codeScanningResult.openAlerts,
+        highCritical: codeScanningResult.highCritical,
+      },
+      workflow: securityWorkflow,
+      openSsf: {
+        status: openSsfResult.status,
+        score: openSsfResult.score,
+        date: openSsfResult.date,
+        url: openSsfResult.url,
+      },
+    },
     projectType: classifyProjectType(repository),
     lastCommitSha: commits[0]?.sha ?? null,
     lastCommitDate,
@@ -328,6 +436,7 @@ function fallbackRepository(repository) {
       deployments: 'unavailable',
       releases: 'unavailable',
       workItems: 'unavailable',
+      security: 'unavailable',
     },
     ['Repository enrichment failed; optional signals are unavailable.'],
   );
@@ -354,6 +463,12 @@ function fallbackRepository(repository) {
     openIssues: null,
     openPullRequests: null,
     staleWorkItems: null,
+    security: {
+      dependabot: { status: 'unavailable', openAlerts: null, highCritical: null },
+      codeScanning: { status: 'unavailable', openAlerts: null, highCritical: null },
+      workflow: { status: 'unavailable', name: null, url: null, date: null },
+      openSsf: { status: 'unavailable', score: null, date: null, url: null },
+    },
     projectType: classifyProjectType(repository),
     lastCommitSha: null,
     lastCommitDate: repository.pushed_at ?? null,

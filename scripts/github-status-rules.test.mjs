@@ -11,6 +11,8 @@ import {
   correlateReleaseVersion,
   inferDeliveryType,
   mapDeliveryStatus,
+  normalizeSecurityAlerts,
+  securityWorkflowEvidence,
   selectBuildWorkflow,
   selectDeliveryWorkflow,
   summarizeCollection,
@@ -26,6 +28,7 @@ describe('collection confidence', () => {
         deployments: 'available',
         releases: 'available',
         workItems: 'available',
+        security: 'available',
       }),
       {
         status: 'complete',
@@ -37,6 +40,7 @@ describe('collection confidence', () => {
           'deployments',
           'releases',
           'workItems',
+          'security',
         ],
         unavailableSignals: [],
         warnings: [],
@@ -52,6 +56,7 @@ describe('collection confidence', () => {
       deployments: 'unavailable',
       releases: 'available',
       workItems: 'unavailable',
+      security: 'available',
     });
     const unavailable = calculateCollection({
       metadata: 'unavailable',
@@ -60,6 +65,7 @@ describe('collection confidence', () => {
       deployments: 'unavailable',
       releases: 'unavailable',
       workItems: 'unavailable',
+      security: 'unavailable',
     });
     assert.equal(partial.status, 'partial');
     assert.equal(partial.confidence, 'medium');
@@ -76,6 +82,49 @@ describe('collection confidence', () => {
       ]),
       { total: 3, complete: 1, partial: 1, unavailable: 1 },
     );
+  });
+});
+
+describe('security posture normalization', () => {
+  it('distinguishes clean, disabled, findings and missing configuration', () => {
+    assert.deepEqual(normalizeSecurityAlerts([], 'enabled'), {
+      status: 'clean',
+      openAlerts: 0,
+      highCritical: 0,
+    });
+    assert.deepEqual(normalizeSecurityAlerts([], 'disabled'), {
+      status: 'disabled',
+      openAlerts: 0,
+      highCritical: 0,
+    });
+    assert.deepEqual(normalizeSecurityAlerts(null, 'enabled'), {
+      status: 'not_configured',
+      openAlerts: 0,
+      highCritical: 0,
+    });
+    assert.deepEqual(
+      normalizeSecurityAlerts([
+        { security_advisory: { severity: 'critical' } },
+        { rule: { security_severity_level: 'low' } },
+      ]),
+      { status: 'findings_present', openAlerts: 2, highCritical: 1 },
+    );
+  });
+
+  it('normalizes a security workflow independently from primary CI', () => {
+    assert.deepEqual(
+      securityWorkflowEvidence([
+        run('CI', '2026-10-01T00:00:00Z'),
+        run('CodeQL security', '2026-10-02T00:00:00Z'),
+      ]),
+      {
+        status: 'passing',
+        name: 'CodeQL security',
+        url: null,
+        date: '2026-10-02T00:00:00Z',
+      },
+    );
+    assert.equal(securityWorkflowEvidence([]).status, 'not_configured');
   });
 });
 

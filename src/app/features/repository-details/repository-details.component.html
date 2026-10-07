@@ -189,6 +189,50 @@
           </div>
         }
       </section>
+      <section class="panel security">
+        <p class="eyebrow">Evidence</p>
+        <h2>Security posture</h2>
+        <dl>
+          <div>
+            <dt>Dependabot</dt>
+            <dd>{{ signalLabel(repository.security.dependabot.status) }}</dd>
+          </div>
+          <div>
+            <dt>Open alerts</dt>
+            <dd>{{ repository.security.dependabot.openAlerts ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Code scanning</dt>
+            <dd>{{ signalLabel(repository.security.codeScanning.status) }}</dd>
+          </div>
+          <div>
+            <dt>High / critical</dt>
+            <dd>{{ repository.security.codeScanning.highCritical ?? 'Unavailable' }}</dd>
+          </div>
+          <div>
+            <dt>Security workflow</dt>
+            <dd>{{ signalLabel(repository.security.workflow.status) }}</dd>
+          </div>
+          <div>
+            <dt>OpenSSF Scorecard</dt>
+            <dd>
+              {{
+                repository.security.openSsf.score ?? signalLabel(repository.security.openSsf.status)
+              }}
+            </dd>
+          </div>
+        </dl>
+        @if (repository.security.workflow.url) {
+          <a [href]="repository.security.workflow.url" target="_blank" rel="noopener noreferrer"
+            >Security workflow ↗</a
+          >
+        }
+        @if (repository.security.openSsf.url) {
+          <a [href]="repository.security.openSsf.url" target="_blank" rel="noopener noreferrer"
+            >OpenSSF evidence ↗</a
+          >
+        }
+      </section>
     </aside>
   </div>
 } @else {

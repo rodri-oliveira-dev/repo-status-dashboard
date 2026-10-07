@@ -104,6 +104,34 @@ export interface StaleWorkItems {
   readonly oldestPullRequests: readonly StaleWorkItem[];
 }
 
+export type SecuritySignalStatus =
+  'clean' | 'findings_present' | 'disabled' | 'not_configured' | 'unavailable';
+
+export interface SecurityPosture {
+  readonly dependabot: {
+    readonly status: SecuritySignalStatus;
+    readonly openAlerts: number | null;
+    readonly highCritical: number | null;
+  };
+  readonly codeScanning: {
+    readonly status: SecuritySignalStatus;
+    readonly openAlerts: number | null;
+    readonly highCritical: number | null;
+  };
+  readonly workflow: {
+    readonly status: BuildStatus | 'not_configured' | 'unavailable';
+    readonly name: string | null;
+    readonly url: string | null;
+    readonly date: string | null;
+  };
+  readonly openSsf: {
+    readonly status: 'available' | 'not_configured' | 'unavailable';
+    readonly score: number | null;
+    readonly date: string | null;
+    readonly url: string | null;
+  };
+}
+
 export interface RepositoryStatus {
   readonly name: string;
   readonly fullName: string;
@@ -120,6 +148,7 @@ export interface RepositoryStatus {
   readonly openIssues: number | null;
   readonly openPullRequests: number | null;
   readonly staleWorkItems: StaleWorkItems | null;
+  readonly security: SecurityPosture;
   readonly projectType: ProjectType;
   readonly lastCommitSha: string | null;
   readonly lastCommitDate: string | null;

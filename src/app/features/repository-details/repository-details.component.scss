@@ -143,11 +143,13 @@ aside {
   gap: 1rem;
 }
 .links,
-.metadata {
+.metadata,
+.security {
   padding: 1.2rem;
 }
 .links h2,
-.metadata h2 {
+.metadata h2,
+.security h2 {
   margin-bottom: 1rem;
 }
 .links a {
@@ -169,6 +171,26 @@ aside {
   gap: 1rem;
   padding: 0.65rem 0;
   border-top: 1px solid var(--border);
+}
+.security dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--border);
+}
+.security dt {
+  margin: 0;
+}
+.security dd {
+  text-align: right;
+  text-transform: capitalize;
+}
+.security > a {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--accent);
+  font-size: 0.72rem;
 }
 .metadata dt {
   margin: 0;

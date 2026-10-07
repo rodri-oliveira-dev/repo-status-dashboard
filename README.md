@@ -153,6 +153,12 @@ workflows:
 
 Papéis suportados: `ci`, `quality`, `security`, `mutation`, `delivery`, `release`, `pages` e `maintenance`. Cada entrada deve ser somente o nome de um arquivo `.yml` ou `.yaml`. Um papel declarado é autoritativo: arquivos não listados não são classificados heuristicamente naquele papel; papéis ausentes continuam usando heurísticas. Arquivo ausente mantém o comportamento padrão, enquanto conteúdo inválido gera um aviso restrito ao repositório e não interrompe a coleta. O conteúdo da configuração não é publicado no snapshot.
 
+### Postura de segurança
+
+A postura apresenta evidências separadas: contagens agregadas de alertas Dependabot e code scanning, status do workflow de segurança e resultado público do OpenSSF Scorecard. Não existe score composto nem alegação de que um repositório está seguro. Estados `clean`, `findings_present`, `disabled`, `not_configured` e `unavailable` distinguem resultado, configuração e falta de acesso.
+
+Os endpoints de alertas exigem leitura de Dependabot alerts e code scanning alerts (`security_events` em tokens clássicos ou as permissões equivalentes somente leitura em fine-grained tokens). O Scorecard vem da API pública `api.securityscorecards.dev`. O snapshot publica apenas estados, score público e contagens; nomes de dependências, CVEs, caminhos, trechos e outros detalhes sensíveis não são serializados. Falhas de permissão ou da API externa reduzem a confiança do grupo `security` sem interromper a coleta. Somente contagens high/critical entram em `Needs Attention`.
+
 ### Delivery
 
 A descoberta segue esta precedência:

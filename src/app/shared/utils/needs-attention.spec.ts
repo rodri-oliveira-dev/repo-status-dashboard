@@ -46,6 +46,12 @@ const repository = (overrides: Partial<RepositoryStatus>): RepositoryStatus =>
       unavailableSignals: [],
       warnings: [],
     },
+    security: {
+      dependabot: { status: 'clean', openAlerts: 0, highCritical: 0 },
+      codeScanning: { status: 'clean', openAlerts: 0, highCritical: 0 },
+      workflow: { status: 'not_configured', name: null, url: null, date: null },
+      openSsf: { status: 'not_configured', score: null, date: null, url: null },
+    },
     ...overrides,
   }) as RepositoryStatus;
 
@@ -100,5 +106,22 @@ describe('needs attention ranking', () => {
         }),
       ]),
     ).toEqual([]);
+  });
+
+  it('surfaces aggregate high and critical security findings', () => {
+    const items = rankNeedsAttention([
+      repository({
+        health: 'healthy',
+        healthReasons: [],
+        security: {
+          dependabot: { status: 'findings_present', openAlerts: 3, highCritical: 2 },
+          codeScanning: { status: 'clean', openAlerts: 0, highCritical: 0 },
+          workflow: { status: 'passing', name: 'CodeQL', url: 'workflow', date: null },
+          openSsf: { status: 'available', score: 8, date: null, url: 'scorecard' },
+        },
+      }),
+    ]);
+    expect(items[0].severity).toBe('critical');
+    expect(items[0].reason).toContain('2 high/critical Dependabot');
   });
 });

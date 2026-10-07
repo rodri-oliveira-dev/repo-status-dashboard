@@ -46,6 +46,21 @@ function fromHealth(repository: RepositoryStatus): AttentionItem | null {
   };
 }
 
+function fromSecurity(repository: RepositoryStatus): AttentionItem | null {
+  const dependabot = repository.security.dependabot.highCritical ?? 0;
+  const codeScanning = repository.security.codeScanning.highCritical ?? 0;
+  if (!dependabot && !codeScanning) return null;
+  const useCodeScanning = codeScanning >= dependabot;
+  const count = useCodeScanning ? codeScanning : dependabot;
+  return {
+    repository,
+    reason: `${count} high/critical ${useCodeScanning ? 'code scanning' : 'Dependabot'} finding${count === 1 ? '' : 's'}`,
+    severity: 'critical',
+    date: repository.updatedAt,
+    externalUrl: `${repository.url}/security/${useCodeScanning ? 'code-scanning' : 'dependabot'}`,
+  };
+}
+
 function fromStaleWork(repository: RepositoryStatus): AttentionItem | null {
   const stale = repository.staleWorkItems;
   if (!stale || (!stale.pullRequestsCount && !stale.issuesCount)) return null;
@@ -67,7 +82,10 @@ function fromStaleWork(repository: RepositoryStatus): AttentionItem | null {
 export function rankNeedsAttention(repositories: readonly RepositoryStatus[]): AttentionItem[] {
   return repositories
     .filter((repository) => !repository.archived)
-    .map((repository) => fromHealth(repository) ?? fromStaleWork(repository))
+    .map(
+      (repository) =>
+        fromSecurity(repository) ?? fromHealth(repository) ?? fromStaleWork(repository),
+    )
     .filter((item): item is AttentionItem => item !== null)
     .sort((left, right) => {
       const severity = Number(left.severity === 'warning') - Number(right.severity === 'warning');

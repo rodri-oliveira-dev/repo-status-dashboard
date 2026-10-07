@@ -8,6 +8,7 @@ export const COLLECTION_SIGNAL_GROUPS = [
   'deployments',
   'releases',
   'workItems',
+  'security',
 ];
 
 export function calculateCollection(signalResults, warningMessages = []) {
@@ -30,6 +31,21 @@ export function calculateCollection(signalResults, warningMessages = []) {
     collectedSignals,
     unavailableSignals,
     warnings: [...warningMessages],
+  };
+}
+
+export function normalizeSecurityAlerts(alerts, configuredStatus) {
+  if (configuredStatus === 'disabled')
+    return { status: 'disabled', openAlerts: 0, highCritical: 0 };
+  if (alerts === null) return { status: 'not_configured', openAlerts: 0, highCritical: 0 };
+  const highCritical = alerts.filter((alert) => {
+    const severity = alert?.security_advisory?.severity ?? alert?.rule?.security_severity_level;
+    return severity === 'high' || severity === 'critical';
+  }).length;
+  return {
+    status: alerts.length ? 'findings_present' : 'clean',
+    openAlerts: alerts.length,
+    highCritical,
   };
 }
 
@@ -187,6 +203,23 @@ export function mapWorkflowStatus(run) {
     return 'failing';
   if (run.conclusion === 'cancelled' || run.conclusion === 'stale') return 'cancelled';
   return 'unknown';
+}
+
+export function securityWorkflowEvidence(runs, configuredWorkflows = {}) {
+  const run = [...runs]
+    .filter((candidate) => classifyWorkflowRole(candidate, configuredWorkflows) === 'security')
+    .sort(
+      (left, right) =>
+        Date.parse(right.updated_at ?? right.created_at) -
+        Date.parse(left.updated_at ?? left.created_at),
+    )[0];
+  if (!run) return { status: 'not_configured', name: null, url: null, date: null };
+  return {
+    status: mapWorkflowStatus(run),
+    name: run.name ?? null,
+    url: run.html_url ?? null,
+    date: run.updated_at ?? run.created_at ?? null,
+  };
 }
 
 export function mapDeliveryStatus(value) {

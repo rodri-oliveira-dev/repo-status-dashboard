@@ -42,4 +42,8 @@ export class RepositoryDetailsComponent implements OnInit {
   protected reasonLabel(code: HealthReasonCode): string {
     return REASON_LABELS[code];
   }
+
+  protected signalLabel(status: string): string {
+    return status.replaceAll('_', ' ');
+  }
 }
