@@ -66,7 +66,9 @@ export class DashboardComponent implements OnInit {
   protected readonly collectionSummary = computed(() => {
     const repositories = this.activeRepositories();
     return {
-      partial: repositories.filter((repository) => repository.collection.status === 'partial').length,
+      partial: repositories.filter(
+        (repository) => repository.collection.status === 'partial',
+      ).length,
       unavailable: repositories.filter(
         (repository) => repository.collection.status === 'unavailable',
       ).length,
