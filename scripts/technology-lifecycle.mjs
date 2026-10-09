@@ -78,8 +78,11 @@ export function evaluateLifecycle(
   const product = cache?.products?.[technology.lifecycleProduct];
   if (!product) return base;
   const release = product.releases?.find((candidate) => candidate.cycle === version.cycle);
-  const cacheAge = Date.parse(cache.updatedAt ?? '')
-    ? (asOf - Date.parse(cache.updatedAt)) / 3_600_000
+  // Freshness belongs to the product, not to the last successful cache refresh.
+  const retrievedAt = product.retrievedAt ?? cache.updatedAt;
+  const retrievedTime = Date.parse(retrievedAt ?? '');
+  const cacheAge = Number.isFinite(retrievedTime)
+    ? (asOf - retrievedTime) / 3_600_000
     : Number.POSITIVE_INFINITY;
   const source = {
     name: 'endoflife.date',
