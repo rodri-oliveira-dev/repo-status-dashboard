@@ -4,6 +4,7 @@ import {
   buildTechnologyInventory,
   filterTechnologyInventory,
   migrationWatch,
+  positionRadarPoints,
   technologyRadarMetrics,
 } from './technology-radar';
 
@@ -108,5 +109,101 @@ describe('Technology Radar aggregations', () => {
     expect(migrationWatch(buildTechnologyInventory(snapshot)).map((row) => row.technology)).toEqual(
       ['.NET'],
     );
+  });
+
+  it('consolidates semantic major cycles while preserving kinds, exact versions and repositories', () => {
+    const consolidated: TechnologyRadarSnapshot = {
+      ...snapshot,
+      repositories: [
+        ...snapshot.repositories,
+        {
+          repository: { name: 'gamma', fullName: 'owner/gamma', url: 'https://example.test/gamma' },
+          coverage: { status: 'complete', treeTruncated: false, filesInspected: 2, issues: [] },
+          technologies: [
+            {
+              id: 'typescript',
+              name: 'TypeScript',
+              category: 'tool',
+              versions: [
+                {
+                  value: '~6.0.2',
+                  cycle: '6',
+                  kind: 'range',
+                  confidence: 'medium',
+                  scope: 'test',
+                  evidence: [],
+                  lifecycle: {
+                    ...lifecycle('active', 'no-immediate-action', '2027-01-01'),
+                    lifecycle: 'unknown',
+                    lts: 'not-applicable',
+                    migrationUrgency: 'unknown',
+                  },
+                },
+                {
+                  value: '5.9.3',
+                  cycle: '5',
+                  kind: 'declared',
+                  confidence: 'medium',
+                  scope: 'test',
+                  evidence: [],
+                  lifecycle: {
+                    ...lifecycle('active', 'no-immediate-action', '2027-01-01'),
+                    lifecycle: 'unknown',
+                    lts: 'not-applicable',
+                    migrationUrgency: 'unknown',
+                  },
+                },
+                {
+                  value: '5.9.3',
+                  cycle: '5',
+                  kind: 'resolved',
+                  confidence: 'high',
+                  scope: 'test',
+                  evidence: [],
+                  lifecycle: {
+                    ...lifecycle('active', 'no-immediate-action', '2027-01-01'),
+                    lifecycle: 'unknown',
+                    lts: 'not-applicable',
+                    migrationUrgency: 'unknown',
+                  },
+                },
+              ],
+            },
+            {
+              id: 'dotnet-sdk',
+              name: '.NET SDK',
+              category: 'tool',
+              versions: ['10.0.100', '10.0.400', '10.0.401'].map((value) => ({
+                value,
+                cycle: '10',
+                kind: 'declared' as const,
+                confidence: 'high' as const,
+                scope: 'tooling' as const,
+                evidence: [],
+                lifecycle: {
+                  ...lifecycle('active', 'no-immediate-action', '2027-01-01'),
+                  cycle: '10',
+                },
+              })),
+            },
+          ],
+        },
+      ],
+    };
+    const rows = buildTechnologyInventory(consolidated);
+    const typescript5 = rows.find((row) => row.key === 'typescript:5')!;
+    expect(typescript5.kinds).toEqual(['resolved', 'declared']);
+    expect(typescript5.versionValues).toEqual(['5.9.3']);
+    expect(typescript5.occurrences).toHaveLength(2);
+    expect(rows.find((row) => row.key === 'typescript:6')?.versionValues).toEqual(['~6.0.2']);
+    const sdk = rows.find((row) => row.key === 'dotnet-sdk:10')!;
+    expect(sdk.versionValues).toEqual(['10.0.100', '10.0.400', '10.0.401']);
+    expect(sdk.repositories).toHaveLength(1);
+  });
+
+  it('positions radar markers deterministically regardless of collection order', () => {
+    const rows = buildTechnologyInventory(snapshot);
+    const reversed = [...rows].reverse();
+    expect(positionRadarPoints(rows)).toEqual(positionRadarPoints(reversed));
   });
 });

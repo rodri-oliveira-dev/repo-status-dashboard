@@ -23,6 +23,35 @@ describe('technology detection', () => {
     );
   });
 
+  it('distinguishes every supported target framework family and preserves TFM evidence', () => {
+    const result = detect({
+      path: 'src/App/App.csproj',
+      content:
+        '<Project><TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.0;netcoreapp3.1;net48;net481;net8.0;net10.0</TargetFrameworks></Project>',
+    });
+    assert.deepEqual(
+      technology(result, 'dotnet-standard').versions.map(({ value }) => value),
+      ['2.0', '2.1'],
+    );
+    assert.deepEqual(
+      technology(result, 'dotnet-core').versions.map(({ value }) => value),
+      ['2.0', '3.1'],
+    );
+    assert.deepEqual(
+      technology(result, 'dotnet-framework').versions.map(({ value }) => value),
+      ['4.8', '4.8.1'],
+    );
+    assert.deepEqual(
+      technology(result, 'dotnet').versions.map(({ value }) => value),
+      ['10.0', '8.0'],
+    );
+    for (const item of result) {
+      for (const version of item.versions) {
+        assert.match(version.evidence[0].detail, /Target framework net/);
+      }
+    }
+  });
+
   it('uses major-only lifecycle keys for modern .NET and dotted keys for .NET Core 3.1', () => {
     const result = detect(
       {
@@ -32,7 +61,10 @@ describe('technology detection', () => {
       { path: 'global.json', content: JSON.stringify({ sdk: { version: '9.0.101' } }) },
     );
     assert.deepEqual(
-      technology(result, 'dotnet').versions.map(({ cycle }) => cycle),
+      [
+        technology(result, 'dotnet').versions[0].cycle,
+        technology(result, 'dotnet-core').versions[0].cycle,
+      ],
       ['10', '3.1'],
     );
     assert.equal(technology(result, 'dotnet-sdk').versions[0].cycle, '9');
@@ -128,6 +160,19 @@ describe('technology detection', () => {
       technology(result, 'typescript').versions.find(({ kind }) => kind === 'resolved').scope,
       'test',
     );
+  });
+
+  it('assigns a range cycle only when its major is unambiguous', () => {
+    const result = detect({
+      path: 'package.json',
+      content: JSON.stringify({
+        engines: { node: '>=22 <25' },
+        devDependencies: { typescript: '~6.0.2', '@angular/core': '>=21.2 <22' },
+      }),
+    });
+    assert.equal(technology(result, 'nodejs').versions[0].cycle, null);
+    assert.equal(technology(result, 'typescript').versions[0].cycle, '6');
+    assert.equal(technology(result, 'angular').versions[0].cycle, '21');
   });
 
   it('isolates invalid manifests and reports partial coverage', () => {

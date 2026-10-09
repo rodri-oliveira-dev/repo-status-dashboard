@@ -88,6 +88,21 @@ describe('lifecycle evaluation', () => {
     );
   });
 
+  it('does not reuse runtime lifecycle for .NET Standard or .NET Framework', () => {
+    for (const family of ['dotnet-standard', 'dotnet-framework']) {
+      const result = evaluateLifecycle(
+        { id: family, lifecycleProduct: null },
+        { cycle: '2.0', kind: 'declared' },
+        cache({ cycle: '2.0', lts: false, eol: '2018-10-01' }),
+        { asOf },
+      );
+      assert.equal(result.lifecycle, 'unknown');
+      assert.equal(result.lts, 'not-applicable');
+      assert.equal(result.eol, null);
+      assert.equal(result.migrationUrgency, 'unknown');
+    }
+  });
+
   it('uses stale cached data without manufacturing a supported result', () => {
     const result = evaluateLifecycle(
       technology,
