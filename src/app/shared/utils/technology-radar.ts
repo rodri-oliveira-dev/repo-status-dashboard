@@ -48,8 +48,9 @@ function chooseLifecycle(
   current: TechnologyInventoryRow['lifecycle'] | undefined,
   candidate: TechnologyInventoryRow['lifecycle'],
 ) {
-  if (!current || current.lifecycle === 'unknown') return candidate;
-  return current;
+  if (!current) return candidate;
+  const preferred = current.lifecycle === 'unknown' ? candidate : current;
+  return current.stale || candidate.stale ? { ...preferred, stale: true } : preferred;
 }
 
 export function filterTechnologyInventory(
