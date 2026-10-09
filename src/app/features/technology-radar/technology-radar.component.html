@@ -57,10 +57,84 @@
     <app-summary-card label="Lifecycle coverage (%)" [value]="metrics().lifecycleCoverage" />
   </section>
   <p class="metric-note">
-    Cycle counts represent distinct detected version declarations. Lifecycle coverage is
+    Cycle counts represent consolidated technology cycles. Lifecycle coverage is
     {{ metrics().lifecycleKnown }}/{{ metrics().lifecycleEligible }} eligible occurrences; version
     ranges are excluded.
   </p>
+
+  <section class="radar-panel panel" aria-labelledby="radar-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Lifecycle visualization</p>
+        <h2 id="radar-title">Technology landscape</h2>
+      </div>
+      <small>Select a marker to inspect its original evidence.</small>
+    </div>
+    <div class="radar-layout">
+      <div class="radar-chart">
+        <svg viewBox="0 0 800 800" role="img" aria-labelledby="radar-svg-title radar-svg-desc">
+          <title id="radar-svg-title">Technology lifecycle radar</title>
+          <desc id="radar-svg-desc">
+            Technologies are grouped into four category quadrants. Distance from the center shows
+            increasing migration urgency; unknown lifecycle appears in the dashed outer ring.
+          </desc>
+          <circle class="radar-ring safe" cx="400" cy="400" r="105" />
+          <circle class="radar-ring monitor" cx="400" cy="400" r="175" />
+          <circle class="radar-ring approaching" cx="400" cy="400" r="245" />
+          <circle class="radar-ring required" cx="400" cy="400" r="315" />
+          <circle class="radar-ring unknown" cx="400" cy="400" r="370" />
+          <path class="axis" d="M400 30V770M30 400H770" />
+          <text class="quadrant-label" x="585" y="55">Platforms</text>
+          <text class="quadrant-label" x="585" y="755">Frameworks</text>
+          <text class="quadrant-label" x="55" y="755">Languages &amp; tools</text>
+          <text class="quadrant-label" x="55" y="55">Infrastructure</text>
+          @for (point of radarPoints(); track point.row.key) {
+            <g
+              class="marker"
+              role="button"
+              tabindex="0"
+              [class.selected]="selectedKey() === point.row.key"
+              [attr.aria-pressed]="selectedKey() === point.row.key"
+              [attr.data-urgency]="point.ring"
+              [attr.aria-label]="markerLabel(point.row)"
+              (click)="select(point.row)"
+              (keydown.enter)="select(point.row)"
+              (keydown.space)="select(point.row); $event.preventDefault()"
+              [attr.transform]="'translate(' + point.x + ' ' + point.y + ')'"
+            >
+              <title>{{ markerLabel(point.row) }}</title>
+              <circle [attr.r]="markerRadius(point.row)" />
+              <text x="18" y="4">{{ point.row.technology }} {{ point.row.version }}</text>
+            </g>
+          }
+        </svg>
+      </div>
+      <aside class="radar-legend" aria-label="Radar legend">
+        <h3>Migration urgency</h3>
+        <ul>
+          <li data-urgency="no-immediate-action">No immediate action</li>
+          <li data-urgency="monitor">Monitor</li>
+          <li data-urgency="migration-approaching">Migration approaching</li>
+          <li data-urgency="migration-required">Migration required</li>
+          <li data-urgency="unknown">Unknown</li>
+        </ul>
+        <p>
+          Marker size reflects distinct repository count. Rings describe lifecycle urgency, not
+          adoption decisions.
+        </p>
+      </aside>
+    </div>
+    <details class="radar-alternative">
+      <summary>Text alternative for radar data</summary>
+      <ul>
+        @for (row of filteredRows(); track row.key) {
+          <li>
+            <button type="button" (click)="select(row)">{{ markerLabel(row) }}</button>
+          </li>
+        }
+      </ul>
+    </details>
+  </section>
 
   <section class="workspace panel" aria-labelledby="inventory-title">
     <div class="section-heading">
@@ -138,8 +212,10 @@
             @for (row of filteredRows(); track row.key) {
               <tr
                 tabindex="0"
+                [attr.aria-selected]="selectedKey() === row.key"
                 (click)="select(row)"
                 (keydown.enter)="select(row)"
+                (keydown.space)="select(row); $event.preventDefault()"
                 [class.selected]="selectedKey() === row.key"
               >
                 <td data-label="Technology">
@@ -148,7 +224,7 @@
                 </td>
                 <td data-label="Version">
                   <code>{{ row.version }}</code
-                  ><small>{{ label(row.kind) }}</small>
+                  ><small>{{ row.versionValues.join(', ') }} · {{ row.kinds.join(', ') }}</small>
                 </td>
                 <td data-label="Lifecycle">
                   <span class="pill" [attr.data-tone]="row.lifecycle.lifecycle">{{
@@ -183,11 +259,11 @@
   </section>
 
   @if (selected(); as row) {
-    <section class="panel details" aria-live="polite">
+    <section #evidence class="panel details" aria-live="polite">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Evidence</p>
-          <h2>{{ row.technology }} {{ row.version }}</h2>
+          <h2 tabindex="-1">{{ row.technology }} {{ row.version }}</h2>
         </div>
         <button type="button" (click)="selectedKey.set(null)" aria-label="Close technology details">
           ×
@@ -196,7 +272,10 @@
       <div class="repository-list">
         @for (
           occurrence of row.occurrences;
-          track occurrence.repository.repository.fullName + occurrence.version.scope
+          track occurrence.repository.repository.fullName +
+            occurrence.version.value +
+            occurrence.version.kind +
+            occurrence.version.scope
         ) {
           <article>
             <div>
@@ -204,7 +283,8 @@
                 occurrence.repository.repository.name
               }}</a
               ><span
-                >{{ label(occurrence.version.scope) }} ·
+                ><code>{{ occurrence.version.value }}</code> ·
+                {{ label(occurrence.version.kind) }} · {{ label(occurrence.version.scope) }} ·
                 {{ label(occurrence.version.confidence) }} confidence</span
               >
               @if (occurrence.version.lifecycle.stale) {

@@ -65,6 +65,76 @@ h3 {
 }
 .workspace {
   overflow: hidden;
+  margin-top: 1rem;
+}
+.radar-panel {
+  overflow: hidden;
+}
+.radar-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+.radar-chart {
+  max-width: 760px;
+  margin: auto;
+}
+.radar-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.radar-legend h3 {
+  margin-bottom: 0.7rem;
+  font-size: 0.85rem;
+}
+.radar-legend ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.radar-legend li {
+  color: var(--text-subtle);
+  font-size: 0.72rem;
+}
+.radar-legend li::before {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  content: '';
+}
+.radar-legend li[data-urgency='monitor']::before,
+.radar-legend li[data-urgency='migration-approaching']::before {
+  background: var(--warning);
+}
+.radar-legend li[data-urgency='migration-required']::before {
+  background: var(--danger);
+}
+.radar-legend li[data-urgency='unknown']::before {
+  background: var(--muted);
+}
+.radar-legend p,
+.radar-alternative {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.radar-alternative {
+  padding: 0 1rem 1rem;
+}
+.radar-alternative button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  text-align: left;
+  cursor: pointer;
 }
 .section-heading {
   display: flex;
@@ -197,6 +267,7 @@ code {
 }
 .details {
   margin-top: 1rem;
+  scroll-margin-top: 5rem;
 }
 .repository-list {
   display: grid;
@@ -325,6 +396,12 @@ code {
   }
   .lower-grid {
     grid-template-columns: 1fr;
+  }
+  .radar-layout {
+    grid-template-columns: 1fr;
+  }
+  .radar-legend {
+    padding: 0 0.5rem;
   }
   .filters label {
     min-width: calc(50% - 0.5rem);
