@@ -96,14 +96,14 @@ range are unambiguously in the same Major; broader or unsupported ranges remain 
 unclassified. Thus the detected version is the exact source value, while the consolidated version
 is the safe cycle used for portfolio visualization.
 
-The circular radar appears before the detailed table. Its quadrants group platforms, frameworks,
-languages and tools, and infrastructure. Its rings show lifecycle-based migration urgencyâ€”No
-immediate action, Monitor, Migration approaching, and Migration requiredâ€”not Adopt/Trial/Assess/Hold
-adoption decisions. Unknown is a separate dashed outer ring and is never treated as safe. Marker
-size represents distinct repository count. Select a marker or table row by mouse or keyboard to
-open Evidence and move focus to it; exact versions, provenance, scope, confidence, source files,
-and repository links remain available there. The filters apply consistently to the chart and
-table, and an expandable text alternative exposes the plotted data.
+The responsive technology matrix appears before the detailed table. Its groups organize platforms,
+frameworks, languages and tools, and infrastructure without overlapping labels. Each technology
+card shows its consolidated version, exact category, distinct repository count, and a textual
+lifecycle-based migration urgency: No immediate action, Monitor, Migration approaching, Migration
+required, or Unknown. These are not Adopt/Trial/Assess/Hold adoption decisions, and Unknown is
+never treated as safe. Select a card or table row by mouse or keyboard to open Evidence and move
+focus to it; exact versions, provenance, scope, confidence, source files, and repository links
+remain available there. The inventory filters apply consistently to the matrix and table.
 
 Lifecycle is evaluated by pure rules in
 [scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). The beta endoflife.date v1

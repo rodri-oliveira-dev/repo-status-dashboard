@@ -101,63 +101,172 @@ a {
 }
 
 app-technology-radar {
-  .radar-ring {
-    fill: none;
-    stroke: var(--border);
-    stroke-width: 1.5;
+  .landscape-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.72rem;
   }
-  .radar-ring.safe {
-    fill: color-mix(in srgb, var(--success-soft) 55%, transparent);
+  .landscape-legend strong {
+    font-size: 0.75rem;
   }
-  .radar-ring.monitor {
-    fill: color-mix(in srgb, var(--warning-soft) 18%, transparent);
+  .landscape-legend ul {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-  .radar-ring.unknown {
-    stroke-dasharray: 8 6;
-    stroke-width: 2;
+  .landscape-legend li,
+  .landscape-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-subtle);
   }
-  .axis {
-    fill: none;
-    stroke: var(--border);
+  .landscape-legend li::before,
+  .landscape-status > span {
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    content: '';
   }
-  .quadrant-label {
-    fill: var(--muted);
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: uppercase;
+  .landscape-legend li:is([data-urgency='monitor'], [data-urgency='migration-approaching'])::before,
+  .landscape-item:is([data-urgency='monitor'], [data-urgency='migration-approaching'])
+    .landscape-status
+    > span {
+    background: var(--warning);
   }
-  .marker {
+  .landscape-legend li[data-urgency='migration-required']::before,
+  .landscape-item[data-urgency='migration-required'] .landscape-status > span {
+    background: var(--danger);
+  }
+  .landscape-legend li[data-urgency='unknown']::before,
+  .landscape-item[data-urgency='unknown'] .landscape-status > span {
+    background: var(--muted);
+  }
+  .landscape-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .landscape-group {
+    min-width: 0;
+    padding: 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: var(--surface-hover);
+  }
+  .landscape-group > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+  .landscape-group header p {
+    margin: 0.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.7rem;
+  }
+  .landscape-group header > span {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    background: var(--neutral-soft);
+    color: var(--text-subtle);
+    font-size: 0.68rem;
+    font-weight: 750;
+  }
+  .landscape-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 0.65rem;
+  }
+  .landscape-item {
+    display: grid;
+    min-width: 0;
+    gap: 0.6rem;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 9px;
+    background: var(--surface-raised);
+    color: var(--text);
+    text-align: left;
     cursor: pointer;
-    outline: none;
   }
-  .marker circle {
-    fill: var(--accent);
-    stroke: var(--surface);
-    stroke-width: 3;
+  .landscape-item:is([data-urgency='monitor'], [data-urgency='migration-approaching']) {
+    border-left-color: var(--warning);
   }
-  .marker text {
-    fill: var(--text);
-    font-size: 13px;
-    font-weight: 650;
-    paint-order: stroke;
-    stroke: var(--surface);
-    stroke-linejoin: round;
-    stroke-width: 4px;
+  .landscape-item[data-urgency='migration-required'] {
+    border-left-color: var(--danger);
   }
-  .marker[data-urgency='monitor'] circle,
-  .marker[data-urgency='migration-approaching'] circle {
-    fill: var(--warning);
+  .landscape-item[data-urgency='unknown'] {
+    border-left-color: var(--muted);
   }
-  .marker[data-urgency='migration-required'] circle {
-    fill: var(--danger);
+  .landscape-item:is(:hover, .selected) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
   }
-  .marker[data-urgency='unknown'] circle {
-    fill: var(--muted);
+  .landscape-item__identity {
+    display: flex;
+    min-width: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.65rem;
   }
-  .marker:hover circle,
-  .marker:focus-visible circle,
-  .marker.selected circle {
-    stroke: var(--text);
-    stroke-width: 5;
+  .landscape-item__identity strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 0.86rem;
+  }
+  .landscape-item__identity code {
+    flex: 0 1 auto;
+    overflow-wrap: anywhere;
+    text-align: right;
+  }
+  .landscape-item__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.35rem 0.75rem;
+    color: var(--muted);
+    font-size: 0.68rem;
+  }
+  .landscape-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+  .landscape-empty {
+    padding-block: 2.5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  app-technology-radar .landscape-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  app-technology-radar {
+    .landscape-legend,
+    .landscape-grid {
+      padding-inline: 0.75rem;
+    }
   }
 }

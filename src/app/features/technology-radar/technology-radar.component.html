@@ -68,72 +68,68 @@
         <p class="eyebrow">Lifecycle visualization</p>
         <h2 id="radar-title">Technology landscape</h2>
       </div>
-      <small>Select a marker to inspect its original evidence.</small>
+      <small>Select a technology to inspect its original evidence.</small>
     </div>
-    <div class="radar-layout">
-      <div class="radar-chart">
-        <svg viewBox="0 0 800 800" role="img" aria-labelledby="radar-svg-title radar-svg-desc">
-          <title id="radar-svg-title">Technology lifecycle radar</title>
-          <desc id="radar-svg-desc">
-            Technologies are grouped into four category quadrants. Distance from the center shows
-            increasing migration urgency; unknown lifecycle appears in the dashed outer ring.
-          </desc>
-          <circle class="radar-ring safe" cx="400" cy="400" r="105" />
-          <circle class="radar-ring monitor" cx="400" cy="400" r="175" />
-          <circle class="radar-ring approaching" cx="400" cy="400" r="245" />
-          <circle class="radar-ring required" cx="400" cy="400" r="315" />
-          <circle class="radar-ring unknown" cx="400" cy="400" r="370" />
-          <path class="axis" d="M400 30V770M30 400H770" />
-          <text class="quadrant-label" x="585" y="55">Platforms</text>
-          <text class="quadrant-label" x="585" y="755">Frameworks</text>
-          <text class="quadrant-label" x="55" y="755">Languages &amp; tools</text>
-          <text class="quadrant-label" x="55" y="55">Infrastructure</text>
-          @for (point of radarPoints(); track point.row.key) {
-            <g
-              class="marker"
-              role="button"
-              tabindex="0"
-              [class.selected]="selectedKey() === point.row.key"
-              [attr.aria-pressed]="selectedKey() === point.row.key"
-              [attr.data-urgency]="point.ring"
-              [attr.aria-label]="markerLabel(point.row)"
-              (click)="select(point.row)"
-              (keydown.enter)="select(point.row)"
-              (keydown.space)="select(point.row); $event.preventDefault()"
-              [attr.transform]="'translate(' + point.x + ' ' + point.y + ')'"
-            >
-              <title>{{ markerLabel(point.row) }}</title>
-              <circle [attr.r]="markerRadius(point.row)" />
-              <text x="18" y="4">{{ point.row.technology }} {{ point.row.version }}</text>
-            </g>
-          }
-        </svg>
-      </div>
-      <aside class="radar-legend" aria-label="Radar legend">
-        <h3>Migration urgency</h3>
-        <ul>
-          <li data-urgency="no-immediate-action">No immediate action</li>
-          <li data-urgency="monitor">Monitor</li>
-          <li data-urgency="migration-approaching">Migration approaching</li>
-          <li data-urgency="migration-required">Migration required</li>
-          <li data-urgency="unknown">Unknown</li>
-        </ul>
-        <p>
-          Marker size reflects distinct repository count. Rings describe lifecycle urgency, not
-          adoption decisions.
-        </p>
-      </aside>
-    </div>
-    <details class="radar-alternative">
-      <summary>Text alternative for radar data</summary>
+    <div class="landscape-legend" aria-label="Migration urgency legend">
+      <strong>Migration urgency</strong>
       <ul>
-        @for (row of filteredRows(); track row.key) {
-          <li>
-            <button type="button" (click)="select(row)">{{ markerLabel(row) }}</button>
-          </li>
-        }
+        <li data-urgency="no-immediate-action">No immediate action</li>
+        <li data-urgency="monitor">Monitor</li>
+        <li data-urgency="migration-approaching">Migration approaching</li>
+        <li data-urgency="migration-required">Migration required</li>
+        <li data-urgency="unknown">Unknown</li>
       </ul>
-    </details>
+    </div>
+    @if (!filteredRows().length) {
+      <div class="empty landscape-empty">
+        <h3>No technologies found</h3>
+        <p>Try changing the inventory search or filters.</p>
+      </div>
+    } @else {
+      <div class="landscape-grid">
+        @for (group of landscape(); track group.id) {
+          <section class="landscape-group" [attr.aria-labelledby]="group.id + '-title'">
+            <header>
+              <div>
+                <h3 [id]="group.id + '-title'">{{ group.label }}</h3>
+                <p>{{ group.description }}</p>
+              </div>
+              <span>{{ group.rows.length }}</span>
+            </header>
+            <div class="landscape-items">
+              @for (row of group.rows; track row.key) {
+                <button
+                  type="button"
+                  class="landscape-item"
+                  [class.selected]="selectedKey() === row.key"
+                  [attr.aria-pressed]="selectedKey() === row.key"
+                  [attr.data-urgency]="row.lifecycle.migrationUrgency"
+                  [attr.aria-label]="markerLabel(row)"
+                  (click)="select(row)"
+                  (keydown.enter)="select(row); $event.preventDefault()"
+                  (keydown.space)="select(row); $event.preventDefault()"
+                >
+                  <span class="landscape-item__identity">
+                    <strong>{{ row.technology }}</strong>
+                    <code>{{ row.version }}</code>
+                  </span>
+                  <span class="landscape-item__meta">
+                    <span>{{ label(row.category) }}</span>
+                    <span>
+                      {{ row.repositories.length }}
+                      {{ row.repositories.length === 1 ? 'repository' : 'repositories' }}
+                    </span>
+                  </span>
+                  <span class="landscape-status">
+                    <span aria-hidden="true"></span>{{ label(row.lifecycle.migrationUrgency) }}
+                  </span>
+                </button>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    }
   </section>
 
   <section class="workspace panel" aria-labelledby="inventory-title">
@@ -277,27 +273,29 @@
             occurrence.version.kind +
             occurrence.version.scope
         ) {
-          <article>
-            <div>
+          <article class="evidence-card">
+            <div class="evidence-card__header">
               <a [routerLink]="['/repository', occurrence.repository.repository.name]">{{
                 occurrence.repository.repository.name
-              }}</a
-              ><span
-                ><code>{{ occurrence.version.value }}</code> ·
-                {{ label(occurrence.version.kind) }} · {{ label(occurrence.version.scope) }} ·
-                {{ label(occurrence.version.confidence) }} confidence</span
-              >
+              }}</a>
+              <span class="evidence-card__meta">
+                <code>{{ occurrence.version.value }}</code>
+                <span>{{ label(occurrence.version.kind) }}</span>
+                <span>{{ label(occurrence.version.scope) }}</span>
+                <span>{{ label(occurrence.version.confidence) }} confidence</span>
+              </span>
               @if (occurrence.version.lifecycle.stale) {
                 <span>Lifecycle source stale — verify before migrating</span>
               }
             </div>
-            <ul>
+            <ul class="evidence-list">
               @for (
                 evidence of occurrence.version.evidence;
                 track evidence.path + evidence.detail
               ) {
                 <li>
-                  <code>{{ evidence.path }}</code> — {{ evidence.detail }}
+                  <code class="evidence-path">{{ evidence.path }}</code>
+                  <span>{{ evidence.detail }}</span>
                 </li>
               }
             </ul>
@@ -330,9 +328,11 @@
                   <span>Lifecycle source is stale</span>
                 }
               </div>
-              <span class="pill" [attr.data-tone]="row.lifecycle.migrationUrgency">{{
-                label(row.lifecycle.migrationUrgency)
-              }}</span>
+              <span
+                class="pill migration-badge"
+                [attr.data-tone]="row.lifecycle.migrationUrgency"
+                >{{ label(row.lifecycle.migrationUrgency) }}</span
+              >
               <div class="links">
                 @for (repository of row.repositories; track repository.repository.fullName) {
                   <a [routerLink]="['/repository', repository.repository.name]">{{

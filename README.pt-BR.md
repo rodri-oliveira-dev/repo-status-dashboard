@@ -97,15 +97,15 @@ as versões permitidas pertencem inequivocamente à mesma Major; ranges amplos o
 permanecem explicitamente não classificados. Assim, versão detectada é o valor exato da fonte, e
 versão consolidada é o ciclo seguro usado na visualização do portfólio.
 
-O radar circular aparece antes da tabela detalhada. Seus quadrantes agrupam plataformas,
-frameworks, linguagens e ferramentas, e infraestrutura. Seus anéis mostram urgência de migração
-baseada no lifecycle — Sem ação imediata, Monitorar, Migração próxima e Migração necessária — e não
-decisões Adopt/Trial/Assess/Hold. Unknown ocupa um anel externo tracejado separado e nunca é tratado
-como seguro. O tamanho do marcador representa a quantidade de repositórios distintos. Selecione um
-marcador ou uma linha da tabela por mouse ou teclado para abrir Evidence e mover o foco até ela;
-versões exatas, proveniência, escopo, confiança, arquivos de origem e links de repositório continuam
-disponíveis no painel. Os filtros se aplicam de forma consistente ao gráfico e à tabela, e uma
-alternativa textual expansível expõe os dados plotados.
+A matriz tecnológica responsiva aparece antes da tabela detalhada. Seus grupos organizam
+plataformas, frameworks, linguagens e ferramentas, e infraestrutura sem sobrepor rótulos. Cada card
+mostra versão consolidada, categoria exata, quantidade de repositórios distintos e a urgência de
+migração baseada no lifecycle em texto: Sem ação imediata, Monitorar, Migração próxima, Migração
+necessária ou Unknown. Essas classificações não são decisões Adopt/Trial/Assess/Hold, e Unknown
+nunca é tratado como seguro. Selecione um card ou uma linha da tabela por mouse ou teclado para
+abrir Evidence e mover o foco até ela; versões exatas, proveniência, escopo, confiança, arquivos de
+origem e links de repositório continuam disponíveis no painel. Os filtros do inventário se aplicam
+de forma consistente à matriz e à tabela.
 
 O lifecycle é avaliado por regras puras em
 [scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). O contrato beta v1 do

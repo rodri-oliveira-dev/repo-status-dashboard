@@ -26,9 +26,40 @@ import {
   buildTechnologyInventory,
   filterTechnologyInventory,
   migrationWatch,
-  positionRadarPoints,
   technologyRadarMetrics,
 } from '../../shared/utils/technology-radar';
+
+const landscapeGroups: readonly {
+  readonly id: string;
+  readonly label: string;
+  readonly description: string;
+  readonly categories: readonly TechnologyCategory[];
+}[] = [
+  {
+    id: 'platforms',
+    label: 'Platforms',
+    description: 'Application runtimes',
+    categories: ['runtime'],
+  },
+  {
+    id: 'frameworks',
+    label: 'Frameworks',
+    description: 'Application frameworks',
+    categories: ['framework'],
+  },
+  {
+    id: 'languages-tools',
+    label: 'Languages & tools',
+    description: 'Languages, compilers and development tools',
+    categories: ['language', 'tool'],
+  },
+  {
+    id: 'infrastructure',
+    label: 'Infrastructure',
+    description: 'Infrastructure and delivery technologies',
+    categories: ['infrastructure'],
+  },
+];
 
 @Component({
   selector: 'app-technology-radar',
@@ -98,7 +129,14 @@ export class TechnologyRadarComponent implements OnInit {
   protected readonly selected = computed(
     () => this.rows().find((row) => row.key === this.selectedKey()) ?? null,
   );
-  protected readonly radarPoints = computed(() => positionRadarPoints(this.filteredRows()));
+  protected readonly landscape = computed(() =>
+    landscapeGroups
+      .map((group) => ({
+        ...group,
+        rows: this.filteredRows().filter((row) => group.categories.includes(row.category)),
+      }))
+      .filter((group) => group.rows.length > 0),
+  );
   protected readonly watch = computed(() => migrationWatch(this.rows()));
   protected readonly calendar = computed(() =>
     this.rows()
@@ -129,10 +167,6 @@ export class TechnologyRadarComponent implements OnInit {
   protected select(row: TechnologyInventoryRow): void {
     this.selectedKey.set(row.key);
     this.scrollRequest.update((value) => value + 1);
-  }
-
-  protected markerRadius(row: TechnologyInventoryRow): number {
-    return Math.min(15, 7 + Math.sqrt(row.repositories.length) * 2);
   }
 
   protected markerLabel(row: TechnologyInventoryRow): string {
