@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import {
@@ -29,11 +29,21 @@ import {
   parseNpmManifest,
   parseNuGetProject,
 } from './package-metrics.mjs';
+import { detectTechnologies, isTechnologyEvidencePath } from './technology-detection.mjs';
+import { buildTechnologyRadarSnapshot } from './technology-lifecycle.mjs';
 
 const OWNER = process.env.GITHUB_OWNER || 'rodri-oliveira-dev';
 const TOKEN = process.env.GH_DASHBOARD_TOKEN || process.env.GITHUB_TOKEN;
 const API = 'https://api.github.com';
 const OUTPUT = resolve(dirname(fileURLToPath(import.meta.url)), '../public/data/repositories.json');
+const TECHNOLOGY_OUTPUT = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../public/data/technology-radar.json',
+);
+const LIFECYCLE_CACHE = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  '../public/data/lifecycle-cache.json',
+);
 const CONCURRENCY = Math.max(1, Math.min(8, Number(process.env.COLLECTOR_CONCURRENCY) || 4));
 const warnings = [];
 let rateLimitReset = null;
@@ -276,7 +286,7 @@ export async function collectRepositoryStructure(repository, base) {
   );
   const tree = treeResult.data?.tree ?? [];
   const sourceEntries = tree.filter(
-    (entry) => entry.type === 'blob' && isProductionProjectPath(entry.path),
+    (entry) => entry.type === 'blob' && isTechnologyEvidencePath(entry.path),
   );
   const sourceResults = await mapWithConcurrency(sourceEntries, CONCURRENCY, async (entry) => ({
     entry,
@@ -292,8 +302,12 @@ export async function collectRepositoryStructure(repository, base) {
     truncated: Boolean(treeResult.data?.truncated),
     evidence: {
       paths: tree.map((entry) => entry.path),
+      files: sourceResults.map(({ entry, result }) => ({
+        path: entry.path,
+        content: decodeGitHubContent(result.data) ?? '',
+      })),
       projectFiles: sourceResults
-        .filter(({ entry }) => entry.path.toLowerCase().endsWith('.csproj'))
+        .filter(({ entry }) => isProductionProjectPath(entry.path))
         .map(({ entry, result }) => ({
           path: entry.path,
           content: decodeGitHubContent(result.data) ?? '',
@@ -612,6 +626,10 @@ async function enrich(repository, generatedAt) {
     repository,
   });
   const packages = await collectPackageMetrics(repository, base, delivery.type, structure);
+  const technology = detectTechnologies(structure.evidence.files, {
+    treeTruncated: structure.truncated,
+  });
+  if (!structure.available) technology.coverage.status = 'unavailable';
   const lastCommitDate =
     commit?.committer?.date ?? commit?.author?.date ?? repository.pushed_at ?? null;
   const buildStatus = mapWorkflowStatus(build);
@@ -747,6 +765,7 @@ async function enrich(repository, generatedAt) {
     health: assessment.health,
     healthReasons: assessment.reasons,
     collection,
+    _technology: technology,
   };
 }
 
@@ -855,7 +874,28 @@ function fallbackRepository(repository, generatedAt = Date.now()) {
     health: assessment.health,
     healthReasons: assessment.reasons,
     collection,
+    _technology: {
+      technologies: [],
+      coverage: {
+        status: 'unavailable',
+        treeTruncated: false,
+        filesInspected: 0,
+        issues: ['Repository enrichment failed.'],
+      },
+    },
   };
+}
+
+async function readLifecycleCache() {
+  try {
+    const cache = JSON.parse(await readFile(LIFECYCLE_CACHE, 'utf8'));
+    return cache?.schemaVersion === 1 ? cache : null;
+  } catch (error) {
+    console.warn(
+      `[collector] lifecycle cache unavailable; lifecycle remains unknown (${safeWarning(error)})`,
+    );
+    return null;
+  }
 }
 
 export async function collect() {
@@ -873,16 +913,32 @@ export async function collect() {
   enriched.sort((left, right) =>
     left.name.localeCompare(right.name, 'en', { sensitivity: 'base' }),
   );
+  const operationalRepositories = enriched.map((repository) =>
+    Object.fromEntries(Object.entries(repository).filter(([key]) => key !== '_technology')),
+  );
   const dataset = {
     schemaVersion: 2,
     owner: OWNER,
     generatedAt: new Date(generatedAt).toISOString(),
-    repositories: enriched,
-    collection: summarizeCollection(enriched),
+    repositories: operationalRepositories,
+    collection: summarizeCollection(operationalRepositories),
     ...(warnings.length ? { warnings } : {}),
   };
   await mkdir(dirname(OUTPUT), { recursive: true });
   await writeFile(OUTPUT, `${JSON.stringify(dataset, null, 2)}\n`, 'utf8');
+  const lifecycleCache = await readLifecycleCache();
+  const technologySnapshot = buildTechnologyRadarSnapshot({
+    owner: OWNER,
+    repositories: enriched.map((repository) => ({
+      name: repository.name,
+      fullName: repository.fullName,
+      url: repository.url,
+      technology: repository._technology,
+    })),
+    cache: lifecycleCache,
+    generatedAt: dataset.generatedAt,
+  });
+  await writeFile(TECHNOLOGY_OUTPUT, `${JSON.stringify(technologySnapshot, null, 2)}\n`, 'utf8');
   console.log(
     `[collector] wrote ${enriched.length} repositories to ${OUTPUT} (${warnings.length} warning(s))`,
   );

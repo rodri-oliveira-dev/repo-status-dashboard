@@ -107,6 +107,86 @@
           </dd>
         </div>
       </dl>
+      <section class="technology-stack" aria-labelledby="technology-stack-title">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Lifecycle intelligence</p>
+            <h2 id="technology-stack-title">Technology Stack</h2>
+          </div>
+          <a routerLink="/technology-radar">Open Technology Radar →</a>
+        </div>
+        @if (technologyStore.loading()) {
+          <p class="technology-state">Loading detected technologies…</p>
+        } @else if (technologyStore.error()) {
+          <p class="technology-state">Technology data is unavailable.</p>
+        } @else if (technologyStack(); as stack) {
+          @if (stack.technologies.length) {
+            <div class="technology-grid">
+              @for (technology of stack.technologies; track technology.id) {
+                @for (
+                  version of technology.versions;
+                  track version.value + version.kind + version.scope
+                ) {
+                  <article>
+                    <div class="technology-title">
+                      <a
+                        routerLink="/technology-radar"
+                        [queryParams]="{ technology: technology.name }"
+                        >{{ technology.name }}</a
+                      >
+                      <span>{{ technology.category }}</span>
+                    </div>
+                    <dl>
+                      <div>
+                        <dt>Version</dt>
+                        <dd>
+                          <code>{{ version.value }}</code> · {{ technologyLabel(version.kind) }}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Lifecycle / LTS</dt>
+                        <dd>
+                          {{ technologyLabel(version.lifecycle.lifecycle) }} /
+                          {{ technologyLabel(version.lifecycle.lts) }}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>EOL</dt>
+                        <dd>
+                          {{
+                            version.lifecycle.eol ? (version.lifecycle.eol | fullDate) : 'Unknown'
+                          }}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Migration</dt>
+                        <dd>{{ technologyLabel(version.lifecycle.migrationUrgency) }}</dd>
+                      </div>
+                    </dl>
+                    <ul>
+                      @for (evidence of version.evidence; track evidence.path + evidence.detail) {
+                        <li>
+                          <code>{{ evidence.path }}</code
+                          ><span>{{ evidence.detail }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </article>
+                }
+              }
+            </div>
+          } @else {
+            <p class="technology-state">No supported technology evidence was detected.</p>
+          }
+          @if (stack.coverage.status !== 'complete') {
+            <p class="technology-warning">
+              Detection coverage is {{ stack.coverage.status }}. Results may be incomplete.
+            </p>
+          }
+        } @else {
+          <p class="technology-state">This repository is not present in the technology snapshot.</p>
+        }
+      </section>
       @if (repository.staleWorkItems; as stale) {
         @if (stale.oldestIssues.length || stale.oldestPullRequests.length) {
           <section class="stale-work" aria-labelledby="stale-work-title">

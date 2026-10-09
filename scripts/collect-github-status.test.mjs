@@ -77,6 +77,6 @@ describe('repository structure collection', () => {
 
     assert.equal(result.available, true);
     assert.deepEqual(result.tree, []);
-    assert.deepEqual(result.evidence, { paths: [], projectFiles: [] });
+    assert.deepEqual(result.evidence, { paths: [], files: [], projectFiles: [] });
   });
 });

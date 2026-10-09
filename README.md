@@ -40,14 +40,66 @@ flowchart LR
     API[GitHub REST API] --> COL[Node.js collector]
     REG[Public package registries] --> COL
     SCORE[OpenSSF Scorecard API] --> COL
+    LIFE[endoflife.date API] --> CACHE[Daily lifecycle cache]
+    CACHE --> COL
     COL --> JSON[Static repositories.json snapshot]
+    COL --> RADAR[Static technology-radar.json snapshot]
     JSON --> SPA[Angular SPA]
+    RADAR --> SPA
     SPA --> PAGES[GitHub Pages]
 ```
 
 The scheduled Pages workflow runs the collector before building the application. The generated
 snapshot is included in the Pages artifact; it is not committed automatically. This keeps data
 collection out of the browser and avoids a continuously running service.
+
+## Technology Radar
+
+The <code>#/technology-radar</code> view inventories technology versions across the portfolio and
+keeps technology health independent from operational repository Health. It provides explicitly
+scoped portfolio indicators, a searchable and sortable inventory, evidence drill-down, Migration
+Watch, and a chronological EOL calendar. Repository detail pages reuse the same snapshot in their
+Technology Stack section and link in both directions.
+
+The collector reuses each repository tree and downloads only relevant evidence files. Detection is
+currently implemented for:
+
+| Technology | Category     | Evidence                                                                                                                                             |
+| ---------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| .NET       | Runtime/tool | <code>.csproj</code>, <code>global.json</code>, and inherited <code>Directory.Build.props/targets</code> properties; SDK evidence is a separate tool |
+| Node.js    | Runtime      | <code>.nvmrc</code>, <code>.node-version</code>, <code>package.json</code> engines, and workflow setup                                               |
+| Angular    | Framework    | <code>@angular/core</code> declarations and resolved <code>package-lock.json</code> entries                                                          |
+| TypeScript | Tool         | <code>typescript</code> declarations and resolved <code>package-lock.json</code> entries                                                             |
+
+A **declared** version comes directly from a manifest; a **resolved** version is pinned by a
+lockfile or a safely resolved central property; a **range** expresses compatibility rather than an
+installed version; and **inferred** evidence is retained only when its provenance is explicit.
+Multiple and conflicting versions are preserved. Test/example paths and development dependencies
+are marked separately. Invalid files, unresolved properties, and truncated trees degrade
+technology coverage without stopping portfolio collection.
+
+Lifecycle is evaluated by pure rules in
+[scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). The beta endoflife.date v1
+contract is isolated in a validating adapter. <code>Active</code> means active support has not
+ended; <code>Maintenance</code> means active support ended but EOL has not; <code>End of Life</code>
+means the published EOL date passed; and absent or unmatched information remains
+<code>Unknown</code>. LTS is separate and can be Yes, No, Unknown, or Not applicable.
+
+Migration urgency uses published EOL dates only: passed dates require migration, 0–90 days are
+approaching, 91–180 days are monitored, more than 180 days need no immediate action, and absent
+dates remain unknown. The thresholds are serialized in the snapshot and tested. Being behind the
+latest release alone never makes a version obsolete, and no target version is recommended without
+verified compatibility evidence.
+
+Lifecycle references are refreshed at most once per 24 hours and restored through the GitHub
+Actions cache. The operational hourly collection reads that local cache and never calls the
+lifecycle API. A failed refresh reuses valid prior data; stale data is identified, while a missing
+source yields Unknown. The browser is read-only, receives no tokens, and makes no lifecycle calls.
+
+The separate <code>technology-radar.json</code> snapshot avoids coupling the operational schema and
+lets the main dashboard load without lifecycle data. To add a detector, extend the pure detector
+registry in [scripts/technology-detection.mjs](scripts/technology-detection.mjs), add narrow evidence
+paths, emit typed evidence without executing repository code, and cover it with local fixtures.
 
 ## Technology
 
@@ -282,12 +334,16 @@ npm start
 
 Open <http://localhost:4200>. The committed
 [public/data/repositories.json](public/data/repositories.json) snapshot supports UI development
-without running the collector.
+without running the collector. The committed empty
+[public/data/technology-radar.json](public/data/technology-radar.json) is the offline baseline; the
+collector replaces it with real detected data.
 
 Useful commands:
 
 ```bash
 npm run collect       # Refresh the snapshot from public GitHub data
+npm run lifecycle:refresh        # Refresh lifecycle data only when older than 24 hours
+npm run lifecycle:refresh:force  # Force-refresh verified lifecycle references
 npm run format:check  # Check Prettier formatting
 npm run lint          # Lint TypeScript, templates, and scripts
 npm test              # Run Angular and collector tests
@@ -299,7 +355,8 @@ npm run build:pages   # Build with the repository Pages base href
 
 [deploy-pages.yml](.github/workflows/deploy-pages.yml) runs on pushes to <code>main</code>, on manual
 dispatch, and hourly at minute 17. It collects data, checks formatting, lints, tests, builds with the
-repository base href, and deploys the official Pages artifact.
+repository base href, and deploys the official Pages artifact. The lifecycle cache uses one key per
+UTC day, so hourly operational refreshes do not repeat external lifecycle requests.
 
 Repository routes use hashes, for example <code>#/repository/repo-status-dashboard</code>, so direct
 refresh does not require server rewrites. The canonical indexable URL is:
@@ -345,6 +402,11 @@ SPA.
   coverage.
 - Anonymous GitHub API limits are low for owners with many repositories.
 - Package and OpenSSF metrics depend on external public APIs and their cache/update policies.
+- TypeScript has no configured lifecycle product because no verified LTS/EOL policy is available;
+  its lifecycle remains Unknown/Not applicable. Only npm lockfile resolution is currently
+  implemented; Yarn and pnpm files are discovery evidence but are not parsed yet.
+- Conditional or custom MSBuild evaluation is intentionally not executed. Only statically
+  resolvable properties are used, and unsupported repository layouts may reduce coverage.
 - GitHub Pages controls some response headers; the ZAP policy keeps those hosting-level findings
   informational.
 - Repository detail pages use hash routes; search engines index the dashboard root rather than one
@@ -356,9 +418,11 @@ Private repositories, forks, and archived repositories are intentionally out of 
 
 ```text
 src/app/core/                 snapshot loading and theme services
-src/app/features/             dashboard and repository detail features
+src/app/features/             dashboard, Technology Radar, and repository detail features
 src/app/shared/               models, components, pipes, filters, and insights
 public/data/repositories.json committed snapshot consumed by the SPA
+public/data/technology-radar.json offline Technology Radar snapshot
+public/data/lifecycle-cache.json verified external lifecycle cache
 scripts/                      collector, semantic rules, and build utilities
 .github/workflows/            CI, Pages, release, quality, SEO, and security automation
 ```

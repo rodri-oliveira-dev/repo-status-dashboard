@@ -91,6 +91,85 @@
 .stale-work a {
   color: var(--text-subtle);
 }
+.technology-stack {
+  padding-top: 1rem;
+}
+.technology-stack .section-title {
+  padding: 0 1rem 1rem;
+}
+.technology-stack .section-title > a {
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.technology-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.8rem;
+  padding: 1rem;
+}
+.technology-grid article {
+  padding: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-raised);
+}
+.technology-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+.technology-title a {
+  font-weight: 750;
+  text-decoration: none;
+}
+.technology-title span {
+  color: var(--muted);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+.technology-grid dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--border);
+}
+.technology-grid dl dt {
+  margin: 0;
+}
+.technology-grid dl dd {
+  text-align: right;
+  text-transform: capitalize;
+}
+.technology-grid ul {
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.technology-grid li {
+  display: grid;
+  gap: 0.25rem;
+  padding-top: 0.55rem;
+  color: var(--muted);
+  font-size: 0.67rem;
+}
+.technology-grid li code {
+  width: fit-content;
+  overflow-wrap: anywhere;
+}
+.technology-state,
+.technology-warning {
+  margin: 0;
+  padding: 1rem;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+.technology-warning {
+  color: var(--warning);
+}
 h2 {
   margin: 0;
   font-size: 1rem;

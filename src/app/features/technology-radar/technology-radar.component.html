@@ -1,0 +1,282 @@
+<section class="hero">
+  <div>
+    <p class="eyebrow">Software lifecycle intelligence</p>
+    <h1>Technology Radar</h1>
+    <p>Detected runtimes, frameworks and tools across the public repository portfolio.</p>
+  </div>
+  @if (store.snapshot(); as snapshot) {
+    <div class="freshness" [title]="snapshot.generatedAt | fullDate">
+      <span aria-hidden="true"></span>Inventory updated {{ snapshot.generatedAt | relativeDate }}
+    </div>
+  }
+</section>
+
+@if (store.loading()) {
+  <section class="state panel" aria-live="polite">
+    <span class="spinner" aria-hidden="true"></span>
+    <h2>Loading Technology Radar</h2>
+    <p>Reading the generated technology snapshot.</p>
+  </section>
+} @else if (store.error(); as error) {
+  <section class="state panel error" role="alert">
+    <h2>Technology data unavailable</h2>
+    <p>{{ error }}</p>
+    <button type="button" (click)="store.load(true)">Try again</button>
+  </section>
+} @else if (!store.snapshot()?.repositories?.length) {
+  <section class="state panel">
+    <h2>No technology inventory yet</h2>
+    <p>Run the collector to generate the local Technology Radar snapshot.</p>
+  </section>
+} @else {
+  @if (store.snapshot(); as snapshot) {
+    @if (snapshot.coverage.partial || snapshot.coverage.unavailable) {
+      <div class="coverage-notice" role="status">
+        <strong>Technology coverage is incomplete.</strong> {{ snapshot.coverage.partial }} partial
+        and {{ snapshot.coverage.unavailable }} unavailable repositories. Unknown lifecycle states
+        remain unknown.
+      </div>
+    }
+  }
+  <section class="summary-grid" aria-label="Technology portfolio summary">
+    <app-summary-card label="Technologies" [value]="metrics().technologies" />
+    <app-summary-card label="Repositories analyzed" [value]="metrics().repositories" />
+    <app-summary-card
+      label="Cycles near EOL"
+      [value]="metrics().approachingCycles"
+      tone="warning"
+    />
+    <app-summary-card label="Cycles out of support" [value]="metrics().eolCycles" tone="danger" />
+    <app-summary-card label="Lifecycle coverage (%)" [value]="metrics().lifecycleCoverage" />
+  </section>
+  <p class="metric-note">
+    Cycle counts represent distinct detected version declarations. Lifecycle coverage is
+    {{ metrics().lifecycleKnown }}/{{ metrics().lifecycleEligible }} eligible occurrences; version
+    ranges are excluded.
+  </p>
+
+  <section class="workspace panel" aria-labelledby="inventory-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Portfolio</p>
+        <h2 id="inventory-title">Technology inventory</h2>
+      </div>
+      <small>Select a row to inspect repositories and evidence.</small>
+    </div>
+    <div class="toolbar">
+      <label class="search">
+        <span class="sr-only">Search technology, version or repository</span>
+        <input
+          type="search"
+          placeholder="Search technologies or repositories..."
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+        />
+      </label>
+      <div class="filters">
+        <label
+          >Category<select [ngModel]="category()" (ngModelChange)="category.set($event)">
+            @for (item of categories; track item) {
+              <option [value]="item">{{ label(item) }}</option>
+            }
+          </select></label
+        >
+        <label
+          >Lifecycle<select [ngModel]="lifecycle()" (ngModelChange)="lifecycle.set($event)">
+            @for (item of lifecycles; track item) {
+              <option [value]="item">{{ label(item) }}</option>
+            }
+          </select></label
+        >
+        <label
+          >Migration<select [ngModel]="urgency()" (ngModelChange)="urgency.set($event)">
+            @for (item of urgencies; track item) {
+              <option [value]="item">{{ label(item) }}</option>
+            }
+          </select></label
+        >
+      </div>
+    </div>
+    @if (!filteredRows().length) {
+      <div class="empty">
+        <h3>No technologies found</h3>
+        <p>Try changing the search or filters.</p>
+      </div>
+    } @else {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>
+                <button type="button" (click)="sortBy('technology')">
+                  Technology {{ sortLabel('technology') }}
+                </button>
+              </th>
+              <th>Version</th>
+              <th>Lifecycle</th>
+              <th>LTS</th>
+              <th>
+                <button type="button" (click)="sortBy('eol')">EOL {{ sortLabel('eol') }}</button>
+              </th>
+              <th>Remaining</th>
+              <th>
+                <button type="button" (click)="sortBy('repositories')">
+                  Repositories {{ sortLabel('repositories') }}
+                </button>
+              </th>
+              <th>Migration</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of filteredRows(); track row.key) {
+              <tr
+                tabindex="0"
+                (click)="select(row)"
+                (keydown.enter)="select(row)"
+                [class.selected]="selectedKey() === row.key"
+              >
+                <td data-label="Technology">
+                  <strong>{{ row.technology }}</strong
+                  ><small>{{ label(row.category) }}</small>
+                </td>
+                <td data-label="Version">
+                  <code>{{ row.version }}</code
+                  ><small>{{ label(row.kind) }}</small>
+                </td>
+                <td data-label="Lifecycle">
+                  <span class="pill" [attr.data-tone]="row.lifecycle.lifecycle">{{
+                    label(row.lifecycle.lifecycle)
+                  }}</span>
+                </td>
+                <td data-label="LTS">{{ label(row.lifecycle.lts) }}</td>
+                <td data-label="EOL">
+                  {{
+                    row.lifecycle.eol ? (row.lifecycle.eol | date: 'mediumDate' : 'UTC') : 'Unknown'
+                  }}
+                </td>
+                <td data-label="Remaining">{{ remaining(row.lifecycle.daysRemaining) }}</td>
+                <td data-label="Repositories">{{ row.repositories.length }}</td>
+                <td data-label="Migration">
+                  <span class="pill" [attr.data-tone]="row.lifecycle.migrationUrgency">{{
+                    label(row.lifecycle.migrationUrgency)
+                  }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  @if (selected(); as row) {
+    <section class="panel details" aria-live="polite">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Evidence</p>
+          <h2>{{ row.technology }} {{ row.version }}</h2>
+        </div>
+        <button type="button" (click)="selectedKey.set(null)" aria-label="Close technology details">
+          ×
+        </button>
+      </div>
+      <div class="repository-list">
+        @for (
+          occurrence of row.occurrences;
+          track occurrence.repository.repository.fullName + occurrence.version.scope
+        ) {
+          <article>
+            <div>
+              <a [routerLink]="['/repository', occurrence.repository.repository.name]">{{
+                occurrence.repository.repository.name
+              }}</a
+              ><span
+                >{{ label(occurrence.version.scope) }} ·
+                {{ label(occurrence.version.confidence) }} confidence</span
+              >
+            </div>
+            <ul>
+              @for (
+                evidence of occurrence.version.evidence;
+                track evidence.path + evidence.detail
+              ) {
+                <li>
+                  <code>{{ evidence.path }}</code> — {{ evidence.detail }}
+                </li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <div class="lower-grid">
+    <section class="panel list-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Prioritized</p>
+          <h2>Migration Watch</h2>
+        </div>
+      </div>
+      @if (watch().length) {
+        <ol>
+          @for (row of watch(); track row.key) {
+            <li>
+              <div>
+                <strong
+                  >{{ row.technology }} <code>{{ row.version }}</code></strong
+                ><span
+                  >{{ remaining(row.lifecycle.daysRemaining) }} ·
+                  {{ row.repositories.length }} repositories</span
+                >
+              </div>
+              <span class="pill" [attr.data-tone]="row.lifecycle.migrationUrgency">{{
+                label(row.lifecycle.migrationUrgency)
+              }}</span>
+              <div class="links">
+                @for (repository of row.repositories; track repository.repository.fullName) {
+                  <a [routerLink]="['/repository', repository.repository.name]">{{
+                    repository.repository.name
+                  }}</a>
+                }
+                @if (row.lifecycle.source) {
+                  <a [href]="row.lifecycle.source.url" target="_blank" rel="noopener noreferrer"
+                    >Source ↗</a
+                  >
+                }
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="empty-inline">No time-bound migrations require attention.</p>
+      }
+    </section>
+    <section class="panel list-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Chronological</p>
+          <h2>EOL calendar</h2>
+        </div>
+      </div>
+      @if (calendar().length) {
+        <ol>
+          @for (row of calendar(); track row.key) {
+            <li [class.past]="(row.lifecycle.daysRemaining ?? 0) < 0">
+              <time [attr.datetime]="row.lifecycle.eol">{{
+                row.lifecycle.eol | date: 'mediumDate' : 'UTC'
+              }}</time>
+              <div>
+                <strong>{{ row.technology }} {{ row.version }}</strong
+                ><span>{{ remaining(row.lifecycle.daysRemaining) }}</span>
+              </div>
+            </li>
+          }
+        </ol>
+      } @else {
+        <p class="empty-inline">No official EOL dates are available.</p>
+      }
+    </section>
+  </div>
+}

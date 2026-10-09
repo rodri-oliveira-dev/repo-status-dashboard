@@ -40,14 +40,68 @@ flowchart LR
     API[GitHub REST API] --> COL[Collector Node.js]
     REG[Registros públicos de pacotes] --> COL
     SCORE[API do OpenSSF Scorecard] --> COL
+    LIFE[API endoflife.date] --> CACHE[Cache diário de lifecycle]
+    CACHE --> COL
     COL --> JSON[Snapshot estático repositories.json]
+    COL --> RADAR[Snapshot estático technology-radar.json]
     JSON --> SPA[SPA Angular]
+    RADAR --> SPA
     SPA --> PAGES[GitHub Pages]
 ```
 
 O workflow agendado do Pages executa o collector antes do build da aplicação. O snapshot gerado é
 incluído no artifact do Pages e não é commitado automaticamente. Assim, a coleta permanece fora do
 navegador e não exige um serviço em execução contínua.
+
+## Technology Radar
+
+A visão <code>#/technology-radar</code> inventaria versões de tecnologias no portfólio e mantém
+Technology Health independente do Health operacional dos repositórios. Ela oferece indicadores com
+escopo explícito, inventário pesquisável e ordenável, detalhamento de evidências, Migration Watch e
+calendário cronológico de EOL. Os detalhes do repositório reutilizam o mesmo snapshot na seção
+Technology Stack, com navegação nos dois sentidos.
+
+O collector reutiliza a árvore de cada repositório e baixa somente arquivos de evidência
+relevantes. A detecção atual inclui:
+
+| Tecnologia | Categoria    | Evidências                                                                                                                                                       |
+| ---------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| .NET       | Runtime/tool | <code>.csproj</code>, <code>global.json</code> e propriedades herdadas de <code>Directory.Build.props/targets</code>; evidência de SDK é uma ferramenta separada |
+| Node.js    | Runtime      | <code>.nvmrc</code>, <code>.node-version</code>, engines do <code>package.json</code> e workflows                                                                |
+| Angular    | Framework    | declarações de <code>@angular/core</code> e entradas resolvidas do <code>package-lock.json</code>                                                                |
+| TypeScript | Tool         | declarações de <code>typescript</code> e entradas resolvidas do <code>package-lock.json</code>                                                                   |
+
+Uma versão **declarada** vem diretamente do manifesto; uma versão **resolvida** é fixada por um
+lockfile ou propriedade central resolvida com segurança; uma **faixa** expressa compatibilidade, não
+uma instalação; e evidência **inferida** só é mantida com origem explícita. Versões múltiplas e
+conflitantes são preservadas. Caminhos de testes/exemplos e dependências de desenvolvimento são
+marcados separadamente. Arquivos inválidos, propriedades não resolvidas e árvores truncadas reduzem
+a cobertura tecnológica sem interromper a coleta do portfólio.
+
+O lifecycle é avaliado por regras puras em
+[scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). O contrato beta v1 do
+endoflife.date fica isolado em um adaptador com validação. <code>Active</code> indica que o suporte
+ativo não terminou; <code>Maintenance</code>, que o suporte ativo terminou mas o EOL não;
+<code>End of Life</code>, que a data publicada de EOL passou; e informação ausente ou sem
+correspondência permanece <code>Unknown</code>. LTS é separado e pode ser Sim, Não, Desconhecido ou
+Não aplicável.
+
+A urgência usa somente datas publicadas de EOL: datas vencidas exigem migração, 0–90 dias indicam
+migração próxima, 91–180 dias exigem monitoramento, mais de 180 dias não requerem ação imediata, e
+datas ausentes permanecem desconhecidas. Os limites são serializados e testados. Estar abaixo da
+última versão não torna uma linha obsoleta automaticamente, e nenhuma versão de destino é indicada
+sem evidência verificável de compatibilidade.
+
+As referências de lifecycle são atualizadas no máximo uma vez a cada 24 horas e restauradas pelo
+cache do GitHub Actions. A coleta operacional horária lê esse cache local e nunca chama a API de
+lifecycle. Uma falha de atualização reutiliza dados válidos anteriores; dados antigos são
+identificados e fonte ausente gera Unknown. O navegador permanece read-only, sem tokens e sem
+consultas de lifecycle.
+
+O snapshot separado <code>technology-radar.json</code> evita acoplar o schema operacional e permite
+carregar o dashboard principal sem dados de lifecycle. Para adicionar um detector, estenda o
+registro puro em [scripts/technology-detection.mjs](scripts/technology-detection.mjs), limite os
+caminhos de evidência, não execute código dos repositórios e adicione fixtures locais.
 
 ## Tecnologias
 
@@ -283,12 +337,15 @@ npm start
 
 Acesse <http://localhost:4200>. O snapshot versionado em
 [public/data/repositories.json](public/data/repositories.json) permite desenvolver a UI sem executar
-o collector.
+o collector. O [public/data/technology-radar.json](public/data/technology-radar.json) vazio é a base
+offline; o collector o substitui por dados reais detectados.
 
 Comandos úteis:
 
 ```bash
 npm run collect       # Atualiza o snapshot com dados públicos do GitHub
+npm run lifecycle:refresh        # Atualiza lifecycle apenas após 24 horas
+npm run lifecycle:refresh:force  # Força atualização das referências verificadas
 npm run format:check  # Verifica a formatação do Prettier
 npm run lint          # Valida TypeScript, templates e scripts
 npm test              # Executa testes Angular e do collector
@@ -301,6 +358,8 @@ npm run build:pages   # Gera o build com o base href do Pages
 [deploy-pages.yml](.github/workflows/deploy-pages.yml) executa em pushes para <code>main</code>,
 manualmente e a cada hora, no minuto 17. Ele coleta os dados, verifica formatação, lint e testes,
 gera o build com o base href do repositório e publica o artifact oficial do Pages.
+O cache de lifecycle usa uma chave por dia UTC, evitando repetir consultas externas nas atualizações
+operacionais horárias.
 
 As rotas usam hash, por exemplo <code>#/repository/repo-status-dashboard</code>, então um refresh
 direto não exige rewrites no servidor. A URL canônica indexável é:
@@ -348,6 +407,12 @@ enviados à SPA.
   cobertura completa dos sinais.
 - O limite anônimo da API do GitHub é baixo para owners com muitos repositórios.
 - Métricas de pacotes e OpenSSF dependem de APIs públicas externas e suas políticas de cache.
+- TypeScript não possui um produto de lifecycle configurado porque não há política LTS/EOL
+  verificável; seu lifecycle permanece Unknown/Não aplicável. Apenas a resolução por
+  <code>package-lock.json</code> está implementada; Yarn e pnpm são descobertos, mas ainda não
+  interpretados.
+- Avaliação condicional ou customizada do MSBuild não é executada. Somente propriedades resolvíveis
+  estaticamente são usadas, e layouts não suportados podem reduzir a cobertura.
 - O GitHub Pages controla alguns headers; a política do ZAP mantém esses findings da hospedagem como
   informativos.
 - As páginas de detalhe usam hash routes; mecanismos de busca indexam a raiz do dashboard, não uma
@@ -359,9 +424,11 @@ Repositórios privados, forks e repositórios arquivados estão intencionalmente
 
 ```text
 src/app/core/                 carregamento do snapshot e serviços de tema
-src/app/features/             dashboard e detalhes de repositório
+src/app/features/             dashboard, Technology Radar e detalhes de repositório
 src/app/shared/               modelos, componentes, pipes, filtros e insights
 public/data/repositories.json snapshot versionado consumido pela SPA
+public/data/technology-radar.json snapshot offline do Technology Radar
+public/data/lifecycle-cache.json cache externo verificado de lifecycle
 scripts/                      collector, regras semânticas e utilitários de build
 .github/workflows/            automações de CI, Pages, release, quality, SEO e security
 ```
