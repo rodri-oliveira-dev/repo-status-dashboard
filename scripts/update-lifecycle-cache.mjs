@@ -10,9 +10,9 @@ const OUTPUT = resolve(
 const PRODUCTS = ['dotnet', 'nodejs', 'angular'];
 const API = 'https://endoflife.date/api/v1/products';
 
-async function previousCache() {
+async function previousCache(filePath = OUTPUT) {
   try {
-    return JSON.parse(await readFile(OUTPUT, 'utf8'));
+    return JSON.parse(await readFile(filePath, 'utf8'));
   } catch {
     return null;
   }
@@ -35,48 +35,78 @@ async function fetchProduct(id, attempt = 0) {
   }
 }
 
-export async function updateLifecycleCache() {
-  const previous = await previousCache();
-  const force = process.argv.includes('--force');
-  const age = previous?.updatedAt
-    ? Date.now() - Date.parse(previous.updatedAt)
-    : Number.POSITIVE_INFINITY;
-  if (!force && age >= 0 && age < 24 * 60 * 60 * 1000) {
-    console.log(`[lifecycle] cache is fresh (${previous.updatedAt}); refresh skipped`);
-    return previous;
-  }
-  const products = { ...(previous?.products ?? {}) };
-  const failures = [];
+function recentAttempt(timestamp, now) {
+  const parsed = Date.parse(timestamp ?? '');
+  const elapsed = now - parsed;
+  return Number.isFinite(parsed) && elapsed >= 0 && elapsed < 24 * 60 * 60 * 1000;
+}
+
+export async function updateLifecycleCache({
+  filePath = OUTPUT,
+  fetcher = fetchProduct,
+  now = () => Date.now(),
+  force = process.argv.includes('--force'),
+} = {}) {
+  const previous = await previousCache(filePath);
+  const nowMs = now();
+  const nowIso = new Date(nowMs).toISOString();
+  // Legacy v1 caches have only a global timestamp. Migrate product timestamps
+  // before any successful individual refresh can advance the global timestamp.
+  const products = Object.fromEntries(
+    Object.entries(previous?.products ?? {}).map(([id, product]) => [
+      id,
+      { ...product, retrievedAt: product.retrievedAt ?? previous.updatedAt ?? null },
+    ]),
+  );
+  const attempts = { ...(previous?.attempts ?? {}) };
+  const failedProducts = new Set(previous?.failedProducts ?? []);
+  let refreshed = 0;
+  let attempted = 0;
+
   for (const id of PRODUCTS) {
+    const lastAttempt = attempts[id] ?? products[id]?.retrievedAt;
+    if (!force && recentAttempt(lastAttempt, nowMs)) {
+      console.log(`[lifecycle] ${id}: refresh skipped (recent attempt)`);
+      continue;
+    }
+    attempted += 1;
+    attempts[id] = nowIso;
     try {
-      products[id] = await fetchProduct(id);
+      products[id] = { ...(await fetcher(id)), retrievedAt: nowIso };
+      refreshed += 1;
+      failedProducts.delete(id);
       console.log(`[lifecycle] refreshed ${id}`);
     } catch (error) {
-      failures.push(id);
+      failedProducts.add(id);
       console.warn(
         `[lifecycle] ${id}: refresh failed; ${products[id] ? 'reusing cache' : 'no cached data available'} (${error instanceof Error ? error.message : String(error)})`,
       );
     }
   }
-  const successful = PRODUCTS.filter((id) => !failures.includes(id));
+
+  if (!attempted && previous) return previous;
   const cache = {
     schemaVersion: 1,
-    updatedAt: successful.length ? new Date().toISOString() : (previous?.updatedAt ?? null),
+    updatedAt: refreshed ? nowIso : (previous?.updatedAt ?? null),
     source: {
       name: 'endoflife.date',
       url: 'https://endoflife.date/docs/api/v1/',
       schemaVersion: '1.x (beta)',
     },
     products,
-    ...(failures.length
-      ? { warnings: failures.map((id) => `${id}: lifecycle refresh failed`) }
+    attempts,
+    ...(failedProducts.size
+      ? {
+          failedProducts: [...failedProducts],
+          warnings: [...failedProducts].map((id) => `${id}: lifecycle refresh failed`),
+        }
       : {}),
   };
   if (!Object.keys(products).length)
     throw new Error('No lifecycle data is available and no cache could be reused.');
-  await mkdir(dirname(OUTPUT), { recursive: true });
-  await writeFile(OUTPUT, `${JSON.stringify(cache, null, 2)}\n`, 'utf8');
-  console.log(`[lifecycle] wrote ${Object.keys(products).length} product(s) to ${OUTPUT}`);
+  await mkdir(dirname(filePath), { recursive: true });
+  await writeFile(filePath, `${JSON.stringify(cache, null, 2)}\n`, 'utf8');
+  console.log(`[lifecycle] wrote ${Object.keys(products).length} product(s) to ${filePath}`);
   return cache;
 }
 
