@@ -7,6 +7,8 @@
     "build": "ng build && node scripts/harden-csp.mjs",
     "build:pages": "ng build --base-href /repo-status-dashboard/ && node scripts/harden-csp.mjs",
     "collect": "node scripts/collect-github-status.mjs",
+    "lifecycle:refresh": "node scripts/update-lifecycle-cache.mjs",
+    "lifecycle:refresh:force": "node scripts/update-lifecycle-cache.mjs --force",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings=0",

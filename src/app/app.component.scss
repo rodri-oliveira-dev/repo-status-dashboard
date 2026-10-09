@@ -65,6 +65,25 @@
   border-color: var(--border-strong);
   background: var(--surface-hover);
 }
+nav {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+nav a {
+  padding: 0.48rem 0.7rem;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+nav a:hover,
+nav a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 main {
   width: min(1480px, 100%);
   margin: 0 auto;
@@ -84,5 +103,12 @@ footer {
   }
   .app-header {
     height: 62px;
+  }
+  nav a:first-child {
+    display: none;
+  }
+  nav a {
+    padding-inline: 0.45rem;
+    font-size: 0.7rem;
   }
 }

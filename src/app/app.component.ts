@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ThemeService } from './core/services/theme.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet],
   template: `
     <header class="app-header">
       <a
@@ -18,6 +18,12 @@ import { ThemeService } from './core/services/theme.service';
           <small>GitHub operations overview</small>
         </span>
       </a>
+      <nav aria-label="Main navigation">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          >Repositories</a
+        >
+        <a routerLink="/technology-radar" routerLinkActive="active">Technology Radar</a>
+      </nav>
       <button
         class="theme-toggle"
         type="button"

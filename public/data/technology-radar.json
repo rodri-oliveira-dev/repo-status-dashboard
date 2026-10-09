@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "owner": "rodri-oliveira-dev",
+  "generatedAt": "2026-10-09T00:00:00.000Z",
+  "lifecycleUpdatedAt": null,
+  "sources": [],
+  "urgencyThresholds": {
+    "approachingDays": 90,
+    "monitorDays": 180
+  },
+  "coverage": {
+    "repositories": 0,
+    "complete": 0,
+    "partial": 0,
+    "unavailable": 0
+  },
+  "repositories": []
+}

@@ -10,6 +10,14 @@ export const routes: Routes = [
     title: 'Repo Control Center',
   },
   {
+    path: 'technology-radar',
+    loadComponent: () =>
+      import('./features/technology-radar/technology-radar.component').then(
+        (module) => module.TechnologyRadarComponent,
+      ),
+    title: 'Technology Radar · Repo Control Center',
+  },
+  {
     path: 'repository/:name',
     loadComponent: () =>
       import('./features/repository-details/repository-details.component').then(
