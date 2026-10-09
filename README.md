@@ -91,9 +91,11 @@ dates remain unknown. The thresholds are serialized in the snapshot and tested. 
 latest release alone never makes a version obsolete, and no target version is recommended without
 verified compatibility evidence.
 
-Lifecycle references are refreshed at most once per 24 hours and restored through the GitHub
-Actions cache. The operational hourly collection reads that local cache and never calls the
-lifecycle API. A failed refresh reuses valid prior data; stale data is identified, while a missing
+Lifecycle references are refreshed at most once per 24 hours per product and restored through the
+GitHub Actions cache. Each product retains its own retrieval time, including when a different
+product refreshes successfully. The operational hourly collector reads only the local cache; the
+refresh step independently retries products with attempts at least 24 hours old. A failed refresh
+reuses valid prior data; stale data is identified, while a missing
 source yields Unknown. The browser is read-only, receives no tokens, and makes no lifecycle calls.
 
 The separate <code>technology-radar.json</code> snapshot avoids coupling the operational schema and
@@ -355,8 +357,9 @@ npm run build:pages   # Build with the repository Pages base href
 
 [deploy-pages.yml](.github/workflows/deploy-pages.yml) runs on pushes to <code>main</code>, on manual
 dispatch, and hourly at minute 17. It collects data, checks formatting, lints, tests, builds with the
-repository base href, and deploys the official Pages artifact. The lifecycle cache uses one key per
-UTC day, so hourly operational refreshes do not repeat external lifecycle requests.
+repository base href, and deploys the official Pages artifact. The lifecycle cache restores the
+newest saved revision and saves a new run-specific key only if the file changed. This avoids
+pinning an old revision under an immutable daily key.
 
 Repository routes use hashes, for example <code>#/repository/repo-status-dashboard</code>, so direct
 refresh does not require server rewrites. The canonical indexable URL is:
