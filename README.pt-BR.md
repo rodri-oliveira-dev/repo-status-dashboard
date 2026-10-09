@@ -71,12 +71,41 @@ relevantes. A detecção atual inclui:
 | Angular    | Framework    | declarações de <code>@angular/core</code> e entradas resolvidas do <code>package-lock.json</code>                                                                |
 | TypeScript | Tool         | declarações de <code>typescript</code> e entradas resolvidas do <code>package-lock.json</code>                                                                   |
 
+Os target frameworks .NET são classificados por família antes da avaliação de lifecycle. Targets
+modernos <code>net8.0</code>/<code>net10.0</code> são runtimes .NET, targets
+<code>netcoreapp</code> são runtimes .NET Core, targets compactos
+<code>net48</code>/<code>net481</code> são .NET Framework e
+<code>netstandard2.0</code>/<code>netstandard2.1</code> são especificações de compatibilidade de API
+.NET Standard. .NET Standard nunca recebe o EOL de um runtime. Famílias sem política de ciclo
+diretamente aplicável e verificável permanecem Unknown, com LTS Not applicable. Os TFMs originais
+continuam nas evidências, inclusive todos os targets de projetos multitarget; a evidência de SDK em
+<code>global.json</code> continua como uma tecnologia .NET SDK separada.
+
 Uma versão **declarada** vem diretamente do manifesto; uma versão **resolvida** é fixada por um
 lockfile ou propriedade central resolvida com segurança; uma **faixa** expressa compatibilidade, não
 uma instalação; e evidência **inferida** só é mantida com origem explícita. Versões múltiplas e
 conflitantes são preservadas. Caminhos de testes/exemplos e dependências de desenvolvimento são
 marcados separadamente. Arquivos inválidos, propriedades não resolvidas e árvores truncadas reduzem
 a cobertura tecnológica sem interromper a coleta do portfólio.
+
+O inventário e o gráfico consolidam versões somente quando Major representa um ciclo de lifecycle
+significativo: .NET SDK, .NET moderno, Node.js, Angular e TypeScript. Ocorrências Declared,
+Resolved e Range continuam disponíveis individualmente em Evidence, enquanto cada repositório é
+contado uma vez por ciclo consolidado. .NET Core e .NET Standard mantêm ciclos Major.Minor, e .NET
+Framework mantém a versão completa do framework. Um range SemVer só recebe uma Major quando todas
+as versões permitidas pertencem inequivocamente à mesma Major; ranges amplos ou não suportados
+permanecem explicitamente não classificados. Assim, versão detectada é o valor exato da fonte, e
+versão consolidada é o ciclo seguro usado na visualização do portfólio.
+
+O radar circular aparece antes da tabela detalhada. Seus quadrantes agrupam plataformas,
+frameworks, linguagens e ferramentas, e infraestrutura. Seus anéis mostram urgência de migração
+baseada no lifecycle — Sem ação imediata, Monitorar, Migração próxima e Migração necessária — e não
+decisões Adopt/Trial/Assess/Hold. Unknown ocupa um anel externo tracejado separado e nunca é tratado
+como seguro. O tamanho do marcador representa a quantidade de repositórios distintos. Selecione um
+marcador ou uma linha da tabela por mouse ou teclado para abrir Evidence e mover o foco até ela;
+versões exatas, proveniência, escopo, confiança, arquivos de origem e links de repositório continuam
+disponíveis no painel. Os filtros se aplicam de forma consistente ao gráfico e à tabela, e uma
+alternativa textual expansível expõe os dados plotados.
 
 O lifecycle é avaliado por regras puras em
 [scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). O contrato beta v1 do

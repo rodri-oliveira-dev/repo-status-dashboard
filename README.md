@@ -71,12 +71,39 @@ currently implemented for:
 | Angular    | Framework    | <code>@angular/core</code> declarations and resolved <code>package-lock.json</code> entries                                                          |
 | TypeScript | Tool         | <code>typescript</code> declarations and resolved <code>package-lock.json</code> entries                                                             |
 
+.NET target frameworks are classified by family before lifecycle evaluation. Modern
+<code>net8.0</code>/<code>net10.0</code> targets are .NET runtimes, <code>netcoreapp</code> targets
+are .NET Core runtimes, compact <code>net48</code>/<code>net481</code> targets are .NET Framework,
+and <code>netstandard2.0</code>/<code>netstandard2.1</code> are .NET Standard API compatibility
+specifications. .NET Standard is never assigned a runtime EOL. Families without a directly
+applicable, verified cycle policy remain Unknown with LTS marked Not applicable. Original TFMs
+remain in evidence, including every target in multi-target projects; <code>global.json</code> SDK
+evidence remains a separate .NET SDK technology.
+
 A **declared** version comes directly from a manifest; a **resolved** version is pinned by a
 lockfile or a safely resolved central property; a **range** expresses compatibility rather than an
 installed version; and **inferred** evidence is retained only when its provenance is explicit.
 Multiple and conflicting versions are preserved. Test/example paths and development dependencies
 are marked separately. Invalid files, unresolved properties, and truncated trees degrade
 technology coverage without stopping portfolio collection.
+
+The inventory and chart consolidate versions only where a Major is a meaningful lifecycle cycle:
+.NET SDK, modern .NET, Node.js, Angular, and TypeScript. Declared, resolved, and range occurrences
+remain individually available in Evidence, while each repository is counted once per consolidated
+cycle. .NET Core and .NET Standard retain Major.Minor cycles, and .NET Framework retains its full
+framework version. A SemVer range is assigned to a Major only when all versions allowed by that
+range are unambiguously in the same Major; broader or unsupported ranges remain explicitly
+unclassified. Thus the detected version is the exact source value, while the consolidated version
+is the safe cycle used for portfolio visualization.
+
+The circular radar appears before the detailed table. Its quadrants group platforms, frameworks,
+languages and tools, and infrastructure. Its rings show lifecycle-based migration urgencyâ€”No
+immediate action, Monitor, Migration approaching, and Migration requiredâ€”not Adopt/Trial/Assess/Hold
+adoption decisions. Unknown is a separate dashed outer ring and is never treated as safe. Marker
+size represents distinct repository count. Select a marker or table row by mouse or keyboard to
+open Evidence and move focus to it; exact versions, provenance, scope, confidence, source files,
+and repository links remain available there. The filters apply consistently to the chart and
+table, and an expandable text alternative exposes the plotted data.
 
 Lifecycle is evaluated by pure rules in
 [scripts/technology-lifecycle.mjs](scripts/technology-lifecycle.mjs). The beta endoflife.date v1
