@@ -92,11 +92,12 @@ datas ausentes permanecem desconhecidas. Os limites são serializados e testados
 última versão não torna uma linha obsoleta automaticamente, e nenhuma versão de destino é indicada
 sem evidência verificável de compatibilidade.
 
-As referências de lifecycle são atualizadas no máximo uma vez a cada 24 horas e restauradas pelo
-cache do GitHub Actions. A coleta operacional horária lê esse cache local e nunca chama a API de
-lifecycle. Uma falha de atualização reutiliza dados válidos anteriores; dados antigos são
-identificados e fonte ausente gera Unknown. O navegador permanece read-only, sem tokens e sem
-consultas de lifecycle.
+As referências de lifecycle são atualizadas no máximo uma vez a cada 24 horas por produto e
+restauradas pelo cache do GitHub Actions. Cada produto mantém seu próprio horário de consulta,
+mesmo quando a atualização de outro produto é bem-sucedida. O coletor operacional horário lê apenas
+o cache local; a etapa de atualização tenta novamente os produtos cuja última tentativa ocorreu há
+pelo menos 24 horas. Uma falha reutiliza os dados anteriores; dados antigos são identificados e
+fonte ausente gera Unknown. O navegador permanece read-only, sem tokens e sem consultas de lifecycle.
 
 O snapshot separado <code>technology-radar.json</code> evita acoplar o schema operacional e permite
 carregar o dashboard principal sem dados de lifecycle. Para adicionar um detector, estenda o
@@ -358,8 +359,9 @@ npm run build:pages   # Gera o build com o base href do Pages
 [deploy-pages.yml](.github/workflows/deploy-pages.yml) executa em pushes para <code>main</code>,
 manualmente e a cada hora, no minuto 17. Ele coleta os dados, verifica formatação, lint e testes,
 gera o build com o base href do repositório e publica o artifact oficial do Pages.
-O cache de lifecycle usa uma chave por dia UTC, evitando repetir consultas externas nas atualizações
-operacionais horárias.
+O cache de lifecycle restaura a revisão salva mais recente e grava uma nova chave específica da
+execução apenas quando o arquivo é alterado. Isso impede fixar uma versão antiga em uma chave diária
+imutável.
 
 As rotas usam hash, por exemplo <code>#/repository/repo-status-dashboard</code>, então um refresh
 direto não exige rewrites no servidor. A URL canônica indexável é:
