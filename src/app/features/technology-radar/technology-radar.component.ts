@@ -75,6 +75,9 @@ export class TechnologyRadarComponent implements OnInit {
   protected readonly selectedKey = signal<string | null>(null);
   protected readonly rows = computed(() => buildTechnologyInventory(this.store.snapshot()));
   protected readonly metrics = computed(() => technologyRadarMetrics(this.store.snapshot()));
+  protected readonly staleRows = computed(
+    () => this.rows().filter((row) => row.lifecycle.stale).length,
+  );
   protected readonly filteredRows = computed(() =>
     filterTechnologyInventory(this.rows(), {
       query: this.query(),
