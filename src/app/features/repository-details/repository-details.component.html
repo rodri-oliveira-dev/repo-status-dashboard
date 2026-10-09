@@ -148,6 +148,11 @@
                         <dd>
                           {{ technologyLabel(version.lifecycle.lifecycle) }} /
                           {{ technologyLabel(version.lifecycle.lts) }}
+                          @if (version.lifecycle.stale) {
+                            <span class="technology-warning">
+                              · Stale lifecycle source — verify dates
+                            </span>
+                          }
                         </dd>
                       </div>
                       <div>
