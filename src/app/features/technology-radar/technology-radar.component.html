@@ -41,8 +41,8 @@
   @if (staleRows()) {
     <div class="coverage-notice" role="status">
       <strong>Some lifecycle references are stale.</strong>
-      {{ staleRows() }} inventory rows use lifecycle data older than 48 hours.
-      Verify dates and support status with the original source before making migration decisions.
+      <span>{{ staleRows() }} inventory rows use data older than 48 hours.</span>
+      <span>Verify official dates before acting on migration guidance.</span>
     </div>
   }
   <section class="summary-grid" aria-label="Technology portfolio summary">
