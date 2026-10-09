@@ -89,8 +89,10 @@ function targetFramework(target) {
   if (match) return { technologyId: 'dotnet-standard', value: `${match[1]}.${match[2]}` };
   match = target.match(/^netcoreapp(\d+)\.(\d+)$/i);
   if (match) return { technologyId: 'dotnet-core', value: `${match[1]}.${match[2]}` };
-  match = target.match(/^net(\d+)\.(\d+)$/i);
-  if (match) return { technologyId: 'dotnet', value: `${match[1]}.${match[2]}` };
+  match = target.match(/^net(\d+)\.(\d+)(?:-[a-z]+(?:\d+(?:\.\d+){0,3})?)?$/i);
+  if (match && Number(match[1]) >= 5) {
+    return { technologyId: 'dotnet', value: `${match[1]}.${match[2]}` };
+  }
   match = target.match(/^net(\d{2,3})$/i);
   if (!match) return null;
   const digits = match[1];

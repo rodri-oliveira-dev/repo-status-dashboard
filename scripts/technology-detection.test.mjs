@@ -52,6 +52,30 @@ describe('technology detection', () => {
     }
   });
 
+  it('detects modern .NET TFMs qualified by a target platform', () => {
+    const result = detect({
+      path: 'src/App/App.csproj',
+      content:
+        '<Project><TargetFrameworks>net8.0-windows;net8.0-windows10.0.19041.0;net9.0-android</TargetFrameworks></Project>',
+    });
+    const versions = technology(result, 'dotnet').versions;
+    assert.deepEqual(
+      versions.map(({ value, cycle }) => ({ value, cycle })),
+      [
+        { value: '8.0', cycle: '8' },
+        { value: '9.0', cycle: '9' },
+      ],
+    );
+    assert.deepEqual(
+      versions.flatMap(({ evidence }) => evidence.map(({ detail }) => detail)).sort(),
+      [
+        'Target framework net8.0-windows',
+        'Target framework net8.0-windows10.0.19041.0',
+        'Target framework net9.0-android',
+      ],
+    );
+  });
+
   it('uses major-only lifecycle keys for modern .NET and dotted keys for .NET Core 3.1', () => {
     const result = detect(
       {
