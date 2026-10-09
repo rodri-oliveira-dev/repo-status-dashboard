@@ -38,6 +38,13 @@
       </div>
     }
   }
+  @if (staleRows()) {
+    <div class="coverage-notice" role="status">
+      <strong>Some lifecycle references are stale.</strong>
+      {{ staleRows() }} inventory rows use lifecycle data older than 48 hours.
+      Verify dates and support status with the original source before making migration decisions.
+    </div>
+  }
   <section class="summary-grid" aria-label="Technology portfolio summary">
     <app-summary-card label="Technologies" [value]="metrics().technologies" />
     <app-summary-card label="Repositories analyzed" [value]="metrics().repositories" />
@@ -147,6 +154,9 @@
                   <span class="pill" [attr.data-tone]="row.lifecycle.lifecycle">{{
                     label(row.lifecycle.lifecycle)
                   }}</span>
+                  @if (row.lifecycle.stale) {
+                    <small>Stale source</small>
+                  }
                 </td>
                 <td data-label="LTS">{{ label(row.lifecycle.lts) }}</td>
                 <td data-label="EOL">
@@ -160,6 +170,9 @@
                   <span class="pill" [attr.data-tone]="row.lifecycle.migrationUrgency">{{
                     label(row.lifecycle.migrationUrgency)
                   }}</span>
+                  @if (row.lifecycle.stale) {
+                    <small>Based on stale data</small>
+                  }
                 </td>
               </tr>
             }
@@ -194,6 +207,9 @@
                 >{{ label(occurrence.version.scope) }} ·
                 {{ label(occurrence.version.confidence) }} confidence</span
               >
+              @if (occurrence.version.lifecycle.stale) {
+                <span>Lifecycle source stale — verify before migrating</span>
+              }
             </div>
             <ul>
               @for (
@@ -230,6 +246,9 @@
                   >{{ remaining(row.lifecycle.daysRemaining) }} ·
                   {{ row.repositories.length }} repositories</span
                 >
+                @if (row.lifecycle.stale) {
+                  <span>Lifecycle source is stale</span>
+                }
               </div>
               <span class="pill" [attr.data-tone]="row.lifecycle.migrationUrgency">{{
                 label(row.lifecycle.migrationUrgency)
@@ -270,6 +289,9 @@
               <div>
                 <strong>{{ row.technology }} {{ row.version }}</strong
                 ><span>{{ remaining(row.lifecycle.daysRemaining) }}</span>
+                @if (row.lifecycle.stale) {
+                  <span>Lifecycle source is stale</span>
+                }
               </div>
             </li>
           }
