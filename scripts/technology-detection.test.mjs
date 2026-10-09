@@ -23,6 +23,21 @@ describe('technology detection', () => {
     );
   });
 
+  it('uses major-only lifecycle keys for modern .NET and dotted keys for .NET Core 3.1', () => {
+    const result = detect(
+      {
+        path: 'App.csproj',
+        content: '<Project><TargetFrameworks>net10.0;netcoreapp3.1</TargetFrameworks></Project>',
+      },
+      { path: 'global.json', content: JSON.stringify({ sdk: { version: '9.0.101' } }) },
+    );
+    assert.deepEqual(
+      technology(result, 'dotnet').versions.map(({ cycle }) => cycle),
+      ['10', '3.1'],
+    );
+    assert.equal(technology(result, 'dotnet-sdk').versions[0].cycle, '9');
+  });
+
   it('resolves centralized target framework properties and marks test projects', () => {
     const result = detect(
       {
@@ -50,7 +65,8 @@ describe('technology detection', () => {
       },
     );
     assert.equal(technology(result, 'dotnet-sdk').category, 'tool');
-    assert.equal(technology(result, 'dotnet-sdk').versions[0].cycle, '8.0');
+    assert.equal(technology(result, 'dotnet-sdk').versions[0].cycle, '8');
+    assert.equal(technology(result, 'dotnet').versions[0].cycle, '8');
     assert.equal(technology(result, 'dotnet').category, 'runtime');
   });
 
@@ -63,6 +79,24 @@ describe('technology detection', () => {
     const versions = technology(result, 'nodejs').versions;
     assert.equal(versions.length, 3);
     assert.equal(versions.find(({ value }) => value === '>=22 <25').kind, 'range');
+  });
+
+  it('ignores dynamic and collection-based workflow Node.js versions', () => {
+    const result = detect({
+      path: '.github/workflows/ci.yml',
+      content: [
+        'node-version: ${{ matrix.node }}',
+        'node-version: [20, 22]',
+        'node-version: "22"',
+        "node-version: '20.x' # pinned major",
+        'node-version: ${{ inputs.node-version }}',
+        'node-version: |',
+      ].join('\n'),
+    });
+    assert.deepEqual(
+      technology(result, 'nodejs').versions.map(({ value }) => value),
+      ['20.x', '22'],
+    );
   });
 
   it('keeps declared Angular and TypeScript ranges separate from resolved lock versions', () => {
