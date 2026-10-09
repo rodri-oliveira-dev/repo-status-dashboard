@@ -288,7 +288,13 @@ code {
 .list-panel li > div {
   min-width: 0;
 }
-.migration-badge {
+.list-panel li span,
+.list-panel time {
+  display: block;
+  color: var(--muted);
+  font-size: 0.69rem;
+}
+.list-panel li > .migration-badge {
   display: inline-flex;
   align-self: start;
   align-items: center;
@@ -299,12 +305,6 @@ code {
   line-height: 1.15;
   text-align: center;
   white-space: normal;
-}
-.list-panel li span,
-.list-panel time {
-  display: block;
-  color: var(--muted);
-  font-size: 0.69rem;
 }
 .list-panel .links {
   grid-column: 1 / -1;

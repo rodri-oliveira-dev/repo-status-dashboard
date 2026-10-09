@@ -170,7 +170,7 @@ export class TechnologyRadarComponent implements OnInit {
   }
 
   protected markerLabel(row: TechnologyInventoryRow): string {
-    return `${row.technology} ${row.version}. ${row.repositories.length} repositories. ${this.label(row.lifecycle.lifecycle)} lifecycle. ${this.label(row.lifecycle.lts)} LTS. ${this.label(row.lifecycle.migrationUrgency)} migration urgency.`;
+    return `${row.technology} ${row.version}. ${this.label(row.category)} category. ${row.repositories.length} repositories. ${this.label(row.lifecycle.lifecycle)} lifecycle. ${this.label(row.lifecycle.lts)} LTS. ${this.label(row.lifecycle.migrationUrgency)} migration urgency.`;
   }
 
   protected sortBy(column: 'technology' | 'eol' | 'repositories'): void {

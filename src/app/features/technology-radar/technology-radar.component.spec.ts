@@ -153,7 +153,7 @@ describe('TechnologyRadarComponent', () => {
     expect(items.every((item) => item.textContent?.includes('1 repository'))).toBe(true);
   });
 
-  it('selects landscape technologies by keyboard and mouse and scrolls to evidence', () => {
+  it('uses native buttons to select technologies and scroll to evidence', () => {
     const fixture = TestBed.createComponent(TechnologyRadarComponent);
     fixture.detectChanges();
     const items = [
@@ -162,7 +162,8 @@ describe('TechnologyRadarComponent', () => {
     const typescript = items.find((item) => item.textContent?.includes('TypeScript'))!;
 
     expect(typescript.tagName).toBe('BUTTON');
-    typescript.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    expect(typescript.getAttribute('aria-label')).toContain('Tool category');
+    typescript.click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.details')).not.toBeNull();
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
@@ -213,6 +214,9 @@ describe('TechnologyRadarComponent', () => {
       'migration-approaching',
       'monitor',
     ]);
+    expect(getComputedStyle(badges[0]).display).toBe('inline-flex');
+    expect(getComputedStyle(badges[0]).alignItems).toBe('center');
+    expect(getComputedStyle(badges[0]).justifyContent).toBe('center');
   });
 
   it('applies filters to both the matrix and table and renders an empty state', async () => {

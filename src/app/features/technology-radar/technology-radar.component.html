@@ -106,8 +106,6 @@
                   [attr.data-urgency]="row.lifecycle.migrationUrgency"
                   [attr.aria-label]="markerLabel(row)"
                   (click)="select(row)"
-                  (keydown.enter)="select(row); $event.preventDefault()"
-                  (keydown.space)="select(row); $event.preventDefault()"
                 >
                   <span class="landscape-item__identity">
                     <strong>{{ row.technology }}</strong>
