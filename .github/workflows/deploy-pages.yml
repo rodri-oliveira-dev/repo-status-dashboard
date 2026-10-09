@@ -31,19 +31,25 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Resolve lifecycle cache key
-        id: lifecycle-key
-        shell: bash
-        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
-      - name: Restore daily lifecycle cache
-        uses: actions/cache@v5
+      - name: Restore latest lifecycle cache
+        uses: actions/cache/restore@v5
         with:
           path: public/data/lifecycle-cache.json
-          key: lifecycle-${{ steps.lifecycle-key.outputs.date }}
+          key: lifecycle-v2-${{ github.run_id }}
           restore-keys: |
-            lifecycle-
+            lifecycle-v2-
+      - name: Record lifecycle cache fingerprint
+        id: lifecycle-before
+        shell: bash
+        run: echo "hash=${{ hashFiles('public/data/lifecycle-cache.json') }}" >> "$GITHUB_OUTPUT"
       - name: Refresh lifecycle references when stale
         run: npm run lifecycle:refresh
+      - name: Save updated lifecycle cache
+        if: ${{ hashFiles('public/data/lifecycle-cache.json') != steps.lifecycle-before.outputs.hash }}
+        uses: actions/cache/save@v5
+        with:
+          path: public/data/lifecycle-cache.json
+          key: lifecycle-v2-${{ github.run_id }}
       - name: Collect repository status
         run: npm run collect
         env:
