@@ -40,7 +40,10 @@ function cycleFor(technologyId, value) {
   const match = cleanVersion(value).match(/\d+(?:\.\d+)?/);
   if (!match) return null;
   const [major, minor] = match[0].split('.');
-  return technologyId.startsWith('dotnet') ? `${major}.${minor ?? '0'}` : major;
+  if (technologyId.startsWith('dotnet')) {
+    return Number(major) >= 5 ? major : `${major}.${minor ?? '0'}`;
+  }
+  return major;
 }
 
 function versionRecord({ technologyId, value, path, kind, confidence, scope, detail }) {
@@ -215,13 +218,16 @@ function detectNodeFiles(files, result) {
   for (const file of files.filter((candidate) =>
     /^\.github\/workflows\/.*\.ya?ml$/i.test(candidate.path),
   )) {
-    for (const match of file.content.matchAll(/node-version\s*:\s*['"]?([^'"\s#]+)/gi)) {
+    for (const match of file.content.matchAll(/^\s*node-version\s*:\s*(.*?)\s*(?:#.*)?$/gim)) {
+      const value = match[1].trim().replace(/^(['"])(.*)\1$/, '$2');
+      // Expressions, YAML collections and non-numeric aliases are not resolved here.
+      if (!/^v?\d+(?:\.(?:\d+|[xX])){0,3}$/.test(value)) continue;
       add(
         result,
         'nodejs',
         versionRecord({
           technologyId: 'nodejs',
-          value: match[1],
+          value,
           path: file.path,
           confidence: 'medium',
           scope: 'tooling',
