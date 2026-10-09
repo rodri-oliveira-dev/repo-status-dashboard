@@ -99,6 +99,31 @@ describe('lifecycle evaluation', () => {
     assert.equal(result.stale, true);
   });
 
+  it('keeps a reused product stale when another product refresh succeeds', () => {
+    const result = evaluateLifecycle(
+      technology,
+      version,
+      {
+        updatedAt: '2026-01-01T00:00:00Z',
+        products: {
+          example: {
+            sourceUrl: 'https://example.test',
+            retrievedAt: '2025-12-20T00:00:00Z',
+            lastModified: '2025-12-19',
+            releases: [{ cycle: '1', lts: true, eol: '2027-01-01' }],
+          },
+          other: {
+            retrievedAt: '2026-01-01T00:00:00Z',
+            releases: [],
+          },
+        },
+      },
+      { asOf },
+    );
+    assert.equal(result.lifecycle, 'active');
+    assert.equal(result.stale, true);
+  });
+
   it('serializes repository technology separately from operational health', () => {
     const snapshot = buildTechnologyRadarSnapshot({
       owner: 'owner',
