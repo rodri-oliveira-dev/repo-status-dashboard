@@ -99,3 +99,65 @@ a {
   background: var(--surface);
   box-shadow: var(--shadow);
 }
+
+app-technology-radar {
+  .radar-ring {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+  .radar-ring.safe {
+    fill: color-mix(in srgb, var(--success-soft) 55%, transparent);
+  }
+  .radar-ring.monitor {
+    fill: color-mix(in srgb, var(--warning-soft) 18%, transparent);
+  }
+  .radar-ring.unknown {
+    stroke-dasharray: 8 6;
+    stroke-width: 2;
+  }
+  .axis {
+    fill: none;
+    stroke: var(--border);
+  }
+  .quadrant-label {
+    fill: var(--muted);
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .marker {
+    cursor: pointer;
+    outline: none;
+  }
+  .marker circle {
+    fill: var(--accent);
+    stroke: var(--surface);
+    stroke-width: 3;
+  }
+  .marker text {
+    fill: var(--text);
+    font-size: 13px;
+    font-weight: 650;
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-linejoin: round;
+    stroke-width: 4px;
+  }
+  .marker[data-urgency='monitor'] circle,
+  .marker[data-urgency='migration-approaching'] circle {
+    fill: var(--warning);
+  }
+  .marker[data-urgency='migration-required'] circle {
+    fill: var(--danger);
+  }
+  .marker[data-urgency='unknown'] circle {
+    fill: var(--muted);
+  }
+  .marker:hover circle,
+  .marker:focus-visible circle,
+  .marker.selected circle {
+    stroke: var(--text);
+    stroke-width: 5;
+  }
+}

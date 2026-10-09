@@ -88,8 +88,10 @@ export interface TechnologyInventoryRow {
   readonly technologyId: string;
   readonly technology: string;
   readonly category: TechnologyCategory;
+  readonly cycle: string | null;
   readonly version: string;
-  readonly kind: VersionKind;
+  readonly versionValues: readonly string[];
+  readonly kinds: readonly VersionKind[];
   readonly lifecycle: LifecycleInformation;
   readonly repositories: readonly RepositoryTechnology[];
   readonly occurrences: readonly { repository: RepositoryTechnology; version: DetectedVersion }[];

@@ -1,12 +1,15 @@
 import { DatePipe } from '@angular/common';
 import {
+  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   signal,
   type OnInit,
+  viewChild,
 } from '@angular/core';
+import type { ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TechnologyRadarService } from '../../core/services/technology-radar.service';
@@ -23,6 +26,7 @@ import {
   buildTechnologyInventory,
   filterTechnologyInventory,
   migrationWatch,
+  positionRadarPoints,
   technologyRadarMetrics,
 } from '../../shared/utils/technology-radar';
 
@@ -73,6 +77,9 @@ export class TechnologyRadarComponent implements OnInit {
   protected readonly sort = signal<'technology' | 'eol' | 'repositories'>('technology');
   protected readonly direction = signal<'asc' | 'desc'>('asc');
   protected readonly selectedKey = signal<string | null>(null);
+  private readonly scrollRequest = signal(0);
+  private lastScrollRequest = 0;
+  private readonly evidence = viewChild<ElementRef<HTMLElement>>('evidence');
   protected readonly rows = computed(() => buildTechnologyInventory(this.store.snapshot()));
   protected readonly metrics = computed(() => technologyRadarMetrics(this.store.snapshot()));
   protected readonly staleRows = computed(
@@ -91,12 +98,27 @@ export class TechnologyRadarComponent implements OnInit {
   protected readonly selected = computed(
     () => this.rows().find((row) => row.key === this.selectedKey()) ?? null,
   );
+  protected readonly radarPoints = computed(() => positionRadarPoints(this.filteredRows()));
   protected readonly watch = computed(() => migrationWatch(this.rows()));
   protected readonly calendar = computed(() =>
     this.rows()
       .filter((row) => row.lifecycle.eol)
       .sort((left, right) => Date.parse(left.lifecycle.eol!) - Date.parse(right.lifecycle.eol!)),
   );
+
+  constructor() {
+    afterRenderEffect(() => {
+      const request = this.scrollRequest();
+      const evidence = this.evidence()?.nativeElement;
+      if (!request || request === this.lastScrollRequest || !this.selected() || !evidence) return;
+      this.lastScrollRequest = request;
+      evidence.querySelector<HTMLElement>('h2')?.focus({ preventScroll: true });
+      evidence.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    });
+  }
 
   ngOnInit(): void {
     const technology = this.route.snapshot.queryParamMap.get('technology');
@@ -106,6 +128,15 @@ export class TechnologyRadarComponent implements OnInit {
 
   protected select(row: TechnologyInventoryRow): void {
     this.selectedKey.set(row.key);
+    this.scrollRequest.update((value) => value + 1);
+  }
+
+  protected markerRadius(row: TechnologyInventoryRow): number {
+    return Math.min(15, 7 + Math.sqrt(row.repositories.length) * 2);
+  }
+
+  protected markerLabel(row: TechnologyInventoryRow): string {
+    return `${row.technology} ${row.version}. ${row.repositories.length} repositories. ${this.label(row.lifecycle.lifecycle)} lifecycle. ${this.label(row.lifecycle.lts)} LTS. ${this.label(row.lifecycle.migrationUrgency)} migration urgency.`;
   }
 
   protected sortBy(column: 'technology' | 'eol' | 'repositories'): void {

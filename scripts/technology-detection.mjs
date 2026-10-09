@@ -2,6 +2,24 @@ const TEST_PATH = /(^|\/)(tests?|specs?|samples?|examples?|benchmarks?|fixtures?
 
 const TECHNOLOGIES = {
   dotnet: { id: 'dotnet', name: '.NET', category: 'runtime', lifecycleProduct: 'dotnet' },
+  'dotnet-core': {
+    id: 'dotnet-core',
+    name: '.NET Core',
+    category: 'runtime',
+    lifecycleProduct: 'dotnet',
+  },
+  'dotnet-framework': {
+    id: 'dotnet-framework',
+    name: '.NET Framework',
+    category: 'runtime',
+    lifecycleProduct: null,
+  },
+  'dotnet-standard': {
+    id: 'dotnet-standard',
+    name: '.NET Standard',
+    category: 'framework',
+    lifecycleProduct: null,
+  },
   'dotnet-sdk': {
     id: 'dotnet-sdk',
     name: '.NET SDK',
@@ -36,14 +54,52 @@ function cleanVersion(value) {
   return clean.replace(/^v(?=\d)/i, '');
 }
 
+function unambiguousRangeMajor(value) {
+  const clean = cleanVersion(value).trim();
+  const alternatives = clean.split('||').map((item) => item.trim());
+  const majors = alternatives.map((alternative) => {
+    const direct = alternative.match(/^[~^]?\s*v?(\d+)(?:\.(?:\d+|[xX*])){0,2}$/);
+    if (direct) return direct[1];
+    const hyphen = alternative.match(/^v?(\d+)(?:\.\d+){0,2}\s+-\s+v?(\d+)(?:\.\d+){0,2}$/);
+    if (hyphen) return hyphen[1] === hyphen[2] ? hyphen[1] : null;
+    const bounded = alternative.match(/^>=?\s*v?(\d+)(?:\.\d+){0,2}\s+<\s*v?(\d+)(?:\.0){0,2}$/);
+    return bounded && Number(bounded[2]) === Number(bounded[1]) + 1 ? bounded[1] : null;
+  });
+  return majors.length && majors.every((major) => major && major === majors[0]) ? majors[0] : null;
+}
+
 function cycleFor(technologyId, value) {
-  const match = cleanVersion(value).match(/\d+(?:\.\d+)?/);
+  const clean = cleanVersion(value);
+  const match = clean.match(/\d+(?:\.\d+)?/);
   if (!match) return null;
   const [major, minor] = match[0].split('.');
-  if (technologyId.startsWith('dotnet')) {
+  if (technologyId === 'dotnet') {
     return Number(major) >= 5 ? major : `${major}.${minor ?? '0'}`;
   }
-  return major;
+  if (technologyId === 'dotnet-sdk') return major;
+  if (technologyId === 'dotnet-core' || technologyId === 'dotnet-standard') {
+    return `${major}.${minor ?? '0'}`;
+  }
+  if (technologyId === 'dotnet-framework') return cleanVersion(value);
+  return kindFor(clean) === 'range' ? unambiguousRangeMajor(clean) : major;
+}
+
+function targetFramework(target) {
+  let match = target.match(/^netstandard(\d+)\.(\d+)$/i);
+  if (match) return { technologyId: 'dotnet-standard', value: `${match[1]}.${match[2]}` };
+  match = target.match(/^netcoreapp(\d+)\.(\d+)$/i);
+  if (match) return { technologyId: 'dotnet-core', value: `${match[1]}.${match[2]}` };
+  match = target.match(/^net(\d+)\.(\d+)(?:-[a-z]+(?:\d+(?:\.\d+){0,3})?)?$/i);
+  if (match && Number(match[1]) >= 5) {
+    return { technologyId: 'dotnet', value: `${match[1]}.${match[2]}` };
+  }
+  match = target.match(/^net(\d{2,3})$/i);
+  if (!match) return null;
+  const digits = match[1];
+  return {
+    technologyId: 'dotnet-framework',
+    value: `${digits[0]}.${digits.slice(1).split('').join('.')}`,
+  };
 }
 
 function versionRecord({ technologyId, value, path, kind, confidence, scope, detail }) {
@@ -174,17 +230,14 @@ function detectDotnet(files, result, issues) {
       .split(';')
       .map((item) => item.trim())
       .filter(Boolean)) {
-      const match = target.match(/^net(?:coreapp|standard)?(\d+)(?:\.(\d+))?/i);
-      if (!match) continue;
-      const value = match[2]
-        ? `${match[1]}.${match[2]}`
-        : `${match[1][0]}.${match[1].slice(1) || '0'}`;
+      const framework = targetFramework(target);
+      if (!framework) continue;
       add(
         result,
-        'dotnet',
+        framework.technologyId,
         versionRecord({
-          technologyId: 'dotnet',
-          value,
+          technologyId: framework.technologyId,
+          value: framework.value,
           path: file.path,
           kind: raw === resolved ? 'declared' : 'resolved',
           confidence: 'high',
