@@ -130,7 +130,7 @@ function pairedVersions(
 }
 
 export function buildRepositoryTechnologyStack(
-  repository: RepositoryTechnology | null,
+  repository: RepositoryTechnology | null | undefined,
 ): readonly TechnologyStackCard[] {
   if (!repository) return [];
   const results: TechnologyStackCard[] = [];
