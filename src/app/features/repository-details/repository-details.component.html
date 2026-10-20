@@ -125,17 +125,17 @@
               @for (card of technologyCards(); track card.key) {
                 <article class="technology-card">
                   <div class="technology-title">
-                    <a
-                      routerLink="/technology-radar"
-                      [queryParams]="{ technology: card.name }"
-                      >{{ card.name }}</a
-                    >
+                    <a routerLink="/technology-radar" [queryParams]="{ technology: card.name }">{{
+                      card.name
+                    }}</a>
                     <span>{{ card.category }}</span>
                   </div>
                   <dl class="technology-facts">
                     <div>
                       <dt>Version</dt>
-                      <dd><code>{{ card.version }}</code></dd>
+                      <dd>
+                        <code>{{ card.version }}</code>
+                      </dd>
                     </div>
                     <div>
                       <dt>Lifecycle / LTS</dt>
