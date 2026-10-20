@@ -120,64 +120,72 @@
         } @else if (technologyStore.error()) {
           <p class="technology-state">Technology data is unavailable.</p>
         } @else if (technologyStack(); as stack) {
-          @if (stack.technologies.length) {
+          @if (technologyCards().length) {
             <div class="technology-grid">
-              @for (technology of stack.technologies; track technology.id) {
-                @for (
-                  version of technology.versions;
-                  track version.value + version.kind + version.scope
-                ) {
-                  <article>
-                    <div class="technology-title">
-                      <a
-                        routerLink="/technology-radar"
-                        [queryParams]="{ technology: technology.name }"
-                        >{{ technology.name }}</a
-                      >
-                      <span>{{ technology.category }}</span>
+              @for (card of technologyCards(); track card.key) {
+                <article class="technology-card">
+                  <div class="technology-title">
+                    <a
+                      routerLink="/technology-radar"
+                      [queryParams]="{ technology: card.name }"
+                      >{{ card.name }}</a
+                    >
+                    <span>{{ card.category }}</span>
+                  </div>
+                  <dl class="technology-facts">
+                    <div>
+                      <dt>Version</dt>
+                      <dd><code>{{ card.version }}</code></dd>
                     </div>
-                    <dl>
-                      <div>
-                        <dt>Version</dt>
-                        <dd>
-                          <code>{{ version.value }}</code> · {{ technologyLabel(version.kind) }}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Lifecycle / LTS</dt>
-                        <dd>
-                          {{ technologyLabel(version.lifecycle.lifecycle) }} /
-                          {{ technologyLabel(version.lifecycle.lts) }}
-                          @if (version.lifecycle.stale) {
-                            <span class="technology-warning">
-                              · Stale lifecycle source — verify dates
-                            </span>
-                          }
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>EOL</dt>
-                        <dd>
-                          {{
-                            version.lifecycle.eol ? (version.lifecycle.eol | fullDate) : 'Unknown'
-                          }}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Migration</dt>
-                        <dd>{{ technologyLabel(version.lifecycle.migrationUrgency) }}</dd>
-                      </div>
-                    </dl>
-                    <ul>
-                      @for (evidence of version.evidence; track evidence.path + evidence.detail) {
-                        <li>
-                          <code>{{ evidence.path }}</code
-                          ><span>{{ evidence.detail }}</span>
-                        </li>
-                      }
-                    </ul>
-                  </article>
-                }
+                    <div>
+                      <dt>Lifecycle / LTS</dt>
+                      <dd>
+                        {{ technologyLabel(card.lifecycle.lifecycle) }} /
+                        {{ technologyLabel(card.lifecycle.lts) }}
+                        @if (card.lifecycle.stale) {
+                          <span class="technology-stale">Stale data — verify dates</span>
+                        }
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>EOL</dt>
+                      <dd>{{ card.lifecycle.eol ? (card.lifecycle.eol | fullDate) : 'Unknown' }}</dd>
+                    </div>
+                    <div>
+                      <dt>Migration</dt>
+                      <dd>{{ technologyLabel(card.lifecycle.migrationUrgency) }}</dd>
+                    </div>
+                  </dl>
+                  <div class="technology-provenance">
+                    <div><strong>Sources</strong> {{ card.kinds.join(' · ') }}</div>
+                    <div><strong>Scopes</strong> {{ card.scopes.join(' · ') }}</div>
+                    @if (card.declared.length && card.resolved.length) {
+                      <div><strong>Declared</strong> {{ card.declared.join(', ') }}</div>
+                      <div><strong>Resolved</strong> {{ card.resolved.join(', ') }}</div>
+                    }
+                  </div>
+                  @for (message of card.mismatches; track message) {
+                    <p class="technology-mismatch" role="status">{{ message }}</p>
+                  }
+                  <div class="technology-evidence-heading">
+                    <h3>Detected files</h3>
+                    <span>{{ card.evidence.length }} files</span>
+                  </div>
+                  <ul
+                    class="technology-evidence-list"
+                    [attr.tabindex]="card.evidence.length > 5 ? 0 : null"
+                    [attr.aria-label]="'Detected files for ' + card.name + ' ' + card.version"
+                  >
+                    @for (evidence of card.evidence; track evidence.path) {
+                      <li>
+                        <code>{{ evidence.path }}</code>
+                        @for (detail of evidence.details; track detail) {
+                          <span>{{ detail }}</span>
+                        }
+                      </li>
+                    }
+                  </ul>
+                </article>
               }
             </div>
           } @else {
