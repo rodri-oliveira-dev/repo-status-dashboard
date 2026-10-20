@@ -105,21 +105,23 @@
 }
 .technology-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 0.8rem;
   padding: 1rem;
 }
-.technology-grid article {
-  padding: 0.9rem;
+.technology-card {
+  min-width: 0;
+  padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface-raised);
 }
 .technology-title {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.7rem;
+  gap: 0.75rem;
+  margin-bottom: 0.8rem;
 }
 .technology-title a {
   font-weight: 750;
@@ -130,35 +132,110 @@
   font-size: 0.65rem;
   text-transform: uppercase;
 }
-.technology-grid dl > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.45rem 0;
-  border-top: 1px solid var(--border);
-}
-.technology-grid dl dt {
+.technology-card .technology-facts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
 }
-.technology-grid dl dd {
-  text-align: right;
-  text-transform: capitalize;
-}
-.technology-grid ul {
-  margin: 0.7rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.technology-grid li {
+.technology-card .technology-facts > div {
   display: grid;
-  gap: 0.25rem;
-  padding-top: 0.55rem;
-  color: var(--muted);
-  font-size: 0.67rem;
+  grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
+  gap: 0.75rem;
+  min-height: 0;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border);
+  border-right: 0;
 }
-.technology-grid li code {
-  width: fit-content;
+.technology-card .technology-facts dt {
+  margin: 0;
+  line-height: 1.4;
+}
+.technology-card .technology-facts dd {
+  min-width: 0;
+  text-align: left;
+  line-height: 1.4;
   overflow-wrap: anywhere;
+}
+.technology-stale {
+  display: block;
+  color: var(--warning);
+  font-size: 0.69rem;
+}
+.technology-provenance {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-subtle);
+  font-size: 0.7rem;
+  overflow-wrap: anywhere;
+}
+.technology-provenance strong {
+  display: inline-block;
+  margin-right: 0.4rem;
+  color: var(--muted);
+}
+.technology-mismatch {
+  margin: 0.7rem 0;
+  padding: 0.6rem;
+  border-left: 3px solid var(--warning);
+  background: var(--warning-soft, var(--neutral-soft));
+  color: var(--text-subtle);
+  font-size: 0.73rem;
+  overflow-wrap: anywhere;
+}
+.technology-evidence-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+}
+.technology-evidence-heading h3 {
+  margin: 0;
+  font-size: 0.76rem;
+}
+.technology-evidence-heading span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.technology-card .technology-evidence-list {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  max-height: 15rem;
+  margin: 0.6rem 0 0;
+  padding: 0 0.4rem 0 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.technology-card .technology-evidence-list:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.technology-card .technology-evidence-list li {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: var(--neutral-soft);
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+.technology-card .technology-evidence-list code {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 .technology-state,
 .technology-warning {
