@@ -136,7 +136,14 @@ export function buildRepositoryTechnologyStack(
   const results: TechnologyStackCard[] = [];
   for (const technology of repository.technologies) {
     const cards = new Map<string, CardBuilder>();
-    const declarations = technology.versions.filter(isPackageDeclaration);
+    // The collector can coalesce evidence from multiple workspaces into one
+    // DetectedVersion. Split by source before pairing to avoid cross-workspace joins.
+    const observations = technology.versions.flatMap((version) =>
+      version.evidence.length
+        ? version.evidence.map((evidence) => ({ ...version, evidence: [evidence] }))
+        : [version],
+    );
+    const declarations = observations.filter(isPackageDeclaration);
     const paired = new Set<DetectedVersion>();
     const ensureCard = (value: string): CardBuilder => {
       let card = cards.get(value);
@@ -161,7 +168,7 @@ export function buildRepositoryTechnologyStack(
 
     // Lockfiles and manifests in the same workspace describe one installation.
     // A mismatched declared range must remain visible, not become a second card.
-    for (const lock of technology.versions.filter(isLockVersion)) {
+    for (const lock of observations.filter(isLockVersion)) {
       const card = ensureCard(lock.value);
       addVersion(card, lock);
       for (const declaration of pairedVersions(declarations, lock)) {
@@ -177,7 +184,7 @@ export function buildRepositoryTechnologyStack(
 
     // Merge identical versions across production, test, tooling and evidence kinds.
     // Do not merge merely by major lifecycle cycle: 10.0 and 10.1 remain distinct.
-    for (const version of technology.versions) {
+    for (const version of observations) {
       if (paired.has(version)) continue;
       addVersion(ensureCard(version.value), version);
     }
