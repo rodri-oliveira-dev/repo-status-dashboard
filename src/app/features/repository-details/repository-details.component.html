@@ -149,7 +149,9 @@
                     </div>
                     <div>
                       <dt>EOL</dt>
-                      <dd>{{ card.lifecycle.eol ? (card.lifecycle.eol | fullDate) : 'Unknown' }}</dd>
+                      <dd>
+                        {{ card.lifecycle.eol ? (card.lifecycle.eol | fullDate) : 'Unknown' }}
+                      </dd>
                     </div>
                     <div>
                       <dt>Migration</dt>
