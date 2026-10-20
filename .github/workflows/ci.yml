@@ -28,11 +28,6 @@ jobs:
         run: npm ci
       - name: Check formatting
         run: npm run format:check
-      - name: Show formatted HTML diff (temporary)
-        if: failure()
-        run: |
-          npx prettier --write src/app/features/repository-details/repository-details.component.html
-          git diff -- src/app/features/repository-details/repository-details.component.html
       - name: Lint
         run: npm run lint
       - name: Test
