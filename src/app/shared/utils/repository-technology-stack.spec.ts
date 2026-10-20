@@ -37,7 +37,9 @@ function version(
     confidence: 'high',
     cycle: value.split('.')[0],
     lifecycle: lifecycle(),
-    evidence: [{ path, kind: path.endsWith('package-lock.json') ? 'lockfile' : 'manifest', detail }],
+    evidence: [
+      { path, kind: path.endsWith('package-lock.json') ? 'lockfile' : 'manifest', detail },
+    ],
   };
 }
 
@@ -97,7 +99,11 @@ describe('repository technology stack presentation', () => {
         ),
       ),
     );
-    expect(cards.map(({ key }) => key)).toEqual(['dotnet:10.0', 'dotnet:10.1', 'dotnet-sdk:10.0.402']);
+    expect(cards.map(({ key }) => key)).toEqual([
+      'dotnet:10.0',
+      'dotnet:10.1',
+      'dotnet-sdk:10.0.402',
+    ]);
   });
 
   it('merges matching TypeScript declared and lockfile versions with both sources', () => {
@@ -209,19 +215,29 @@ describe('repository technology stack presentation', () => {
       ),
     );
     expect(cards).toHaveLength(2);
-    expect(cards.find(({ version: value }) => value === '5.9.3')?.evidence.map((item) => item.path)).toEqual([
-      'app/package-lock.json',
-      'app/package.json',
-    ]);
-    expect(cards.find(({ version: value }) => value === '5.9.4')?.evidence.map((item) => item.path)).toEqual([
-      'other/package-lock.json',
-      'other/package.json',
-    ]);
+    expect(
+      cards.find(({ version: value }) => value === '5.9.3')?.evidence.map((item) => item.path),
+    ).toEqual(['app/package-lock.json', 'app/package.json']);
+    expect(
+      cards.find(({ version: value }) => value === '5.9.4')?.evidence.map((item) => item.path),
+    ).toEqual(['other/package-lock.json', 'other/package.json']);
   });
 
   it('deduplicates file paths while retaining distinct evidence details', () => {
-    const v1 = version('10.0', 'declared', 'production', 'src/App.csproj', 'Target framework net10.0');
-    const v2 = version('10.0', 'resolved', 'production', 'src/App.csproj', 'Central property net10.0');
+    const v1 = version(
+      '10.0',
+      'declared',
+      'production',
+      'src/App.csproj',
+      'Target framework net10.0',
+    );
+    const v2 = version(
+      '10.0',
+      'resolved',
+      'production',
+      'src/App.csproj',
+      'Central property net10.0',
+    );
     const original = snapshot(tech('dotnet', '.NET', 'runtime', v1, v2));
     const cards = buildRepositoryTechnologyStack(original);
     expect(cards).toHaveLength(1);
