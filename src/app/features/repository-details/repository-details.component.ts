@@ -6,6 +6,7 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge/statu
 import { FullDatePipe } from '../../shared/pipes/full-date.pipe';
 import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import type { HealthReasonCode } from '../../shared/models/repository-status.model';
+import { buildRepositoryTechnologyStack } from '../../shared/utils/repository-technology-stack';
 
 const REASON_LABELS: Record<HealthReasonCode, string> = {
   REPOSITORY_ARCHIVED: 'Repository is archived.',
@@ -38,6 +39,9 @@ export class RepositoryDetailsComponent implements OnInit {
   );
   protected readonly technologyStack = computed(() =>
     this.technologyStore.findByRepository(this.route.snapshot.paramMap.get('name') ?? ''),
+  );
+  protected readonly technologyCards = computed(() =>
+    buildRepositoryTechnologyStack(this.technologyStack()),
   );
 
   ngOnInit(): void {
